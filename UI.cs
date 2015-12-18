@@ -34,6 +34,7 @@ namespace nboard
             _bookmarks.Width = Screen.AllScreens[0].Bounds.Width / 4;
             _bookmarks.Height = Screen.AllScreens[0].Bounds.Height / 2;
             _bookmarks.Left = Screen.AllScreens[0].Bounds.Width - _bookmarks.Width - 15;
+            _bookmarks.Top = 100;
             _bookmarks.StartPosition = FormStartPosition.Manual;
 
             var bookmarks = db.Bookmarked;
@@ -51,6 +52,7 @@ namespace nboard
             _updates.Width = Screen.AllScreens[0].Bounds.Width/4;
             _updates.Height = Screen.AllScreens[0].Bounds.Height/2;
             _updates.Left = 15;
+            _updates.Top = 100;
             _updates.StartPosition = FormStartPosition.Manual;
 
 
