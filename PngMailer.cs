@@ -20,7 +20,18 @@ namespace nboard
                 foreach (string f in files)
                 {
                     string pathToPng = f;
-                    byte[] packed = new PngCrypter().Decrypt(pathToPng);
+                    byte[] packed = null;
+
+                    try
+                    {
+                        packed = new PngCrypter().Decrypt(pathToPng);
+                    }
+
+                    catch(Exception e)
+                    {
+                        Logger.LogError(e.ToString());
+                    }
+
                     NanoPost[] posts = null;
 
                     try

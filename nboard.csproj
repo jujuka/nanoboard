@@ -8,6 +8,8 @@
     <RootNamespace>nboard</RootNamespace>
     <AssemblyName>nboard</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,7 +54,6 @@
     <Compile Include="ApplicationStarter.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="FontProvider.cs" />
-    <Compile Include="LockBitmap.cs" />
     <Compile Include="PngCrypterUtils.cs" />
     <Compile Include="PngCrypter.cs" />
     <Compile Include="NanoEncoding.cs" />
