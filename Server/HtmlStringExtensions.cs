@@ -66,6 +66,37 @@ div {
     float: left;
 }
 
+.head {
+  background: #654;
+  color: salmon;
+  padding: 1em;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  position: absolute;
+  top:0;
+  left:0;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+.step {
+  height:5em;
+}
+
+.big {
+    font-size: 2em;
+}
+
 textarea
 {
   font-size: 0.9em;

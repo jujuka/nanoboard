@@ -53,6 +53,16 @@ namespace nboard
             }
 
             var sb = new StringBuilder();
+
+            sb.Append(
+                (
+                    ("Наноборда").ToSpan("big noselect","").AddBreak() +
+                    ("[Главная]".ToRef("/"))
+                ).ToDiv("head", "")         
+            );
+
+            sb.Append("".ToDiv("step", ""));
+
             var posts = _db.GetThreadPosts(thread).ExceptHidden(_db);
 
             bool first = true;
