@@ -72,6 +72,7 @@
     <Compile Include="Server\Handlers\ThreadViewHandler.cs" />
     <Compile Include="Server\Handlers\ReplyViewHandler.cs" />
     <Compile Include="Server\Handlers\WriteHandler.cs" />
+    <Compile Include="Server\Handlers\HideHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

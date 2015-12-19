@@ -73,7 +73,8 @@ namespace nboard
         public void Hide(Hash hash)
         {
             if (_hideList.Contains(hash.Value)) return;
-            if (hash == RootHash) return;
+            if (hash.Zero) return;
+            if (hash.Value == RootHash.Value) return;
             _hideList.Add(hash.Value);
             File.AppendAllText(HideList, hash.Value + "\n");
         }

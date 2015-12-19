@@ -47,14 +47,13 @@ namespace nboard
                     return new ErrorHandler(StatusCode.BadRequest, "Wrong hash format.").Handle(request);
                 }
             }
-
             else
             {
                 thread = _db.RootHash;
             }
 
             var sb = new StringBuilder();
-            var posts = _db.GetThreadPosts(thread);
+            var posts = _db.GetThreadPosts(thread).ExceptHidden(_db);
 
             bool first = true;
 
@@ -66,7 +65,8 @@ namespace nboard
                         (
                             p.Message.Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             ("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
-                            ("[Ответить]").ToRefBlank("/reply/" + p.GetHash().Value)
+                            //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
+                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
                         ).ToDiv("post", ""));
                     first = false;
                     continue;
@@ -88,11 +88,24 @@ namespace nboard
                     ans += "а";
                 }
 
+                if (p.GetHash().Value == _db.RootHash.Value)
+                {
+                    sb.Append(
+                    (
+                        p.Message.Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                        ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
+                    ).ToDiv("post main", ""));
+                }
+                else
                 sb.Append(
                     (
                         p.Message.Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                         (answers > 0 ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
-                        ("[Ответить]").ToRefBlank("/reply/" + p.GetHash().Value)
+                        "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
+                        x.send('');
+                        document.getElementById('" + p.GetHash().Value + @"').parentNode.style.visibility='hidden';") +
+                        //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
+                        ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
                     ).ToDiv("post", ""));
             }
 

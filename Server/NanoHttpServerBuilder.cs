@@ -27,6 +27,7 @@ namespace nboard
             server.AddHandler("thread", new ThreadViewHandler(_db));
             server.AddHandler("reply", new ReplyViewHandler(_db));
             server.AddHandler("write", new WriteHandler(_db));
+            server.AddHandler("hide", new HideHandler(_db));
             return server;
         }
     }

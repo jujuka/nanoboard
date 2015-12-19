@@ -56,6 +56,10 @@ a:hover {
   padding: 0.7em;
 }
 
+.main {
+  background: white;
+}
+
 div {
     display: inline-block;
     clear: both;
