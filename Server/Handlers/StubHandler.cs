@@ -25,5 +25,4 @@ namespace nboard
             return new NanoHttpResponse(StatusCode.Ok, _stub);
         }
     }
-    
 }

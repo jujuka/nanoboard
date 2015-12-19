@@ -29,5 +29,4 @@ namespace nboard
                 (_statusLine.ToHeader(2) + _description.ToPar()).ToHtmlBody());
         }
     }
-    
 }

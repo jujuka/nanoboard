@@ -15,5 +15,4 @@ namespace nboard
     {
         NanoHttpResponse Handle(NanoHttpRequest request);
     }
-    
 }

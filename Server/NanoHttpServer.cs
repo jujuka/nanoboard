@@ -44,10 +44,7 @@ namespace nboard
         {
             var request = new NanoHttpRequest(connection.Request);
             if (request.Method == "GET" || request.Method == "POST") Process(connection, request);
-            else connection.Response(
-                new NanoHttpResponse(
-                    StatusCode.MethodNotAllowed, 
-                    (StatusCode.MethodNotAllowed.ToHeader(2) + "Server only supports GET and POST".ToPar()).ToHtmlBody()));
+            else connection.Response(new ErrorHandler(StatusCode.MethodNotAllowed, "Server only supports GET and POST").Handle(request));
         }
 
         private void Process(HttpConnection connection, NanoHttpRequest request)
@@ -67,8 +64,7 @@ namespace nboard
 
             else
             {
-                connection.Response(
-                    new NanoHttpResponse(StatusCode.BadRequest, (StatusCode.BadRequest.ToHeader(2) + "Unknown endpoint: " + endpoint).ToHtmlBody()));
+                connection.Response(new ErrorHandler(StatusCode.BadRequest, "Unknown endpoint: " + endpoint).Handle(request));
             }
         }
 

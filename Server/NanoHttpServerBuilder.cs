@@ -13,10 +13,18 @@ namespace nboard
 {
     class NanoHttpServerBuilder
     {
+        private readonly NanoDB _db;
+
+        public NanoHttpServerBuilder(NanoDB db)
+        {
+            _db = db;
+        }
+
         public NanoHttpServer Build(int port)
         {
-            return new NanoHttpServer(port);
+            var server = new NanoHttpServer(port);
+            server.SetRootHandler(new ThreadViewHandler(_db, _db.RootHash));
+            return server;
         }
     }
-    
 }
