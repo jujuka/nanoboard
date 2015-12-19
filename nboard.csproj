@@ -68,6 +68,7 @@
     <Compile Include="Server\TcpServer.cs" />
     <Compile Include="Server\Handlers\StubHandler.cs" />
     <Compile Include="Server\Handlers\IRequestHandler.cs" />
+    <Compile Include="Server\Handlers\ErrorHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
