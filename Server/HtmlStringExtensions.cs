@@ -16,6 +16,65 @@ namespace nboard
         public const string Break = "<br/>";
         public const string Line = "<hr/>";
 
+        public const string Style = @"
+body {
+  font-family: 'Trebuchet MS', Trebuchet, sans-serif;
+  background: #eee;
+  line-height: 1.3em;
+  font-size: 0.9em;
+}
+
+a {
+  color: salmon;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 0.2em;
+}
+
+a:hover {
+  color: darkorange;
+  text-decoration: underline;
+}
+
+.postinner {
+  max-height: 16em;
+  overflow: auto;
+  margin-bottom: .5em;
+}
+
+.post {
+  width: auto;
+  border: 1px solid #ccc;
+  border-radius: .5em;
+  display: inline-block;
+  white-space: wrap;
+  background: #ddd;
+  color: #333;
+  margin: 0.25em;
+  float: left;
+  clear: both;
+  padding: 0.7em;
+}
+
+div {
+    display: inline-block;
+    clear: both;
+    float: left;
+}
+
+textarea
+{
+  font-size: 0.9em;
+  width: 32em;
+  height: 22em;
+}
+
+button
+{
+  font-size: 0.9em;
+}
+";
+
         public static string AddBreak(this string s)
         {
             return s + Break;
@@ -23,7 +82,8 @@ namespace nboard
 
         public static string ToHtmlBody(this string s)
         {
-            return string.Format("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body>{0}</body></html>", s);
+            return string.Format(
+                "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><style>{1}</style></head><body>{0}</body></html>", s, Style);
         }
 
         public static string ToHeader(this string s, int no)
@@ -56,9 +116,9 @@ namespace nboard
             return ToElemIdClass(content, @class, id, "span");
         }
 
-        public static string ToButton(this string content, string @class, string id)
+        public static string ToButton(this string content, string @class, string id, string onclick)
         {
-            return ToElemIdClass(content, @class, id, "button");
+            return string.Format("<{3} id='{0}' onclick=\"{4}\" class='{1}'>{2}</{3}>", id, @class, content, "button", onclick);
         }
 
         public static string ToInput(this string placeholder, string @class, string id, string type)
@@ -71,14 +131,14 @@ namespace nboard
             return ToElemIdClass(content, @class, id, "textarea");
         }
 
-        public static string ToRef(this string url, string message)
+        public static string ToRef(this string message, string url)
         {
-            return string.Format("<a href='{0}>{1}</a>", url, message);
+            return string.Format("<a href='{0}'>{1}</a>", url, message);
         }
 
-        public static string ToRefBlank(this string url, string message)
+        public static string ToRefBlank(this string message, string url)
         {
-            return string.Format("<a href='{0} target='_blank'>{1}</a>", url, message);
+            return string.Format("<a href='{0}' target='_blank'>{1}</a>", url, message);
         }
     }
     

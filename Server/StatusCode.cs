@@ -17,6 +17,7 @@ namespace nboard
         public const string NotFound = "404 Not Found";
         public const string BadRequest = "400 Bad Request";
         public const string MethodNotAllowed = "405 Method Not Allowed";
+        public const string InternalServerError = "500 Internal Server Error";
     }
     
 }

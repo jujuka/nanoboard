@@ -25,6 +25,7 @@ namespace nboard
             if (value.Length != HashCalculator.HashCrop*2)
             {
                 Invalid = true;
+                return;
             }
 
             for (int i = 0; i < HashCalculator.HashCrop*2; i++)

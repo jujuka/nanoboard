@@ -23,7 +23,10 @@ namespace nboard
         public NanoHttpServer Build(int port)
         {
             var server = new NanoHttpServer(port);
-            server.SetRootHandler(new ThreadViewHandler(_db, _db.RootHash));
+            server.SetRootHandler(new ThreadViewHandler(_db));
+            server.AddHandler("thread", new ThreadViewHandler(_db));
+            server.AddHandler("reply", new ReplyViewHandler(_db));
+            server.AddHandler("write", new WriteHandler(_db));
             return server;
         }
     }
