@@ -65,6 +65,9 @@
     <Compile Include="HtmlStringExtensions.cs" />
     <Compile Include="StatusCode.cs" />
     <Compile Include="NanoHttpResponse.cs" />
+    <Compile Include="IRequestHandler.cs" />
+    <Compile Include="NanoHttpServerBuilder.cs" />
+    <Compile Include="StubHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

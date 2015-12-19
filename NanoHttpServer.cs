@@ -14,32 +14,62 @@ namespace nboard
     class NanoHttpServer
     {
         private readonly TcpServer _tcp;
+        private readonly Dictionary<string,IRequestHandler> _handlers;
+        private IRequestHandler _root;
 
         public NanoHttpServer(int port)
         {
+            _handlers = new Dictionary<string, IRequestHandler>();
             _tcp = new TcpServer(port);
             _tcp.ConnectionAdded += OnConnectionAdded;
+            _root = new StubHandler("Page not ready yet".ToHtmlBody());
+        }
+
+        public void AddRootHandler(IRequestHandler handler)
+        {
+            _root = handler;   
+        }
+
+        public void AddHandler(string endpoint, IRequestHandler handler)
+        {
+            _handlers[endpoint] = handler;
+        }
+
+        public void Run()
+        {
             _tcp.Run();
         }
 
         private void OnConnectionAdded(HttpConnection connection)
         {
-            Console.WriteLine("Connection added");
             var request = new NanoHttpRequest(connection.Request);
-            if (request.Method == "GET") ProcessGet(connection, request.Address);
-            else if (request.Method == "POST") ProcessPost(connection, request.Address, request.Content);
+            if (request.Method == "GET" || request.Method == "POST") Process(connection, request);
             else connection.Response(
                 new NanoHttpResponse(
                     StatusCode.MethodNotAllowed, 
-                    (StatusCode.MethodNotAllowed.ToHeader(2) + "Server only supports GET and POST".ToPar()).ToHtmlBody()).ToString());
+                    (StatusCode.MethodNotAllowed.ToHeader(2) + "Server only supports GET and POST".ToPar()).ToHtmlBody()));
         }
 
-        private void ProcessGet(HttpConnection connection, string address)
+        private void Process(HttpConnection connection, NanoHttpRequest request)
         {
-        }
+            if (request.Address == "/")
+            {
+                connection.Response(_root.Handle(request));
+                return;
+            }
 
-        private void ProcessPost(HttpConnection connection, string address, string content)
-        {
+            var endpoint = request.Address.Split(new char[]{'/'}, StringSplitOptions.RemoveEmptyEntries)[0];
+
+            if (_handlers.ContainsKey(endpoint))
+            {
+                connection.Response(_handlers[endpoint].Handle(request));
+            }
+
+            else
+            {
+                connection.Response(
+                    new NanoHttpResponse(StatusCode.BadRequest, (StatusCode.BadRequest.ToHeader(2) + "Unknown endpoint: " + endpoint).ToHtmlBody()));
+            }
         }
 
         public void Stop()

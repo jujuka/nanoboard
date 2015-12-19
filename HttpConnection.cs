@@ -23,6 +23,12 @@ namespace nboard
             this._callback = callback;
         }
 
+        public void Response(NanoHttpResponse repsonse)
+        {
+            _callback(repsonse.ToString());
+        }
+
+        [Obsolete]
         public void Response(string repsonse)
         {
             _callback(repsonse);

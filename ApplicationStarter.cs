@@ -24,7 +24,8 @@ namespace nboard
                 daemon.Stop();
                 new PngMailer().FillOutbox(db);
             };*/
-            var serv = new NanoHttpServer(7345);
+            var serv = new NanoHttpServerBuilder().Build(7345);
+            serv.Run();
         }
 
         private void PrepareFolders()
