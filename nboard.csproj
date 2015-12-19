@@ -58,6 +58,13 @@
     <Compile Include="PngCrypter.cs" />
     <Compile Include="NanoEncoding.cs" />
     <Compile Include="FileUtils.cs" />
+    <Compile Include="TcpServer.cs" />
+    <Compile Include="HttpConnection.cs" />
+    <Compile Include="NanoHttpServer.cs" />
+    <Compile Include="NanoHttpRequest.cs" />
+    <Compile Include="HtmlStringExtensions.cs" />
+    <Compile Include="StatusCode.cs" />
+    <Compile Include="NanoHttpResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
