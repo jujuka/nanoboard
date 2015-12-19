@@ -23,7 +23,7 @@ namespace nboard
 
         public static string ToHtmlBody(this string s)
         {
-            return string.Format("<html><body>{0}</body></html>", s);
+            return string.Format("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body>{0}</body></html>", s);
         }
 
         public static string ToHeader(this string s, int no)

@@ -15,24 +15,17 @@ namespace nboard
     class HttpConnection
     {
         public readonly string Request;
-        private Action<string> _callback;
+        private Action<string,string> _callback;
 
-        public HttpConnection(string request, Action<string> callback)
+        public HttpConnection(string request, Action<string,string> asciiUtf8callback)
         {
             this.Request = request;
-            this._callback = callback;
+            this._callback = asciiUtf8callback;
         }
 
-        public void Response(NanoHttpResponse repsonse)
+        public void Response(NanoHttpResponse response)
         {
-            _callback(repsonse.ToString());
-        }
-
-        [Obsolete]
-        public void Response(string repsonse)
-        {
-            _callback(repsonse);
+            _callback(response.GetResponse(), response.GetContent());
         }
     }
-    
 }

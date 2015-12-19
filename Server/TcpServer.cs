@@ -54,10 +54,9 @@ namespace nboard
         private void HandleClient(object obj)
         {
             TcpClient client = (TcpClient)obj;
-            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
-            var reader = client.GetStream();
+            var stream = client.GetStream();
             String readData = "";
-            reader.ReadTimeout = 100;
+            stream.ReadTimeout = 100;
             var buffer = new byte[1024];
             int len = 0;
 
@@ -65,7 +64,7 @@ namespace nboard
             {
                 do
                 {
-                    len = reader.Read(buffer, 0, buffer.Length);
+                    len = stream.Read(buffer, 0, buffer.Length);
                     var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
                     readData += block;
                 }
@@ -79,10 +78,13 @@ namespace nboard
 
             if (ConnectionAdded != null)
             {
-                ConnectionAdded(new HttpConnection(readData, response =>
+                ConnectionAdded(new HttpConnection(readData, (ascii,utf8) =>
                 {
-                    writer.Write(response);
-                    writer.Flush();
+                    byte[] ba = Encoding.ASCII.GetBytes(ascii);
+                    byte[] bu = Encoding.UTF8.GetBytes(utf8);
+                    stream.Write(ba, 0, ba.Length);
+                    stream.Write(bu, 0, bu.Length);
+                    stream.Flush();
                     client.Close();
                 }));
             }

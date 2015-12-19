@@ -14,16 +14,22 @@ namespace nboard
     class NanoHttpResponse
     {
         private readonly string _response;
+        private readonly string _content;
 
-        public NanoHttpResponse(string code, string content = null)
+        public NanoHttpResponse(string code, string content)
         {
-            _response = "HTTP/1.1 " + code + (string.IsNullOrEmpty(content) ? "\r\n" : ("\r\n\r\n" + content));
+            _response = "HTTP/1.1 " + code + (string.IsNullOrEmpty(content) ? "\r\n" : ("\r\n\r\n"));
+            _content = content;
         }
 
-        public override string ToString()
+        public string GetResponse()
         {
             return _response;
         }
+
+        public string GetContent()
+        {
+            return _content;
+        }
     }
-    
 }
