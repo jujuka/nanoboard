@@ -11,7 +11,7 @@ namespace nboard
 {
     class MainClass
     {
-        [STAThread]
+        //[STAThread]
         public static void Main(string[] args)
         {
             new ApplicationStarter();
