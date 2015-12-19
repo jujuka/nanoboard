@@ -70,6 +70,8 @@
     <Compile Include="Server\Handlers\IRequestHandler.cs" />
     <Compile Include="Server\Handlers\ErrorHandler.cs" />
     <Compile Include="Server\Handlers\ThreadViewHandler.cs" />
+    <Compile Include="Server\Handlers\ReplyViewHandler.cs" />
+    <Compile Include="Server\Handlers\WriteHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
