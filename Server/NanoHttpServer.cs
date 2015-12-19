@@ -25,7 +25,7 @@ namespace nboard
             _root = new StubHandler("Page not ready yet".ToHtmlBody());
         }
 
-        public void AddRootHandler(IRequestHandler handler)
+        public void SetRootHandler(IRequestHandler handler)
         {
             _root = handler;   
         }
