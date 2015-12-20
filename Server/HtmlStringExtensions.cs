@@ -171,6 +171,12 @@ button
             return string.Format("<a href='{0}'>{1}</a>", url, message);
         }
 
+        public static string ToPostRef(this string message, string url)
+        {
+            return string.Format(
+                "<a onclick=\"var x=new XMLHttpRequest();x.open('GET','{0}','true');x.send('');\">{1}</a>", url, message);
+        }
+
         public static string ToRefBlank(this string message, string url)
         {
             return string.Format("<a href='{0}' target='_blank'>{1}</a>", url, message);

@@ -75,6 +75,10 @@
     <Compile Include="Server\Handlers\HideHandler.cs" />
     <Compile Include="Server\Handlers\ShutdownHandler.cs" />
     <Compile Include="Server\Handlers\AggregateHandler.cs" />
+    <Compile Include="Png\ShaCrypter.cs" />
+    <Compile Include="Server\Handlers\SaveHandler.cs" />
+    <Compile Include="Server\Handlers\AsmPngHandler.cs" />
+    <Compile Include="Server\Handlers\FreshPostsHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

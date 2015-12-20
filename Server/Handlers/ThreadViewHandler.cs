@@ -34,6 +34,22 @@ namespace nboard
             }
         }
 
+        public static void AddHeader(StringBuilder sb)
+        {
+            sb.Append(
+                (
+                    ("Наноборда").ToSpan("big noselect","").AddBreak() +
+                    ("[Главная]".ToRef("/")) + 
+                    ("[Создать PNG]".ToPostRef("/asmpng")) + 
+                    ("[Сохранить базу]".ToPostRef("/save")) + 
+                    ("[Свежие посты]".ToRef("/fresh")) + 
+                    "[Искать посты]".ToPostRef("/aggregate") +
+                    ("[Выключить сервер]".ToRef("/shutdown")) 
+                ).ToDiv("head", "")
+            );
+            sb.Append("".ToDiv("step", ""));
+        }
+
         private NanoHttpResponse HandleSafe(NanoHttpRequest request)
         {
             Hash thread = null;
@@ -53,20 +69,7 @@ namespace nboard
             }
 
             var sb = new StringBuilder();
-
-            sb.Append(
-                (
-                    ("Наноборда").ToSpan("big noselect","").AddBreak() +
-                    ("[Главная]".ToRef("/")) + 
-                    ("[Создать PNG]".ToRef("/asmpng")) + 
-                    ("[Сохранить базу]".ToRef("/save")) + 
-                    ("[Свежие посты]".ToRef("/fresh")) + 
-                    ("[Искать посты]".ToRef("/aggregate")) + 
-                    ("[Выключить сервер]".ToRef("/shutdown")) 
-                ).ToDiv("head", "")         
-            );
-
-            sb.Append("".ToDiv("step", ""));
+            AddHeader(sb);
 
             var posts = _db.GetThreadPosts(thread).ExceptHidden(_db);
 

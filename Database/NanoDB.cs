@@ -40,7 +40,6 @@ namespace nboard
             var root = new NanoPost(Hash.CreateZero(), NanoPost.RootStub);
             AddPost(root, false);
             RootHash = root.GetHash();
-            AddToBookmarks(RootHash);
             if (File.Exists(HideList))
             {
                 _hideList = new HashSet<string>(File.ReadAllLines(HideList));
@@ -50,6 +49,8 @@ namespace nboard
             {
                 _bookmarks = new HashSet<string>(File.ReadAllLines(Bookmarks));
             }
+
+            AddToBookmarks(RootHash);
         }
 
         public Hash[] Threads

@@ -11,8 +11,21 @@ namespace nboard
 {
     class PngCrypter
     {
+        private string _key;
+
+        public PngCrypter()
+        {
+            if (!File.Exists("key.txt"))
+            {
+                File.WriteAllText("key.txt", "nano");
+            }
+
+            _key = File.ReadAllText("key.txt");
+        }
+
         public void Crypt(string inputImageFileName, string outputImageFileName, byte[] hiddenBytes)
         {
+            hiddenBytes = ShaCrypter.Xor(hiddenBytes, _key);
             byte[] hiddenLengthBytes = BitConverter.GetBytes(hiddenBytes.Length);
             byte[] hiddenCombinedBytes = PngCrypterUtils.Combine(hiddenLengthBytes, hiddenBytes);
             Image innocuousBmp = Image.FromFile(inputImageFileName);
@@ -54,7 +67,7 @@ namespace nboard
             int loadedHiddenLength = BitConverter.ToInt32(loadedHiddenLengthBytes, 0);
             byte[] loadedHiddenBytes = DecodeBytes(loadedEncodedRgbComponents, bytesInInt, loadedHiddenLength);
             loadedEncodedBmp.Dispose();
-            return loadedHiddenBytes;
+            return ShaCrypter.Xor(loadedHiddenBytes, _key);
         }
  
         private static byte[] DecodeBytes(byte[] innocuousLookingData, int byteIndex, int byteCount)
