@@ -73,6 +73,8 @@
     <Compile Include="Server\Handlers\ReplyViewHandler.cs" />
     <Compile Include="Server\Handlers\WriteHandler.cs" />
     <Compile Include="Server\Handlers\HideHandler.cs" />
+    <Compile Include="Server\Handlers\ShutdownHandler.cs" />
+    <Compile Include="Server\Handlers\AggregateHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

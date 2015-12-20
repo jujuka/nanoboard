@@ -28,6 +28,8 @@ namespace nboard
             server.AddHandler("reply", new ReplyViewHandler(_db));
             server.AddHandler("write", new WriteHandler(_db));
             server.AddHandler("hide", new HideHandler(_db));
+            server.AddHandler("aggregate", new AggregateHandler());
+            server.AddHandler("shutdown", new ShutdownHandler(server));
             return server;
         }
     }

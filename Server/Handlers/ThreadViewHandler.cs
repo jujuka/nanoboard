@@ -57,7 +57,12 @@ namespace nboard
             sb.Append(
                 (
                     ("Наноборда").ToSpan("big noselect","").AddBreak() +
-                    ("[Главная]".ToRef("/"))
+                    ("[Главная]".ToRef("/")) + 
+                    ("[Создать PNG]".ToRef("/asmpng")) + 
+                    ("[Сохранить базу]".ToRef("/save")) + 
+                    ("[Свежие посты]".ToRef("/fresh")) + 
+                    ("[Искать посты]".ToRef("/aggregate")) + 
+                    ("[Выключить сервер]".ToRef("/shutdown")) 
                 ).ToDiv("head", "")         
             );
 
