@@ -10,7 +10,7 @@ namespace nboard
 
         public static Hash Calculate(string raw)
         {
-            byte[] bhash = MD5.Create().ComputeHash(NanoEncoding.GetBytes(raw));
+            byte[] bhash = SHA256.Create().ComputeHash(NanoEncoding.GetBytes(raw));
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < HashCrop; i++)

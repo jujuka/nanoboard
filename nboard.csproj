@@ -58,6 +58,7 @@
     <Compile Include="PngCrypter.cs" />
     <Compile Include="NanoEncoding.cs" />
     <Compile Include="FileUtils.cs" />
+    <Compile Include="ShaCrypter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
