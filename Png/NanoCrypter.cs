@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 
 namespace nboard
 {
@@ -12,16 +13,17 @@ namespace nboard
         public byte[] Pack(NanoPost[] posts)
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(NanoEncoding.GetBytes(posts.Length.ToString("x6")));
+            bytes.AddRange(Encoding.UTF8.GetBytes(posts.Length.ToString("x6")));
 
             foreach (var p in posts)
             {
-                bytes.AddRange(NanoEncoding.GetBytes(p.Serialized().Length.ToString("x6")));
+                var len = Encoding.UTF8.GetBytes(p.Serialized()).Length;
+                bytes.AddRange(Encoding.UTF8.GetBytes(len.ToString("x6")));
             }
 
             foreach (var p in posts)
             {
-                bytes.AddRange(NanoEncoding.GetBytes(p.Serialized()));
+                bytes.AddRange(Encoding.UTF8.GetBytes(p.Serialized()));
             }
 
             return bytes.ToArray();
@@ -30,7 +32,7 @@ namespace nboard
         public NanoPost[] Unpack(byte[] bytes)
         {
             List<NanoPost> posts = new List<NanoPost>();
-            string str = NanoEncoding.GetString(bytes);
+            string str = Encoding.UTF8.GetString(bytes);
 
             int count = int.Parse(str.Substring(0, 6), System.Globalization.NumberStyles.HexNumber);
             List<int> sizes = new List<int>();

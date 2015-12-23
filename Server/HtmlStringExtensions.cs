@@ -129,7 +129,8 @@ button
             s = s.Replace("[/i]", "</i>");
             s = s.Replace("[jpg=", "<img width=\"500\" src=\"data:image/jpg;base64,");
             s = s.Replace("[gif=", "<img width=\"500\" src=\"data:image/gif;base64,");
-            s = s.Replace("]", "\"/>");
+            s = s.Replace("[png=", "<img width=\"500\" src=\"data:image/png;base64,");
+            s = s.Replace("]", "\" />");
             return s;
         }
 

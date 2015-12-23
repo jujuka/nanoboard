@@ -229,10 +229,11 @@ namespace nboard
             foreach (var p in _new)
             {
                 var text = p.Serialized();
-                FileUtils.AppendAllBytes(Index, NanoEncoding.GetBytes(offset.ToString("x8")));
-                FileUtils.AppendAllBytes(Index, NanoEncoding.GetBytes(text.Length.ToString("x8")));
-                FileUtils.AppendAllBytes(Data, NanoEncoding.GetBytes(text));
-                offset += text.Length;
+                var bytes = Encoding.UTF8.GetBytes(text);
+                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
+                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(bytes.Length.ToString("x8")));
+                FileUtils.AppendAllBytes(Data, bytes);
+                offset += bytes.Length;
             }
 
             if (clear)
@@ -246,8 +247,8 @@ namespace nboard
             if (!File.Exists(Index) || !File.Exists(Data))
                 return;
 
-            string indexes = NanoEncoding.GetString(File.ReadAllBytes(Index));
-            string posts = NanoEncoding.GetString(File.ReadAllBytes(Data));
+            string indexes = Encoding.UTF8.GetString(File.ReadAllBytes(Index));
+            string posts = Encoding.UTF8.GetString(File.ReadAllBytes(Data));
 
             try
             {
