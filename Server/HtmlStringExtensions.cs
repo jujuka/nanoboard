@@ -115,6 +115,24 @@ button
             return s + Break;
         }
 
+        public static string Strip(this string s)
+        {
+            s = s.Replace("<", "&lt;");
+            s = s.Replace(">", "&gt;");
+            s = s.Replace("[u]", "<u>");
+            s = s.Replace("[/u]", "</u>");
+            s = s.Replace("[s]", "<s>");
+            s = s.Replace("[/s]", "</s>");
+            s = s.Replace("[b]", "<b>");
+            s = s.Replace("[/b]", "</b>");
+            s = s.Replace("[i]", "<i>");
+            s = s.Replace("[/i]", "</i>");
+            s = s.Replace("[jpg=", "<img width=\"500\" src=\"data:image/jpg;base64,");
+            s = s.Replace("[gif=", "<img width=\"500\" src=\"data:image/gif;base64,");
+            s = s.Replace("]", "\"/>");
+            return s;
+        }
+
         public static string ToHtmlBody(this string s)
         {
             return string.Format(

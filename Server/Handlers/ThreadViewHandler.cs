@@ -81,7 +81,7 @@ namespace nboard
                 {
                     sb.Append(
                         (
-                            p.Message.Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             ("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
                             //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                             ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
@@ -110,14 +110,14 @@ namespace nboard
                 {
                     sb.Append(
                     (
-                        p.Message.Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                        p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                         ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
                     ).ToDiv("post main", ""));
                 }
                 else
                 sb.Append(
                     (
-                        p.Message.Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                        p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                         (answers > 0 ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
                         "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');

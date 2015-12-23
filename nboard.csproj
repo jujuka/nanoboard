@@ -79,6 +79,7 @@
     <Compile Include="Server\Handlers\SaveHandler.cs" />
     <Compile Include="Server\Handlers\AsmPngHandler.cs" />
     <Compile Include="Server\Handlers\FreshPostsHandler.cs" />
+    <Compile Include="Server\Handlers\NotificationHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
