@@ -42,7 +42,7 @@ namespace nboard
 
         private void OnConnectionAdded(HttpConnection connection)
         {
-            var request = new NanoHttpRequest(connection.Request);
+            var request = new NanoHttpRequest(connection, connection.Request);
             if (request.Method == "GET" || request.Method == "POST") Process(connection, request);
             else connection.Response(new ErrorHandler(StatusCode.MethodNotAllowed, "Server only supports GET and POST").Handle(request));
         }

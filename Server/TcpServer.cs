@@ -59,6 +59,7 @@ namespace nboard
             stream.ReadTimeout = 100;
             var buffer = new byte[1024];
             int len = 0;
+            List<byte> raw = new List<byte>();
 
             try
             {
@@ -67,6 +68,8 @@ namespace nboard
                     len = stream.Read(buffer, 0, buffer.Length);
                     var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
                     readData += block;
+
+                    for (int i = 0; i < len; i++) raw.Add(buffer[i]);
                 }
                 while (len > 0);
             }
@@ -78,7 +81,7 @@ namespace nboard
 
             if (ConnectionAdded != null)
             {
-                ConnectionAdded(new HttpConnection(readData, (ascii,utf8) =>
+                ConnectionAdded(new HttpConnection(raw.ToArray(), readData, (ascii,utf8) =>
                 {
                     byte[] ba = Encoding.ASCII.GetBytes(ascii);
                     byte[] bu = Encoding.UTF8.GetBytes(utf8);

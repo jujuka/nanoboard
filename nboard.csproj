@@ -79,6 +79,8 @@
     <Compile Include="Server\Handlers\AsmPngHandler.cs" />
     <Compile Include="Server\Handlers\FreshPostsHandler.cs" />
     <Compile Include="Server\Handlers\NotificationHandler.cs" />
+    <Compile Include="Server\Handlers\ImageBase64ConvertHandler.cs" />
+    <Compile Include="Server\Handlers\ConvertResultHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

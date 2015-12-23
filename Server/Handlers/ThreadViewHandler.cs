@@ -59,6 +59,7 @@ namespace nboard
                     ("[Сохранить базу]".ToPostRef("/save")) + 
                     ("[Свежие посты]".ToRef("/fresh")) + 
                     "[Искать посты]".ToPostRef("/aggregate") +
+                    "[Картинку - в base64]".ToRefBlank("/image") +
                     ("[Выключить сервер]".ToRef("/shutdown")) +
 
                     "<div id='notif1' style='position:fixed;right:2%;top:10px;'></div>"

@@ -16,9 +16,11 @@ namespace nboard
     {
         public readonly string Request;
         private Action<string,string> _callback;
+        public readonly byte[] Raw;
 
-        public HttpConnection(string request, Action<string,string> asciiUtf8callback)
+        public HttpConnection(byte[] raw, string request, Action<string,string> asciiUtf8callback)
         {
+            this.Raw = raw;
             this.Request = request;
             this._callback = asciiUtf8callback;
         }

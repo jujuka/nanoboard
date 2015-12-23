@@ -34,6 +34,8 @@ namespace nboard
             server.AddHandler("aggregate", new AggregateHandler());
             server.AddHandler("shutdown", new ShutdownHandler(server));
             server.AddHandler("status", new NotificationHandler());
+            server.AddHandler("image", new ImageBase64ConvertHandler());
+            server.AddHandler("convert", new ConvertResultHandler());
             return server;
         }
     }

@@ -17,10 +17,12 @@ namespace nboard
         public readonly string Address;
         public readonly Dictionary<string, string> Headers = new Dictionary<string, string>();
         public readonly string Content;
+        public readonly HttpConnection Connection;
         public readonly bool Invalid = false;
 
-        public NanoHttpRequest(string request)
+        public NanoHttpRequest(HttpConnection conn, string request)
         {
+            Connection = conn;
             if (string.IsNullOrEmpty(request))
             {
                 Invalid = true;

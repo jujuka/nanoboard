@@ -131,9 +131,10 @@ button
             s = s.Replace("[/b]", "</b>");
             s = s.Replace("[i]", "<i>");
             s = s.Replace("[/i]", "</i>");
+            s = s.Replace("[img=", "<img src=\"data:image/jpg;base64,");
             s = s.Replace("[jpg=", "<img src=\"data:image/jpg;base64,");
-            s = s.Replace("[gif=", "<img src=\"data:image/gif;base64,");
             s = s.Replace("[png=", "<img src=\"data:image/png;base64,");
+            s = s.Replace("[gif=", "<img src=\"data:image/gif;base64,");
             s = s.Replace("]", "\" />");
             return s;
         }
