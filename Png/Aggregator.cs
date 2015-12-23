@@ -75,12 +75,20 @@ namespace nboard
 
         public void Aggregate()
         {
+            bool empty = true;
+
             foreach (string place in _places)
             {
                 if (!place.StartsWith("#"))
                 {
+                    empty = false;
                     ParseText(place);
                 }
+            }
+
+            if (empty)
+            {
+                InProgress = 0;
             }
         }
 

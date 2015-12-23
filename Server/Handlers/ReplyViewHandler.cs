@@ -44,6 +44,7 @@ namespace nboard
             }
 
             var sb = new StringBuilder();
+            ThreadViewHandler.AddHeader(sb);
             var p = _db.Get(thread);
 
                 sb.Append(

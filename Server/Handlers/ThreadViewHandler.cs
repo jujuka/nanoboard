@@ -34,6 +34,21 @@ namespace nboard
             }
         }
 
+        public const string NotifierScript = @"
+        window.onload = function() {
+             setInterval(function() { 
+                var elem = document.getElementById('notif1');
+                var x = new XMLHttpRequest();
+                x.open('GET', '/status', true);
+                x.onreadystatechange = function() {
+                    if (x.readyState != 4 || x.status != 200) return;
+                    elem.innerHTML = x.responseText;
+                }
+                x.send('');
+            }, 1000);
+        }
+";
+
         public static void AddHeader(StringBuilder sb)
         {
             sb.Append(
@@ -44,7 +59,10 @@ namespace nboard
                     ("[Сохранить базу]".ToPostRef("/save")) + 
                     ("[Свежие посты]".ToRef("/fresh")) + 
                     "[Искать посты]".ToPostRef("/aggregate") +
-                    ("[Выключить сервер]".ToRef("/shutdown")) 
+                    ("[Выключить сервер]".ToRef("/shutdown")) +
+
+                    "<div id='notif1' style='position:fixed;right:2%;top:10px;'></div>"
+
                 ).ToDiv("head", "")
             );
             sb.Append("".ToDiv("step", ""));
@@ -129,7 +147,7 @@ namespace nboard
 
             sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
 
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());
+            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody(NotifierScript));
         }
     }
 }

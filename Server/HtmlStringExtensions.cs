@@ -56,6 +56,10 @@ a:hover {
   padding: 0.7em;
 }
 
+img {
+    max-width: 500px;
+}
+
 .main {
   background: white;
 }
@@ -127,17 +131,17 @@ button
             s = s.Replace("[/b]", "</b>");
             s = s.Replace("[i]", "<i>");
             s = s.Replace("[/i]", "</i>");
-            s = s.Replace("[jpg=", "<img width=\"500\" src=\"data:image/jpg;base64,");
-            s = s.Replace("[gif=", "<img width=\"500\" src=\"data:image/gif;base64,");
-            s = s.Replace("[png=", "<img width=\"500\" src=\"data:image/png;base64,");
+            s = s.Replace("[jpg=", "<img src=\"data:image/jpg;base64,");
+            s = s.Replace("[gif=", "<img src=\"data:image/gif;base64,");
+            s = s.Replace("[png=", "<img src=\"data:image/png;base64,");
             s = s.Replace("]", "\" />");
             return s;
         }
 
-        public static string ToHtmlBody(this string s)
+        public static string ToHtmlBody(this string s, string script = "")
         {
             return string.Format(
-                "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><style>{1}</style></head><body>{0}</body></html>", s, Style);
+                "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><style>{1}</style><script>{2}</script></head><body>{0}</body></html>", s, Style, script);
         }
 
         public static string ToHeader(this string s, int no)

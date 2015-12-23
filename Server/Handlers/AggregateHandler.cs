@@ -19,12 +19,21 @@ namespace nboard
         public AggregateHandler()
         {
             _agg = new Aggregator();
+
+            _agg.ProgressChanged += () => 
+            {
+                if (_agg.InProgress == 0)
+                {
+                    NotificationHandler.Instance.AddNotification("Поиск сообщений завершен.");
+                }
+            };
         }
 
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
             if (_agg.InProgress == 0)
             {
+                NotificationHandler.Instance.AddNotification("Начат поиск сообщений.");
                 _agg.Aggregate();
             }
 

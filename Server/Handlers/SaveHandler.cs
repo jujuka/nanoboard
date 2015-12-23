@@ -24,7 +24,7 @@ namespace nboard
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
             _db.WritePosts(false);
-            return new NanoHttpResponse(StatusCode.Ok, "");
+            return new NanoHttpResponse(StatusCode.Ok, "\n");
         }
     }
 }

@@ -82,10 +82,13 @@ namespace nboard
                 {
                     byte[] ba = Encoding.ASCII.GetBytes(ascii);
                     byte[] bu = Encoding.UTF8.GetBytes(utf8);
+                    try{
                     stream.Write(ba, 0, ba.Length);
                     stream.Write(bu, 0, bu.Length);
                     stream.Flush();
+                    }catch{}finally{
                     client.Close();
+                    }
                 }));
             }
         }

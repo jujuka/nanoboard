@@ -14,18 +14,26 @@ namespace nboard
 {
     class NotificationHandler : IRequestHandler
     {
-        private string _message;
+        private static Queue<string> _messages = new Queue<string>();
 
-        public void SetNotification(string message)
+        public void AddNotification(string message)
         {
-            _message = message;
+            _messages.Enqueue(message);
         }
 
         #region IRequestHandler implementation
 
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
-            return new NanoHttpResponse(StatusCode.Ok, _message);
+            try
+            {
+                return new NanoHttpResponse(StatusCode.Ok, _messages.Dequeue());
+            }
+
+            catch
+            {
+                return new NanoHttpResponse(StatusCode.NotFound, "\n");
+            }
         }
 
         #endregion

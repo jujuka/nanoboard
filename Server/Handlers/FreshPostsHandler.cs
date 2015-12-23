@@ -72,7 +72,7 @@ namespace nboard
 
             sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
 
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());
+            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody(ThreadViewHandler.NotifierScript));
         }
     }
     

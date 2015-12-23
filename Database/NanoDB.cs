@@ -176,17 +176,17 @@ namespace nboard
             return posts.ToArray();
         }
 
-        public void AddPost(NanoPost post)
+        public bool AddPost(NanoPost post)
         {
-            if (post.Invalid) return;
-            AddPost(post, true);
+            if (post.Invalid) return false;
+            return AddPost(post, true);
         }
 
-        private void AddPost(NanoPost post, bool isNew)
+        private bool AddPost(NanoPost post, bool isNew)
         {
             if (_posts.ContainsKey(post.GetHash()))
             {
-                return;
+                return false;
             }
 
             if (isNew)
@@ -214,6 +214,8 @@ namespace nboard
             {
                 Updated(post);
             }
+
+            return true;
         }
 
         public void WritePosts(bool clear = true)
@@ -236,8 +238,11 @@ namespace nboard
                 offset += bytes.Length;
             }
 
+            NotificationHandler.Instance.AddNotification("Сохранение на диск успешно.");
+
             if (clear)
             {
+                NotificationHandler.Instance.AddNotification("Список новых сообщений очищен.");
                 _new.Clear();
             }
         }

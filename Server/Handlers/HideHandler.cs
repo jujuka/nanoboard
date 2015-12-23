@@ -33,12 +33,12 @@ namespace nboard
             try
             {
                 _db.Hide(hash);
-                return new NanoHttpResponse(StatusCode.Ok, "");
+                return new NanoHttpResponse(StatusCode.Ok, "\n");
             }
 
             catch
             {
-                return new ErrorHandler(StatusCode.InternalServerError, "").Handle(request);
+                return new ErrorHandler(StatusCode.InternalServerError, "\n").Handle(request);
             }
         }
     }

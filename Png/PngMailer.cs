@@ -26,8 +26,7 @@ namespace nboard
                     {
                         packed = new PngCrypter().Decrypt(pathToPng);
                     }
-
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Logger.LogError(e.ToString());
                     }
@@ -38,18 +37,25 @@ namespace nboard
                     {   
                         posts = nanoCrypter.Unpack(packed);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Logger.Log(f);
                         Logger.Log(e.ToString());
                     }
 
+                    bool any = false;
+
                     if (posts != null)
                     {
                         foreach (var p in posts)
                         {
-                            to.AddPost(p);
+                            any |= to.AddPost(p);
                         }
+                    }
+
+                    if (any)
+                    {
+                        NotificationHandler.Instance.AddNotification("Извлечены новые сообщения.");
                     }
                 }
 
