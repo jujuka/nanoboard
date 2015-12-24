@@ -6,7 +6,7 @@ namespace nboard
 {
     class NanoPost
     {
-        public const int MaxLength = 90000;
+        public const int MaxLength = 128000;
         public const string RootStub = "{Welcome to Nanoboard}";
         private readonly Hash _hash;
         private readonly string _raw;

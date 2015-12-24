@@ -37,7 +37,7 @@ a:hover {
 }
 
 .postinner {
-  max-height: 16em;
+  max-height: 48em;
   overflow: auto;
   margin-bottom: .5em;
 }
@@ -57,7 +57,13 @@ a:hover {
 }
 
 img {
-    max-width: 500px;
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.fullimg {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .main {
@@ -119,6 +125,8 @@ button
             return s + Break;
         }
 
+        static int _id = 1;
+
         public static string Strip(this string s)
         {
             s = s.Replace("<", "&lt;");
@@ -131,10 +139,11 @@ button
             s = s.Replace("[/b]", "</b>");
             s = s.Replace("[i]", "<i>");
             s = s.Replace("[/i]", "</i>");
-            s = s.Replace("[img=", "<img src=\"data:image/jpg;base64,");
-            s = s.Replace("[jpg=", "<img src=\"data:image/jpg;base64,");
-            s = s.Replace("[png=", "<img src=\"data:image/png;base64,");
-            s = s.Replace("[gif=", "<img src=\"data:image/gif;base64,");
+            string imgscript = "onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")'";
+            s = s.Replace("[img=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/jpg;base64,");
+            s = s.Replace("[jpg=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/jpg;base64,");
+            s = s.Replace("[png=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/png;base64,");
+            s = s.Replace("[gif=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/gif;base64,");
             s = s.Replace("]", "\" />");
             return s;
         }
