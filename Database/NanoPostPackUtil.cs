@@ -8,28 +8,28 @@ using System.Text;
 
 namespace nboard
 {
-    class NanoCrypter
+    static class NanoPostPackUtil
     {
-        public byte[] Pack(NanoPost[] posts)
+        public static byte[] Pack(NanoPost[] posts)
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(Encoding.UTF8.GetBytes(posts.Length.ToString("x6")));
 
             foreach (var p in posts)
             {
-                var len = Encoding.UTF8.GetBytes(p.Serialized()).Length;
+                var len = p.SerializedBytes().Length;
                 bytes.AddRange(Encoding.UTF8.GetBytes(len.ToString("x6")));
             }
 
             foreach (var p in posts)
             {
-                bytes.AddRange(Encoding.UTF8.GetBytes(p.Serialized()));
+                bytes.AddRange(p.SerializedBytes());
             }
 
             return GZipUtil.Compress(bytes.ToArray());
         }
 
-        public NanoPost[] Unpack(byte[] bytes)
+        public static NanoPost[] Unpack(byte[] bytes)
         {
             bytes = GZipUtil.Decompress(bytes);
             List<NanoPost> posts = new List<NanoPost>();

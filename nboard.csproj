@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{CF2752ED-0E02-4C17-8C83-151312787AD7}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>nboard</RootNamespace>
     <AssemblyName>nboard</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -38,7 +38,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Strings.cs" />
-    <Compile Include="IMailer.cs" />
     <Compile Include="ApplicationStarter.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="FontProvider.cs" />
@@ -47,16 +46,12 @@
     <Compile Include="Server\NanoHttpResponse.cs" />
     <Compile Include="Server\NanoHttpServer.cs" />
     <Compile Include="Server\NanoHttpServerBuilder.cs" />
-    <Compile Include="Png\PngCrypter.cs" />
-    <Compile Include="Png\PngCrypterUtils.cs" />
     <Compile Include="Png\PngMailer.cs" />
     <Compile Include="Png\Aggregator.cs" />
-    <Compile Include="Png\CryptHelper.cs" />
     <Compile Include="Png\DownloadCheckDaemon.cs" />
     <Compile Include="Misc\FileUtils.cs" />
     <Compile Include="Database\Hash.cs" />
     <Compile Include="Database\HashCalculator.cs" />
-    <Compile Include="Png\NanoCrypter.cs" />
     <Compile Include="Database\NanoPostExtensions.cs" />
     <Compile Include="Database\NanoPost.cs" />
     <Compile Include="Misc\Logger.cs" />
@@ -73,14 +68,18 @@
     <Compile Include="Server\Handlers\HideHandler.cs" />
     <Compile Include="Server\Handlers\ShutdownHandler.cs" />
     <Compile Include="Server\Handlers\AggregateHandler.cs" />
-    <Compile Include="Png\ShaCrypter.cs" />
     <Compile Include="Server\Handlers\SaveHandler.cs" />
     <Compile Include="Server\Handlers\AsmPngHandler.cs" />
     <Compile Include="Server\Handlers\FreshPostsHandler.cs" />
     <Compile Include="Server\Handlers\NotificationHandler.cs" />
     <Compile Include="Server\Handlers\ImageBase64ConvertHandler.cs" />
     <Compile Include="Server\Handlers\ConvertResultHandler.cs" />
-    <Compile Include="Png\GZipUtil.cs" />
+    <Compile Include="Misc\GZipUtil.cs" />
+    <Compile Include="Database\NanoPostPackUtil.cs" />
+    <Compile Include="Misc\ShaCrypter.cs" />
+    <Compile Include="Png\PngContainerCreator.cs" />
+    <Compile Include="Png\PngUtils.cs" />
+    <Compile Include="Png\PngStegoUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

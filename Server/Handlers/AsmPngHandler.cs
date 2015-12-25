@@ -24,7 +24,6 @@ namespace nboard
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
             new PngMailer().FillOutbox(_db);
-            NotificationHandler.Instance.AddNotification("Готово - см. последний файл в папке upload.");
             return new NanoHttpResponse(StatusCode.Ok, "\n");
         }
     }

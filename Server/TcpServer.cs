@@ -20,6 +20,8 @@ namespace nboard
 
         public TcpServer(int port)
         {
+            Console.WriteLine("Listening on port " + port);
+            Console.WriteLine("You can change port in port.txt file");
             _server = new TcpListener(IPAddress.Any, port);
         }
 
@@ -32,6 +34,7 @@ namespace nboard
 
         public void Stop()
         {
+            Console.WriteLine("Server was shut down");
             _isRunning = false;
         }
 

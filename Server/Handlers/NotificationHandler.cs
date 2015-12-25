@@ -27,7 +27,7 @@ namespace nboard
         {
             try
             {
-                return new NanoHttpResponse(StatusCode.Ok, _messages.Dequeue());
+                return new NanoHttpResponse(StatusCode.Ok, _messages.Dequeue() + (_messages.Count > 0 ? "<br>"+_messages.Peek() : ""));
             }
 
             catch

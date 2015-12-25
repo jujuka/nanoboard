@@ -10,6 +10,7 @@ namespace nboard
         public const string RootStub = "{Welcome to Nanoboard}";
         private readonly Hash _hash;
         private readonly string _raw;
+        private readonly byte[] _bytes;
         public bool Invalid { get; private set; }
         public readonly Hash ReplyTo;
         public readonly string Message;
@@ -40,7 +41,8 @@ namespace nboard
             ReplyTo = new Hash(raw.Substring(0, HashCalculator.HashCrop*2));
             Message = raw.Substring(HashCalculator.HashCrop*2);
 
-            if (Encoding.UTF8.GetBytes(Message).Length > NanoPost.MaxPostByteLength) Invalid = true;
+            _bytes = Encoding.UTF8.GetBytes(_raw);
+            if (_bytes.Length > NanoPost.MaxPostByteLength) Invalid = true;
 
             if (ReplyTo.Invalid)
             {
@@ -56,7 +58,8 @@ namespace nboard
             ReplyTo = replyTo;
             Message = message;
 
-            if (Encoding.UTF8.GetBytes(Message).Length > NanoPost.MaxPostByteLength) Invalid = true;
+            _bytes = Encoding.UTF8.GetBytes(_raw);
+            if (_bytes.Length > NanoPost.MaxPostByteLength) Invalid = true;
 
             if (ReplyTo.Invalid)
             {
@@ -64,7 +67,12 @@ namespace nboard
             }
         }
 
-        public string Serialized()
+        public byte[] SerializedBytes()
+        {
+            return _bytes;
+        }
+
+        public string SerializedString()
         {
             return _raw;
         }

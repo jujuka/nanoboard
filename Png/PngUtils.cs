@@ -9,7 +9,7 @@ using System.Text;
  
 namespace nboard
 {
-    class PngCrypterUtils
+    class PngUtils
     {
         public static byte[] BitmapToByteArray(Image img)
         {

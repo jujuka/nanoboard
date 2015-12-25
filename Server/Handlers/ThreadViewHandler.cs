@@ -62,7 +62,7 @@ namespace nboard
                     "[Картинку - в base64]".ToRefBlank("/image") +
                     ("[Выключить сервер]".ToRef("/shutdown")) +
 
-                    "<div id='notif1' style='position:fixed;right:2%;top:10px;'></div>"
+                    "<div id='notif1' style='text-align:right;position:fixed;right:2%;top:10px;'></div>"
 
                 ).ToDiv("head", "")
             );

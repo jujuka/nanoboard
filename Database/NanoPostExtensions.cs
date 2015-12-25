@@ -45,6 +45,16 @@ namespace nboard
             return posts.Where(p => !db.IsHidden(p.GetHash())).ToArray();
         }
 
+        public static NanoPost[] ExceptInvalid(this NanoPost[] posts, NanoDB db)
+        {
+            return posts.Where(p => !p.Invalid).ToArray();
+        }
+
+        public static NanoPost[] FilterBySize(this NanoPost[] posts, int max)
+        {
+            return posts.Where(p => p.SerializedBytes().Length <= max).ToArray();
+        }
+
         public static NanoPost[] Sorted(this NanoPost[] posts)
         {
             var list = new List<NanoPost>();

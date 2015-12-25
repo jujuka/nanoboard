@@ -9,11 +9,11 @@ using System.Text;
  
 namespace nboard
 {
-    class PngCrypter
+    class PngStegoUtil
     {
         private string _key;
 
-        public PngCrypter()
+        public PngStegoUtil()
         {
             if (!File.Exists("key.txt"))
             {
@@ -23,15 +23,15 @@ namespace nboard
             _key = File.ReadAllText("key.txt");
         }
 
-        public void Crypt(string inputImageFileName, string outputImageFileName, byte[] hiddenBytes)
+        public void HideBytesInPng(string inputImageFileName, string outputImageFileName, byte[] hiddenBytes)
         {
             hiddenBytes = ShaCrypter.Xor(hiddenBytes, _key);
             byte[] hiddenLengthBytes = BitConverter.GetBytes(hiddenBytes.Length);
-            byte[] hiddenCombinedBytes = PngCrypterUtils.Combine(hiddenLengthBytes, hiddenBytes);
+            byte[] hiddenCombinedBytes = PngUtils.Combine(hiddenLengthBytes, hiddenBytes);
             Image innocuousBmp = Image.FromFile(inputImageFileName);
-            byte[] rgbComponents = PngCrypterUtils.RgbComponentsToBytes(innocuousBmp);
+            byte[] rgbComponents = PngUtils.RgbComponentsToBytes(innocuousBmp);
             byte[] encodedRgbComponents = EncodeBytes(hiddenCombinedBytes, rgbComponents);
-            Bitmap encodedBmp = PngCrypterUtils.ByteArrayToBitmap(encodedRgbComponents, innocuousBmp.Width, innocuousBmp.Height);
+            Bitmap encodedBmp = PngUtils.ByteArrayToBitmap(encodedRgbComponents, innocuousBmp.Width, innocuousBmp.Height);
             encodedBmp.Save(outputImageFileName, ImageFormat.Png);
             encodedBmp.Dispose();
             innocuousBmp.Dispose();
@@ -58,10 +58,10 @@ namespace nboard
             return encodedBitmapRgbComponents;
         }
  
-        public byte[] Decrypt(string imageFileName)
+        public byte[] ReadHiddenBytesFromPng(string imageFileName)
         {
             Bitmap loadedEncodedBmp = new Bitmap(imageFileName);
-            byte[] loadedEncodedRgbComponents = PngCrypterUtils.RgbComponentsToBytes(loadedEncodedBmp);
+            byte[] loadedEncodedRgbComponents = PngUtils.RgbComponentsToBytes(loadedEncodedBmp);
             const int bytesInInt = 4;
             byte[] loadedHiddenLengthBytes = DecodeBytes(loadedEncodedRgbComponents, 0, bytesInInt);
             int loadedHiddenLength = BitConverter.ToInt32(loadedHiddenLengthBytes, 0);

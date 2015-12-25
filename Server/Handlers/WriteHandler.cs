@@ -44,6 +44,7 @@ namespace nboard
             }
             else
             {
+                NotificationHandler.Instance.AddNotification("Сообщение добавлено.");
                 _db.AddPost(post);
                 return new NanoHttpResponse(StatusCode.Ok, "");
             }

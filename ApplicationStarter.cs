@@ -24,7 +24,21 @@ namespace nboard
                 daemon.Stop();
                 new PngMailer().FillOutbox(db);
             };*/
-            var serv = new NanoHttpServerBuilder(db).Build(7345);
+
+            if (!File.Exists("port.txt"))
+            {
+                File.WriteAllText("port.txt", "7345");
+            }
+
+            int port = 0;
+            int.TryParse(File.ReadAllText("port.txt"), out port);
+
+            if (port <= 0)
+            {
+                port = 7345;
+            }
+
+            var serv = new NanoHttpServerBuilder(db).Build(port);
             serv.Run();
         }
 

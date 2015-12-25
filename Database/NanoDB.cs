@@ -230,19 +230,16 @@ namespace nboard
 
             foreach (var p in _new)
             {
-                var text = p.Serialized();
-                var bytes = Encoding.UTF8.GetBytes(text);
+                var bytes = p.SerializedBytes();
                 FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
                 FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(bytes.Length.ToString("x8")));
                 FileUtils.AppendAllBytes(Data, bytes);
                 offset += bytes.Length;
             }
 
-            NotificationHandler.Instance.AddNotification("Сохранение на диск успешно.");
-
             if (clear)
             {
-                NotificationHandler.Instance.AddNotification("Список новых сообщений очищен.");
+                //NotificationHandler.Instance.AddNotification("Список новых сообщений очищен.");
                 _new.Clear();
             }
         }

@@ -8,14 +8,13 @@ using System.Net;
 
 namespace nboard
 {
-    class PngMailer : IMailer
+    class PngMailer
     {
         public void ReadInbox(NanoDB to)
         {
             if (Directory.Exists(Strings.Download))
             {
                 string[] files = Directory.GetFiles(Strings.Download);
-                var nanoCrypter = new NanoCrypter();
 
                 foreach (string f in files)
                 {
@@ -24,7 +23,7 @@ namespace nboard
 
                     try
                     {
-                        packed = new PngCrypter().Decrypt(pathToPng);
+                        packed = new PngStegoUtil().ReadHiddenBytesFromPng(pathToPng);
                     }
                     catch (Exception e)
                     {
@@ -35,7 +34,7 @@ namespace nboard
 
                     try
                     {   
-                        posts = nanoCrypter.Unpack(packed);
+                        posts = NanoPostPackUtil.Unpack(packed);
                     }
                     catch (Exception e)
                     {
@@ -73,9 +72,8 @@ namespace nboard
                 Directory.CreateDirectory(Strings.Upload);
             }
 
-            NanoPost[] posts = from.GetNewPosts();
-            new CryptHelper().PutPostsToOutbox(posts, from);
-            from.WritePosts();
+            new PngContainerCreator().SaveToPngContainer(from);
+            from.WritePosts(false);
         }
     }
 }
