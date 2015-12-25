@@ -7,7 +7,6 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>nboard</RootNamespace>
     <AssemblyName>nboard</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -81,6 +80,7 @@
     <Compile Include="Server\Handlers\NotificationHandler.cs" />
     <Compile Include="Server\Handlers\ImageBase64ConvertHandler.cs" />
     <Compile Include="Server\Handlers\ConvertResultHandler.cs" />
+    <Compile Include="Png\GZipUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,2 +1,0 @@
-# nanoboard
-nanoboard client

@@ -26,11 +26,12 @@ namespace nboard
                 bytes.AddRange(Encoding.UTF8.GetBytes(p.Serialized()));
             }
 
-            return bytes.ToArray();
+            return GZipUtil.Compress(bytes.ToArray());
         }
 
         public NanoPost[] Unpack(byte[] bytes)
         {
+            bytes = GZipUtil.Decompress(bytes);
             List<NanoPost> posts = new List<NanoPost>();
             string str = Encoding.UTF8.GetString(bytes);
 
