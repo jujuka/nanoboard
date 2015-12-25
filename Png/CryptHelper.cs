@@ -39,24 +39,18 @@ namespace nboard
 
                 if (packed.Length <= capacity)
                 {
-                    if (packed.Length <= capacity / 2)
-                    {
-                        var newPosts = new List<NanoPost>(posts);
-                        int postsToRequest = (int)(0.75f * (capacity - packed.Length) / (packed.Length / (1+(float)posts.Length)));
-                        newPosts.AddRange(db.GetNLastPosts(postsToRequest/2).ExceptHidden(db));
-                        newPosts.AddRange(db.GetNRandomPosts(postsToRequest/2).ExceptHidden(db));
-                        while (newPosts.EvaluateSize() > capacity)
-                        {
-                            newPosts.RemoveAt(newPosts.Count - 1);
-                        }
-                        byte[] newpacked = new NanoCrypter().Pack(newPosts.ToArray());
-                        packed = newpacked;
-                    }
+                    var newPosts = new List<NanoPost>(posts);
+                    int postsToRequest = (int)(3f * (capacity - packed.Length) / (packed.Length / (1+(float)posts.Length)));
+                    newPosts.AddRange(db.GetNLastPosts(postsToRequest/2).ExceptHidden(db));
+                    newPosts.AddRange(db.GetNRandomPosts(postsToRequest/2).ExceptHidden(db));
+                    byte[] newpacked = new NanoCrypter().Pack(newPosts.ToArray());
+                    packed = newpacked;
 
                     new PngCrypter().Crypt(
                         file.FullName, 
                         Strings.Upload + Path.DirectorySeparatorChar + sessionPrefix + Strings.PngExt, 
                         packed);
+                    Console.WriteLine(string.Format("Capacity: {0}, Packed: {1}, Count: {2}", capacity, packed.Length, newPosts.Count));
                     return;
                 }
             }
