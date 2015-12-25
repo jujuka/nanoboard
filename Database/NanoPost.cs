@@ -6,7 +6,7 @@ namespace nboard
 {
     class NanoPost
     {
-        public const int MaxLength = 128000;
+        public const int MaxPostByteLength = 65000;
         public const string RootStub = "{Welcome to Nanoboard}";
         private readonly Hash _hash;
         private readonly string _raw;
@@ -40,7 +40,7 @@ namespace nboard
             ReplyTo = new Hash(raw.Substring(0, HashCalculator.HashCrop*2));
             Message = raw.Substring(HashCalculator.HashCrop*2);
 
-            if (Message.Length > NanoPost.MaxLength) Invalid = true;
+            if (Encoding.UTF8.GetBytes(Message).Length > NanoPost.MaxPostByteLength) Invalid = true;
 
             if (ReplyTo.Invalid)
             {
@@ -56,7 +56,7 @@ namespace nboard
             ReplyTo = replyTo;
             Message = message;
 
-            if (Message.Length > NanoPost.MaxLength) Invalid = true;
+            if (Encoding.UTF8.GetBytes(Message).Length > NanoPost.MaxPostByteLength) Invalid = true;
 
             if (ReplyTo.Invalid)
             {

@@ -35,8 +35,18 @@ namespace nboard
                 return new ErrorHandler(StatusCode.BadRequest, "Invalid hash").Handle(request);
             }
 
-            _db.AddPost(new NanoPost(thread, request.Content));
-            return new NanoHttpResponse(StatusCode.Ok, "");
+            var post = new NanoPost(thread, request.Content);
+
+            if (post.Invalid)
+            {
+                NotificationHandler.Instance.AddNotification("Превышен максимальный размер поста.");
+                return new NanoHttpResponse(StatusCode.BadRequest, "");
+            }
+            else
+            {
+                _db.AddPost(post);
+                return new NanoHttpResponse(StatusCode.Ok, "");
+            }
         }
     }
 }
