@@ -49,7 +49,7 @@ namespace nboard
             string userAgent = File.ReadAllLines(UserAgentConfig).First(l => !l.StartsWith("#")).Trim();
             _headers = new WebHeaderCollection();
             _headers[HttpRequestHeader.UserAgent] = userAgent;
-            _headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+            //_headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
 
             if (File.Exists(Downloaded))
             {
@@ -96,7 +96,7 @@ namespace nboard
         {
             Logger.Log(address);
             var client = new WebClient();
-            //client.Headers = _headers;
+            client.Headers = _headers;
 
             client.DownloadDataCompleted += (object sender, DownloadDataCompletedEventArgs e) => 
             {
