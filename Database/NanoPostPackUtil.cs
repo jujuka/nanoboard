@@ -17,7 +17,7 @@ namespace nboard
 
             foreach (var p in posts)
             {
-                var len = p.SerializedBytes().Length;
+                var len = p.SerializedString().Length;
                 bytes.AddRange(Encoding.UTF8.GetBytes(len.ToString("x6")));
             }
 

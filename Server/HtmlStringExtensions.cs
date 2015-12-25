@@ -16,7 +16,17 @@ namespace nboard
         public const string Break = "<br/>";
         public const string Line = "<hr/>";
 
-        public const string Style = @"
+        static HtmlStringExtensions()
+        {
+            if (!File.Exists("style.css"))
+            {
+                File.WriteAllText("style.css", Style);
+            }
+
+            Style = File.ReadAllText("style.css");
+        }
+
+        public static string Style = @"
 body {
   font-family: 'Trebuchet MS', Trebuchet, sans-serif;
   background: #eee;

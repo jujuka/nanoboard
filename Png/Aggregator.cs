@@ -96,7 +96,7 @@ namespace nboard
         {
             Logger.Log(address);
             var client = new WebClient();
-            client.Headers = _headers;
+            //client.Headers = _headers;
 
             client.DownloadDataCompleted += (object sender, DownloadDataCompletedEventArgs e) => 
             {
