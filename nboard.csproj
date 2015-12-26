@@ -39,7 +39,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Strings.cs" />
     <Compile Include="ApplicationStarter.cs" />
-    <Compile Include="UI.cs" />
     <Compile Include="FontProvider.cs" />
     <Compile Include="Database\NanoDB.cs" />
     <Compile Include="Server\NanoHttpRequest.cs" />

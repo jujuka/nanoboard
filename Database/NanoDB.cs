@@ -13,7 +13,7 @@ namespace nboard
         private const string Index = "index.db";
         private const string Data = "data.db";
         private const string HideList = "hide.list";
-        private const string Bookmarks = "bookmarks.list";
+        //private const string Bookmarks = "bookmarks.list";
 
         private readonly Dictionary<Hash, NanoPost> _posts;
         private readonly List<NanoPost> _addedPosts;
@@ -26,7 +26,7 @@ namespace nboard
         public Hash RootHash { get; private set; }
 
         public event Action<NanoPost> Updated = delegate(NanoPost obj) {};
-        public event Action<NanoPost> BookmarkAdded = delegate(NanoPost obj) {};
+        //public event Action<NanoPost> BookmarkAdded = delegate(NanoPost obj) {};
 
         public NanoDB()
         {
@@ -45,12 +45,12 @@ namespace nboard
                 _hideList = new HashSet<string>(File.ReadAllLines(HideList));
             }
 
-            if (File.Exists(Bookmarks))
+            /*if (File.Exists(Bookmarks))
             {
                 _bookmarks = new HashSet<string>(File.ReadAllLines(Bookmarks));
-            }
+            }*/
 
-            AddToBookmarks(RootHash);
+            //AddToBookmarks(RootHash);
         }
 
         public Hash[] Threads
@@ -80,6 +80,7 @@ namespace nboard
             File.AppendAllText(HideList, hash.Value + "\n");
         }
 
+        /*
         public void AddToBookmarks(Hash hash)
         {
             if (_bookmarks.Contains(hash.Value)) return;
@@ -99,6 +100,7 @@ namespace nboard
                 File.AppendAllText(Bookmarks, b + "\n");
             }
         }
+        */
 
         public NanoPost[] Bookmarked
         {
