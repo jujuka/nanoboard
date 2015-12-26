@@ -55,6 +55,7 @@ namespace nboard
                     if (any)
                     {
                         NotificationHandler.Instance.AddNotification("Извлечены новые сообщения.");
+                        to.WritePosts(false);
                     }
                 }
 
