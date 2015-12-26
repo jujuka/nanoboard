@@ -55,7 +55,7 @@ namespace nboard
                     if (any)
                     {
                         NotificationHandler.Instance.AddNotification("Извлечены новые сообщения.");
-                        to.WritePosts(false);
+                        to.WriteNewPosts(false);
                     }
                 }
 
@@ -74,7 +74,7 @@ namespace nboard
             }
 
             new PngContainerCreator().SaveToPngContainer(from);
-            from.WritePosts(false);
+            from.WriteNewPosts(false);
         }
     }
 }

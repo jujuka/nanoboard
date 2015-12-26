@@ -32,6 +32,7 @@ body {
   background: #eee;
   line-height: 1.3em;
   font-size: 0.9em;
+  overflow-x: hidden;
 }
 
 a {

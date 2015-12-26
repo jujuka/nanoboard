@@ -35,7 +35,9 @@ namespace nboard
                 return new ErrorHandler(StatusCode.BadRequest, "Invalid hash").Handle(request);
             }
 
-            var post = new NanoPost(thread, request.Content);
+            var str = Encoding.UTF8.GetString(request.Connection.Raw);
+            str = str.Substring(str.IndexOf("\r\n\r\n")+4);
+            var post = new NanoPost(thread, str);
 
             if (post.Invalid)
             {

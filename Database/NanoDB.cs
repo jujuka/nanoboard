@@ -218,7 +218,7 @@ namespace nboard
             return true;
         }
 
-        public void WritePosts(bool clear = true)
+        public void WriteNewPosts(bool clear = true)
         {
             int offset = 0;
 
@@ -230,16 +230,15 @@ namespace nboard
 
             foreach (var p in _new)
             {
-                var bytes = p.SerializedBytes();
+                var @string = p.SerializedString();
                 FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
-                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(bytes.Length.ToString("x8")));
-                FileUtils.AppendAllBytes(Data, bytes);
-                offset += bytes.Length;
+                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(@string.Length.ToString("x8")));
+                FileUtils.AppendAllBytes(Data, p.SerializedBytes());
+                offset += @string.Length;
             }
 
             if (clear)
             {
-                //NotificationHandler.Instance.AddNotification("Список новых сообщений очищен.");
                 _new.Clear();
             }
         }
