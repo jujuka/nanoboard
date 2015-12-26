@@ -52,6 +52,16 @@ namespace nboard
             packed = prevPacked;
             Console.WriteLine(string.Format("PNG capacity:{0}, posts amount (not unique):{1}, packed size:{2}", capacity, realAmount, packed.Length));
 
+            if (capacity != packed.Length)
+            {
+                var noise = new byte[capacity - packed.Length];
+                random.NextBytes(noise);
+                var temp = new List<byte>();
+                temp.AddRange(packed);
+                temp.AddRange(noise);
+                packed = temp.ToArray();
+            }
+
             new PngStegoUtil().HideBytesInPng(
                         file.FullName, 
                         Strings.Upload + Path.DirectorySeparatorChar + sessionPrefix + Strings.PngExt, 
