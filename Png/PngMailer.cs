@@ -59,9 +59,20 @@ namespace nboard
                     }
                 }
 
-                foreach (string f in files)
+                try
                 {
-                    File.Delete(f);
+                    foreach (string f in files)
+                    {
+                        File.Delete(f);
+                    }
+                }
+                catch
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    foreach (string f in files)
+                    {
+                        File.Delete(f);
+                    }
                 }
             }
         }
