@@ -25,7 +25,7 @@ namespace nboard
 
         public void HideBytesInPng(string inputImageFileName, string outputImageFileName, byte[] hiddenBytes)
         {
-            hiddenBytes = ShaCrypter.Xor(hiddenBytes, _key);
+            hiddenBytes = ByteEncryptionUtil.EncryptSalsa20(hiddenBytes, _key);
             byte[] hiddenLengthBytes = BitConverter.GetBytes(hiddenBytes.Length);
             byte[] hiddenCombinedBytes = PngUtils.Combine(hiddenLengthBytes, hiddenBytes);
             Image innocuousBmp = Image.FromFile(inputImageFileName);
@@ -67,7 +67,7 @@ namespace nboard
             int loadedHiddenLength = BitConverter.ToInt32(loadedHiddenLengthBytes, 0);
             byte[] loadedHiddenBytes = DecodeBytes(loadedEncodedRgbComponents, bytesInInt, loadedHiddenLength);
             loadedEncodedBmp.Dispose();
-            return ShaCrypter.Xor(loadedHiddenBytes, _key);
+            return ByteEncryptionUtil.DecryptSalsa20(loadedHiddenBytes, _key);
         }
  
         private static byte[] DecodeBytes(byte[] innocuousLookingData, int byteIndex, int byteCount)
