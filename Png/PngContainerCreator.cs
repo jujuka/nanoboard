@@ -36,7 +36,7 @@ namespace nboard
 
             int realAmount = 0;
 
-            while (amount < 65535 && (prevPacked == null || packed == null || packed.Length < capacity))
+            while (amount < 65535 && (prevPacked == null || packed == null || packed.Length < capacity - 32))
             {
                 prevPacked = packed;
                 var lastPosts = db.GetNLastPosts(amount).ExceptHidden(db);
@@ -52,9 +52,9 @@ namespace nboard
             packed = prevPacked;
             Console.WriteLine(string.Format("PNG capacity:{0}, posts amount (not unique):{1}, packed size:{2}", capacity, realAmount, packed.Length));
 
-            if (capacity != packed.Length)
+            if (capacity - packed.Length > 32)
             {
-                var noise = new byte[capacity - packed.Length];
+                var noise = new byte[capacity - packed.Length - 32];
                 random.NextBytes(noise);
                 var temp = new List<byte>();
                 temp.AddRange(packed);
