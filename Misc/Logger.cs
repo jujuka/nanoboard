@@ -21,17 +21,38 @@ namespace nboard
 
         public static void LogDrawLine()
         {
-            File.AppendAllText(InfoLog, new string('#', 100) + "\r\n");
+            try
+            {
+                File.AppendAllText(InfoLog, new string('#', 100) + "\r\n");
+            }
+            catch
+            {
+                File.AppendAllText(InfoLog, new string('#', 100) + "\r\n");
+            }
         }
 
         public static void LogError(string msg, params object[] objs)
         {
-            File.AppendAllText(ErrLog, string.Format(msg + "\r\n", objs));
+            try
+            {
+                File.AppendAllText(ErrLog, string.Format(msg + "\r\n", objs));
+            }
+            catch
+            {
+                File.AppendAllText(ErrLog, string.Format(msg + "\r\n", objs));
+            };
         }
 
         public static void Log(string msg, params object[] objs)
         {
-            File.AppendAllText(InfoLog, string.Format(msg + "\r\n", objs));
+            try
+            {
+                File.AppendAllText(InfoLog, string.Format(msg + "\r\n", objs));
+            }
+            catch
+            {
+                File.AppendAllText(InfoLog, string.Format(msg + "\r\n", objs));
+            }
         }
     }
     

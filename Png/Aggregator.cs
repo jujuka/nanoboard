@@ -14,7 +14,7 @@ namespace nboard
         private const string UserAgentConfig = "useragent.config";
         private const string Downloaded = "downloaded.txt";
         private const string Config = "places.txt";
-        private const string ImgPattern = "href=\"[A-z0-9/\\.]*\\.png\"";
+        private const string ImgPattern = "href=\"[:A-z0-9/\\-\\.]*\\.png\"";
 
         private int _inProgress = 0;
         public int InProgress
@@ -49,7 +49,9 @@ namespace nboard
             string userAgent = File.ReadAllLines(UserAgentConfig).First(l => !l.StartsWith("#")).Trim();
             _headers = new WebHeaderCollection();
             _headers[HttpRequestHeader.UserAgent] = userAgent;
-            //_headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+            _headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+            _headers[HttpRequestHeader.AcceptLanguage] = "en-US,en;q=0.8";
+            _headers[HttpRequestHeader.CacheControl] = "max-age=0";
 
             if (File.Exists(Downloaded))
             {
@@ -100,7 +102,6 @@ namespace nboard
 
             client.DownloadDataCompleted += (object sender, DownloadDataCompletedEventArgs e) => 
             {
-                InProgress -= 1;
                 string imageAddress = "";
                 try
                 {
@@ -111,7 +112,17 @@ namespace nboard
 
                     foreach (Match im in images)
                     {
-                        imageAddress = host + im.Value.Replace("href=", "").Trim('"');
+                        imageAddress = im.Value.Replace("href=", "").Trim('"');
+
+                        if (imageAddress.Contains("http://") || imageAddress.Contains("https://"))
+                        {
+                        }
+
+                        else
+                        {
+                            imageAddress = host + imageAddress;
+                        }
+
                         ParseImage(imageAddress);
                     }
                 }
@@ -125,9 +136,12 @@ namespace nboard
                         Logger.LogError(e.Error.Message);
                     Logger.LogError(ex.Message);
                 }
+                InProgress -= 1;
             };
 
             InProgress += 1;
+            address = address.Replace("2ch.hk", "m2-ch.ru");
+            NotificationHandler.Instance.AddNotification(address);
             client.DownloadDataAsync(new Uri(address));
         }
 
@@ -165,6 +179,8 @@ namespace nboard
             };
 
             InProgress += 1;
+            address = address.Replace("2ch.hk", "m2-ch.ru");
+            NotificationHandler.Instance.AddNotification(address);
             client.DownloadDataAsync(new Uri(address));
         }
     }
