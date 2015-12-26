@@ -25,12 +25,23 @@ namespace nboard
 
             if (!File.Exists("ip.txt"))
             {
-                File.WriteAllText("ip.text", "127.0.0.1");
+                File.WriteAllText("ip.txt", "127.0.0.1");
             }
 
-            string ip = File.ReadAllText("ip.text");
+            string ip = File.ReadAllText("ip.txt");
 
-            _server = new TcpListener(IPAddress.Parse(ip), port);
+            if (ip == "localhost")
+            {
+                IPAddress ipAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
+                Console.WriteLine(ipAddress.ToString() + ":" + port);
+                IPEndPoint ipLocalEndPoint = new IPEndPoint(ipAddress, port);
+                _server = new TcpListener(ipLocalEndPoint);
+            }
+                
+            else
+            {
+                _server = new TcpListener(IPAddress.Parse(ip), port);
+            }
         }
 
         public void Run()
