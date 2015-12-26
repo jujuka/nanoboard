@@ -68,11 +68,6 @@ namespace nboard
                 }
                 catch
                 {
-                    System.Threading.Thread.Sleep(1000);
-                    foreach (string f in files)
-                    {
-                        File.Delete(f);
-                    }
                 }
             }
         }
