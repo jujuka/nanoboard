@@ -42,6 +42,21 @@ a {
   margin: 0 0.2em;
 }
 
+sp {
+  text-decoration: none;
+  color: #bbb;
+  background: #bbb;
+}
+
+g {
+  color: green;
+}
+
+sp:hover {
+  background: #ddd;
+  color: #333;
+}
+
 a:hover {
   color: darkorange;
   text-decoration: underline;
@@ -138,6 +153,13 @@ button
 
         static int _id = 1;
 
+        public static string StripInput(this string s)
+        {
+            s = s.Replace("<", "&lt;");
+            s = s.Replace(">", "&gt;");
+            return s;
+        }
+
         public static string Strip(this string s)
         {
             s = s.Replace("<", "&lt;");
@@ -150,6 +172,10 @@ button
             s = s.Replace("[/b]", "</b>");
             s = s.Replace("[i]", "<i>");
             s = s.Replace("[/i]", "</i>");
+            s = s.Replace("[sp]", "<sp>");
+            s = s.Replace("[/sp]", "</sp>");
+            s = s.Replace("[g]", "<g>");
+            s = s.Replace("[/g]", "</g>");
             string imgscript = "onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")'";
             s = s.Replace("[img=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/jpg;base64,");
             s = s.Replace("[jpg=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/jpg;base64,");
