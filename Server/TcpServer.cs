@@ -22,7 +22,7 @@ namespace nboard
         {
             Console.WriteLine("Listening on port " + port);
             Console.WriteLine("You can change port in port.txt file");
-            _server = new TcpListener(IPAddress.Any, port);
+            _server = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
         }
 
         public void Run()
