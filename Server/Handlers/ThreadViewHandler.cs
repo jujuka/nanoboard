@@ -109,9 +109,9 @@ namespace nboard
                     sb.Append(
                         (
                             p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            ("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
+                            (("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
                             //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
+                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("","")
                         ).ToDiv("post", ""));
                     first = false;
                     continue;
@@ -138,7 +138,7 @@ namespace nboard
                     sb.Append(
                         (
                             p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
+                            (("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post main", ""));
                 }
                 else
@@ -146,12 +146,12 @@ namespace nboard
                     sb.Append(
                         (
                             p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            (answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value) : "") +
+                            ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value) : "") +
                             "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
                         document.getElementById('" + p.GetHash().Value + @"').parentNode.style.visibility='hidden';") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
+                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToStyledDiv("post", "", "position:relative;left:" + p.DepthTag * 20 + "px;"));
                 }
             }

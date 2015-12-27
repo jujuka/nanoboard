@@ -60,13 +60,13 @@ namespace nboard
                 sb.Append(
                     (
                         p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                        (answers > ThreadViewHandler.MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
+                        ((answers > ThreadViewHandler.MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
                         "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
                         document.getElementById('" + p.GetHash().Value + @"').parentNode.style.visibility='hidden';") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                         ("[В тред]").ToRef("/thread/" + p.ReplyTo.Value) +
-                        ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
+                        ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                     ).ToDiv("post", ""));
             }
 
