@@ -125,6 +125,54 @@ namespace nboard
             return _threadPosts.ContainsKey(thread) ? _threadPosts[thread].ToArray().ExceptHidden(this).Length : 0;
         }
 
+        public NanoPost[] GetExpandedThreadPosts(Hash thread, int depth = 0, List<NanoPost> list = null)
+        {
+            if (list == null)
+            {
+                list = new List<NanoPost>();
+            }
+
+            if (depth == 0)
+            {
+                // clear depth
+                foreach (var p in _posts)
+                {
+                    p.Value.DepthTag = 0;
+                }
+            }
+
+
+            if (!_threadPosts.ContainsKey(thread))
+            {
+                if (_posts.ContainsKey(thread))
+                {
+                    _posts[thread].DepthTag = depth;
+                    list.Add(_posts[thread]);
+                    return new NanoPost[] { _posts[thread] };
+                }
+                else
+                {
+                    return new NanoPost[0];
+                }
+            }
+
+
+            if (depth == 0 && _posts.ContainsKey(thread))
+            {
+                _posts[thread].DepthTag = depth;
+                list.Add(_posts[thread]);
+            }
+
+            foreach (var tp in _threadPosts[thread])
+            {
+                tp.DepthTag = depth + 1;
+                list.Add(tp);
+                GetExpandedThreadPosts(tp.GetHash(), depth + 1, list);
+            }
+
+            return list.Distinct().ToArray();
+        }
+
         public NanoPost[] GetThreadPosts(Hash thread)
         {
             if (!_threadPosts.ContainsKey(thread))
@@ -148,6 +196,7 @@ namespace nboard
             }
 
             list.AddRange(_threadPosts[thread].ToArray().Sorted());
+            list.ForEach(p => p.DepthTag = 0);
             return list.ToArray();
         }
 

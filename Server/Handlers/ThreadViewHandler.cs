@@ -14,11 +14,14 @@ namespace nboard
 {
     class ThreadViewHandler : IRequestHandler
     {
+        public const int MinAnswers = -1;
         private readonly NanoDB _db;
+        private readonly bool _expand;
 
-        public ThreadViewHandler(NanoDB db)
+        public ThreadViewHandler(NanoDB db, bool expand = false)
         {
             _db = db;
+            _expand = expand;
         }
 
         public NanoHttpResponse Handle(NanoHttpRequest request)
@@ -39,7 +42,7 @@ namespace nboard
              setInterval(function() { 
                 var elem = document.getElementById('notif1');
                 var x = new XMLHttpRequest();
-                x.open('GET', '/status', true);
+                x.open('POST', '/status', true);
                 x.onreadystatechange = function() {
                     if (x.readyState != 4 || x.status != 200) return;
                     elem.innerHTML = x.responseText;
@@ -53,7 +56,7 @@ namespace nboard
         {
             sb.Append(
                 (
-                    ("Наноборда<span style='font-size:0.5em;'><sup>v1.0.5</sup></span>").ToSpan("big noselect","").AddBreak() +
+                    ("Наноборда<span style='font-size:0.5em;'><sup>v1.0.6</sup></span>").ToSpan("big noselect","").AddBreak() +
                     ("[Главная]".ToRef("/")) + 
                     ("[Создать PNG]".ToPostRef("/asmpng")) + 
                     ("[Сохранить базу]".ToPostRef("/save")) + 
@@ -90,8 +93,13 @@ namespace nboard
             var sb = new StringBuilder();
             AddHeader(sb);
 
-            var posts = _db.GetThreadPosts(thread).ExceptHidden(_db);
+            NanoPost[] posts = null;
 
+            if (!_expand)
+                posts = _db.GetThreadPosts(thread).ExceptHidden(_db);
+            else
+                posts = _db.GetExpandedThreadPosts(thread).ExceptHidden(_db);
+            
             bool first = true;
 
             foreach (var p in posts)
@@ -116,7 +124,7 @@ namespace nboard
                 {
                     //
                 }
-                else if (answers != 11 && answers % 10 == 5)
+                else if (answers == 0 || (answers != 11 && answers % 10 == 5))
                 {
                     ans += "ов";
                 }
@@ -128,26 +136,46 @@ namespace nboard
                 if (p.GetHash().Value == _db.RootHash.Value)
                 {
                     sb.Append(
-                    (
-                        p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                        ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
-                    ).ToDiv("post main", ""));
+                        (
+                            p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
+                        ).ToDiv("post main", ""));
                 }
                 else
-                sb.Append(
-                    (
-                        p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                        (answers > 0 ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
-                        "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
+                {
+                    sb.Append(
+                        (
+                            p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            (answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value) : "") +
+                            "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
                         document.getElementById('" + p.GetHash().Value + @"').parentNode.style.visibility='hidden';") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                        ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
-                    ).ToDiv("post", ""));
+                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)
+                        ).ToStyledDiv("post", "", "position:relative;left:" + p.DepthTag * 20 + "px;"));
+                }
             }
 
-            sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
+            string s1 = "<a href='#' onclick='location.reload()'>[Обновить]</a>";
 
+            if (thread.Value != _db.RootHash.Value)
+            {
+                if (!_expand)
+                    s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"thread\",\"expand\")'>[Развернуть]</a>";
+                else
+                    s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"expand\",\"thread\")'>[Свернуть]</a>";
+            }
+
+            sb.Append(s1.ToDiv("", ""));
+
+            sb.Append("<div style='height:50px'></div>");
+
+            /*
+            if (!_expand)
+                sb.Append("Развернуть".ToButton("", "", "window.location.href=window.location.toString().replace('thread','expand')").ToDiv("",""));
+            else
+                sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
+            */
             return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody(NotifierScript));
         }
     }

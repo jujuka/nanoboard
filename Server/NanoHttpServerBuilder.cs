@@ -25,6 +25,7 @@ namespace nboard
             var server = new NanoHttpServer(port);
             server.SetRootHandler(new ThreadViewHandler(_db));
             server.AddHandler("thread", new ThreadViewHandler(_db));
+            server.AddHandler("expand", new ThreadViewHandler(_db, true));
             server.AddHandler("reply", new ReplyViewHandler(_db));
             server.AddHandler("write", new WriteHandler(_db));
             server.AddHandler("hide", new HideHandler(_db));

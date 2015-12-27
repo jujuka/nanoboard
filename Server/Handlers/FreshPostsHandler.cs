@@ -60,7 +60,7 @@ namespace nboard
                 sb.Append(
                     (
                         p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                        (answers > 0 ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
+                        (answers > ThreadViewHandler.MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
                         "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
                         document.getElementById('" + p.GetHash().Value + @"').parentNode.style.visibility='hidden';") +
@@ -70,7 +70,9 @@ namespace nboard
                     ).ToDiv("post", ""));
             }
 
-            sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
+            string s1 = "<a href='#' onclick='location.reload()'>[Обновить]</a>";
+            sb.Append(s1.ToDiv("",""));
+            sb.Append("<div style='height:50px'></div>");
 
             return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody(ThreadViewHandler.NotifierScript));
         }

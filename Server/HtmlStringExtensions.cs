@@ -216,6 +216,11 @@ button
             return ToElemIdClass(content, @class, id, "div");
         }
 
+        public static string ToStyledDiv(this string content, string @class, string id, string style)
+        {
+            return string.Format("<{3} id='{0}' style='{4}' class='{1}'>{2}</{3}>", id, @class, content, "div", style);
+        }
+
         public static string ToSpan(this string content, string @class, string id)
         {
             return ToElemIdClass(content, @class, id, "span");
