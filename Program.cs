@@ -24,6 +24,7 @@ namespace nboard
             NanoPost[] unpacked = NanoPostPackUtil.Unpack(packed);
             Console.WriteLine(unpacked[0].Message);
             */
+
             new ApplicationStarter();
         }
     }

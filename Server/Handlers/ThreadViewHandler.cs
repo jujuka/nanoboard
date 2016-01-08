@@ -56,7 +56,7 @@ namespace nboard
         {
             sb.Append(
                 (
-                    ("Наноборда<span style='font-size:0.5em;'><sup>v1.0.6</sup></span>").ToSpan("big noselect","").AddBreak() +
+                    ("Наноборда<span style='font-size:0.5em;'><sup>v"+App.Version+"</sup></span>").ToSpan("big noselect","").AddBreak() +
                     ("[Главная]".ToRef("/")) + 
                     ("[Создать PNG]".ToPostRef("/asmpng")) + 
                     ("[Сохранить базу]".ToPostRef("/save")) + 

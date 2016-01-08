@@ -51,7 +51,7 @@ namespace nboard
                     (
                         p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value)
                     ).ToDiv("post", ""));
-                sb.Append(((">" + p.Message.StripInput().Replace("\n", "\n>") + "\n").ToTextArea("", "reply").AddBreak() +
+                sb.Append(((/*">" + p.Message.StripInput().Replace("\n", "\n>") + "\n"*/"").ToTextArea("", "reply").AddBreak() +
                 ("Отправить".ToButton("", "sendbtn", @"
                     var x = new XMLHttpRequest();
                     x.open('POST', '../write/"+p.GetHash().Value+@"', true);

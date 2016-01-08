@@ -80,6 +80,7 @@
     <Compile Include="Png\PngStegoUtil.cs" />
     <Compile Include="Misc\Salsa20.cs" />
     <Compile Include="Misc\ByteEncryptionUtil.cs" />
+    <Compile Include="Server\Handlers\App.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
