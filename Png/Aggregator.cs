@@ -153,9 +153,28 @@ namespace nboard
 
         private void ParseImage(string address)
         {
-            if (_downloaded.Contains(address)) return;
+            if (_downloaded.Contains(address))
+                return;
             _downloaded.Add(address);
-            File.AppendAllText(Downloaded, address + "\n");
+
+
+            try
+            {
+                File.AppendAllText(Downloaded, address + "\n");
+            }
+            catch
+            {
+                System.Threading.Thread.Sleep(1000);
+
+                try
+                {
+                    File.AppendAllText(Downloaded, address + "\n");
+                }
+                catch
+                {
+                }
+            }
+
             Logger.Log(address);
             var client = new WebClient();
             client.Headers = _headers;
