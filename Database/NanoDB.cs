@@ -40,6 +40,35 @@ namespace nboard
             var root = new NanoPost(Hash.CreateZero(), NanoPost.RootStub);
             AddPost(root, false);
             RootHash = root.GetHash();
+
+            var cat = new NanoPost(RootHash, "[b]КАТЕГОРИИ[/b]\nЧтобы создать новую категорию, ответьте на это сообщение.\nОтветьте на одну из категорий, чтобы создать там тред.");
+            AddPost(cat);
+            var cathash = cat.GetHash();
+            AddPost(new NanoPost(cathash, "[b]Автомобили/Мотоциклы[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Бред/Разное[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Видеоигры[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Выживание[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Железо/Софт[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Иностранные языки[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Кино и ТВ[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Книги[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Криптоанархия[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Музыка[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Мода и стиль[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Наука[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Обсуждение Наноборды[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Паранормальное[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Политика[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Психология[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Программирование[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Реквесты[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Смартфоны/Планшеты[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Секс[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Спорт[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Творчество[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Японская культура[/b]"));
+            AddPost(new NanoPost(cathash, "[b]18+[/b]"));
+
             if (File.Exists(HideList))
             {
                 _hideList = new HashSet<string>(File.ReadAllLines(HideList));
@@ -302,7 +331,7 @@ namespace nboard
             string indexes = Encoding.UTF8.GetString(File.ReadAllBytes(Index));
             string posts = Encoding.UTF8.GetString(File.ReadAllBytes(Data));
 
-            //try
+            try
             {
 
                 for (int i = 0; i < indexes.Length / 8; i += 2)
@@ -316,9 +345,9 @@ namespace nboard
                 }
             }
 
-            //catch(Exception e)
+            catch(Exception e)
             {
-            //    Logger.LogError(e.ToString());
+                Logger.LogError(e.ToString());
             }
         }
 
