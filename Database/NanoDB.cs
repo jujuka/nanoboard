@@ -275,8 +275,8 @@ namespace nboard
 
             if (File.Exists(Data))
             {
-                FileInfo dataInfo = new FileInfo(Data);
-                offset = (int)dataInfo.Length;
+                string posts = Encoding.UTF8.GetString(File.ReadAllBytes(Data));
+                offset = posts.Length;
             }
 
             foreach (var p in _new)
@@ -302,7 +302,7 @@ namespace nboard
             string indexes = Encoding.UTF8.GetString(File.ReadAllBytes(Index));
             string posts = Encoding.UTF8.GetString(File.ReadAllBytes(Data));
 
-            try
+            //try
             {
 
                 for (int i = 0; i < indexes.Length / 8; i += 2)
@@ -316,8 +316,9 @@ namespace nboard
                 }
             }
 
-            catch
+            //catch(Exception e)
             {
+            //    Logger.LogError(e.ToString());
             }
         }
 
