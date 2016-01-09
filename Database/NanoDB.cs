@@ -42,32 +42,32 @@ namespace nboard
             RootHash = root.GetHash();
 
             var cat = new NanoPost(RootHash, "[b]КАТЕГОРИИ[/b]\nЧтобы создать новую категорию, ответьте на это сообщение.\nОтветьте на одну из категорий, чтобы создать там тред.");
-            AddPost(cat);
+            AddPost(cat, false);
             var cathash = cat.GetHash();
-            AddPost(new NanoPost(cathash, "[b]Автомобили/Мотоциклы[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Бред/Разное[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Видеоигры[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Выживание[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Железо/Софт[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Иностранные языки[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Кино и ТВ[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Книги[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Криптоанархия[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Музыка[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Мода и стиль[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Наука[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Обсуждение Наноборды[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Паранормальное[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Политика[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Психология[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Программирование[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Реквесты[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Смартфоны/Планшеты[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Секс[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Спорт[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Творчество[/b]"));
-            AddPost(new NanoPost(cathash, "[b]Японская культура[/b]"));
-            AddPost(new NanoPost(cathash, "[b]18+[/b]"));
+            AddPost(new NanoPost(cathash, "[b]Автомобили/Мотоциклы[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Бред/Разное[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Видеоигры[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Выживание[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Железо/Софт[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Иностранные языки[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Кино и ТВ[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Книги[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Криптоанархия[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Музыка[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Мода и стиль[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Наука[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Обсуждение Наноборды[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Паранормальное[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Политика[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Психология[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Программирование[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Реквесты[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Смартфоны/Планшеты[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Секс[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Спорт[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Творчество[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]Японская культура[/b]"), false);
+            AddPost(new NanoPost(cathash, "[b]18+[/b]"), false);
 
             if (File.Exists(HideList))
             {

@@ -39,6 +39,7 @@ namespace nboard
             var sb = new StringBuilder();
             ThreadViewHandler.AddHeader(sb);
             var posts = _db.GetNewPosts().ExceptHidden(_db);
+            posts = posts.Reverse().ToArray();
 
             foreach (var p in posts)
             {

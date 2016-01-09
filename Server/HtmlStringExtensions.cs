@@ -171,17 +171,26 @@ button
             s = s.Replace("[b]", "<b>");
             s = s.Replace("[/b]", "</b>");
             s = s.Replace("[i]", "<i>");
+            s = s.Replace("[I]", "<i>");
+            s = s.Replace("[/I]", "</i>");
             s = s.Replace("[/i]", "</i>");
             s = s.Replace("[sp]", "<sp>");
             s = s.Replace("[/sp]", "</sp>");
             s = s.Replace("[g]", "<g>");
             s = s.Replace("[/g]", "</g>");
+
+            if (s.Contains("[img="))
+            {
+                s = s.Replace("]", "\" />");
+            }
+
             string imgscript = "onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")'";
-            s = s.Replace("[img=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/jpg;base64,");
-            s = s.Replace("[jpg=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/jpg;base64,");
-            s = s.Replace("[png=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/png;base64,");
-            s = s.Replace("[gif=", "<img id='imgid"+_id+++"' "+imgscript+"src=\"data:image/gif;base64,");
-            s = s.Replace("]", "\" />");
+            s = s.Replace("[img=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/jpg;base64,");
+            s = s.Replace("[jpg=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/jpg;base64,");
+            s = s.Replace("[png=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/png;base64,");
+            s = s.Replace("[gif=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/gif;base64,");
+
+
             return s;
         }
 
