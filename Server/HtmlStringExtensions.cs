@@ -65,6 +65,7 @@ a:hover {
 .postinner {
   max-height: 48em;
   overflow: auto;
+  max-width: 600px;
   margin-bottom: .5em;
 }
 
