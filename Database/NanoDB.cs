@@ -269,6 +269,11 @@ namespace nboard
                 return false;
             }
 
+            if (IsHidden(post.GetHash()))
+            {
+                return false;
+            }
+
             if (isNew)
             {
                 _new.Add(post);

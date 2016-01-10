@@ -191,6 +191,17 @@ button
             s = s.Replace("[png=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/png;base64,");
             s = s.Replace("[gif=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/gif;base64,");
 
+            /*
+            var arr = s.ToCharArray();
+
+            int ob = 0, oi = 0, os = 0, og = 0, osp = 0, ou = 0, oI = 0;
+            int cb = 0, ci = 0, cs = 0, cg = 0, csp = 0, cu = 0, cI = 0;
+
+            foreach (var a in arr)
+            {
+                
+            }
+            */
 
             return s;
         }

@@ -95,20 +95,42 @@ namespace nboard
 
             NanoPost[] posts = null;
 
+            /*
             if (!_expand)
                 posts = _db.GetThreadPosts(thread).ExceptHidden(_db);
             else
                 posts = _db.GetExpandedThreadPosts(thread).ExceptHidden(_db);
-            
+            */
+
+            if (!_expand)
+                posts = _db.GetThreadPosts(thread);
+            else
+                posts = _db.GetExpandedThreadPosts(thread);
+
             bool first = true;
 
             foreach (var p in posts)
             {
+                string pMessage = p.Message;
+
+                if (_db.IsHidden(p.GetHash()))
+                {
+                    if (_db.CountAnswers(p.GetHash()) == 0)
+                    {
+                        continue;
+                    }
+
+                    else
+                    {
+                        pMessage = "[i]Пост " + p.GetHash().Value + " скрыт вами, но все ещё содержит ответы.[/i]";
+                    }
+                }
+
                 if (first && !p.GetHash().Zero && !p.ReplyTo.Zero)
                 {
                     sb.Append(
                         (
-                            p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            pMessage.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             (("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
                             //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                             ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("","")
@@ -150,7 +172,7 @@ namespace nboard
                 {
                     sb.Append(
                         (
-                            p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            pMessage.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value) : "") +
                             "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
