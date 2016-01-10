@@ -124,7 +124,7 @@ namespace nboard
             foreach (var p in posts)
             {
                 string pMessage = p.Message;
-                string hMessage = "[i]Пост " + p.GetHash().Value + " скрыт.[/i]";
+                //string hMessage = "[i]Пост " + p.GetHash().Value + " скрыт.[/i]";
                 bool hidden = false;
 
                 if (_db.IsHidden(p.GetHash()))

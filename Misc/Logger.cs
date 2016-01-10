@@ -16,7 +16,13 @@ namespace nboard
 
         public static void LogErrorDrawLine()
         {
-            File.AppendAllText(ErrLog, new string('#', 100) + "\r\n");
+            try
+            {
+                File.AppendAllText(ErrLog, new string('#', 100) + "\r\n");
+            }
+            catch
+            {
+            }
         }
 
         public static void LogDrawLine()

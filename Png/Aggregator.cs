@@ -41,37 +41,42 @@ namespace nboard
 
         public Aggregator()
         {
-            if (!File.Exists(UserAgentConfig))
+            try
             {
-                File.WriteAllText(UserAgentConfig, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36");
+                if (!File.Exists(UserAgentConfig))
+                {
+                    File.WriteAllText(UserAgentConfig, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36");
+                }
+
+                string userAgent = File.ReadAllLines(UserAgentConfig).First(l => !l.StartsWith("#")).Trim();
+                _headers = new WebHeaderCollection();
+                _headers[HttpRequestHeader.UserAgent] = userAgent;
+                _headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+                _headers[HttpRequestHeader.AcceptLanguage] = "en-US,en;q=0.8";
+                _headers[HttpRequestHeader.CacheControl] = "max-age=0";
+
+                if (File.Exists(Downloaded))
+                {
+                    _downloaded = new HashSet<string>(File.ReadAllLines(Downloaded));
+                }
+                else
+                {
+                    _downloaded = new HashSet<string>();
+                }
+
+                if (File.Exists(Config))
+                {
+                    _places = new List<string>(File.ReadAllLines(Config));
+                }
+                else
+                {
+                    File.WriteAllText(Config, "# put urls to threads here, each at new line:\n");
+                    _places = new List<string>();
+                }
             }
-
-            string userAgent = File.ReadAllLines(UserAgentConfig).First(l => !l.StartsWith("#")).Trim();
-            _headers = new WebHeaderCollection();
-            _headers[HttpRequestHeader.UserAgent] = userAgent;
-            _headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
-            _headers[HttpRequestHeader.AcceptLanguage] = "en-US,en;q=0.8";
-            _headers[HttpRequestHeader.CacheControl] = "max-age=0";
-
-            if (File.Exists(Downloaded))
+            catch (Exception e)
             {
-                _downloaded = new HashSet<string>(File.ReadAllLines(Downloaded));
-            }
-
-            else
-            {
-                _downloaded = new HashSet<string>();
-            }
-
-            if (File.Exists(Config))
-            {
-                _places = new List<string>(File.ReadAllLines(Config));
-            }
-
-            else
-            {
-                File.WriteAllText(Config, "# put urls to threads here, each at new line:\n");
-                _places = new List<string>();
+                Logger.LogError("Error while creating containers aggregator:\n" + e.ToString());
             }
         }
 
@@ -95,8 +100,10 @@ namespace nboard
                     InProgress = 0;
                 }
             }
-            catch
+
+            catch (Exception e)
             {
+                Logger.LogError("Error while parsing from places.txt:\n" + e.ToString());
             }
         }
 
@@ -170,8 +177,9 @@ namespace nboard
                 {
                     File.AppendAllText(Downloaded, address + "\n");
                 }
-                catch
+                catch (Exception e)
                 {
+                    Logger.LogError("downloaded.txt appending error:\n" + e.ToString());
                 }
             }
 
@@ -185,12 +193,19 @@ namespace nboard
 
                 try
                 {
+                    if (!Directory.Exists("temp"))
+                    {
+                        Directory.CreateDirectory("temp");
+                    }
+
                     if (!Directory.Exists(Strings.Download))
                     {
                         Directory.CreateDirectory(Strings.Download);
                     }
 
-                    File.WriteAllBytes(Strings.Download + Path.DirectorySeparatorChar + new Uri(address).Segments.Last(), e.Result);
+                    var name = Guid.NewGuid().ToString().Trim('{', '}');
+                    File.WriteAllBytes("temp" + Path.DirectorySeparatorChar + name, e.Result);
+                    File.Move("temp" + Path.DirectorySeparatorChar + name, Strings.Download + Path.DirectorySeparatorChar + name);
                 }
 
                 catch (Exception ex)

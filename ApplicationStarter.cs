@@ -18,20 +18,34 @@ namespace nboard
             PrepareFolders();
 
             var db = new NanoDB();
-            var daemon = new DownloadCheckDaemon(db);
+            new DownloadCheckDaemon(db);
             db.ReadPosts();
             /*form.FormClosed += (object sender, FormClosedEventArgs e) => {
                 daemon.Stop();
                 new PngMailer().FillOutbox(db);
             };*/
 
-            if (!File.Exists("port.txt"))
+            try
             {
-                File.WriteAllText("port.txt", "7345");
+                if (!File.Exists("port.txt"))
+                {
+                    File.WriteAllText("port.txt", "7345");
+                }
+            }
+            catch
+            {
+                Logger.LogError("Cant write to port.txt");
             }
 
             int port = 0;
-            int.TryParse(File.ReadAllText("port.txt"), out port);
+            try
+            {
+                int.TryParse(File.ReadAllText("port.txt"), out port);
+            }
+            catch
+            {
+                Logger.LogError("Error reading port.txt");
+            }
 
             if (port <= 0)
             {

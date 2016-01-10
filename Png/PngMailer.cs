@@ -25,9 +25,10 @@ namespace nboard
                     {
                         packed = new PngStegoUtil().ReadHiddenBytesFromPng(pathToPng);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        Logger.LogError(e.ToString());
+                        // invalid container error:
+                        //Logger.LogError(e.ToString());
                     }
 
                     NanoPost[] posts = null;

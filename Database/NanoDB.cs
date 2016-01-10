@@ -69,9 +69,16 @@ namespace nboard
             AddPost(new NanoPost(cathash, "[b]Японская культура[/b]"), false);
             AddPost(new NanoPost(cathash, "[b]18+[/b]"), false);
 
-            if (File.Exists(HideList))
+            try
             {
-                _hideList = new HashSet<string>(File.ReadAllLines(HideList));
+                if (File.Exists(HideList))
+                {
+                    _hideList = new HashSet<string>(File.ReadAllLines(HideList));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("Error wile reading hide.list\n" + e.ToString());
             }
 
             /*if (File.Exists(Bookmarks))
@@ -312,65 +319,80 @@ namespace nboard
 
         public void RewriteDbExceptHidden(bool clear = true)
         {
-            int offset = 0;
-
-            if (File.Exists(Data))
+            try
             {
-                File.Copy(Data, "data.bak");
-                File.Delete(Data);
+                int offset = 0;
+
+                if (File.Exists(Data))
+                {
+                    File.Copy(Data, "data.bak");
+                    File.Delete(Data);
+                }
+
+                if (File.Exists(Index))
+                {
+                    File.Copy(Index, "index.bak");
+                    File.Delete(Index);
+                }
+
+                var all = _posts.Values.ToArray();
+
+                foreach (var p in all)
+                {
+                    if (IsHidden(p.GetHash()))
+                        continue;
+                    var @string = p.SerializedString();
+                    FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
+                    FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(@string.Length.ToString("x8")));
+                    FileUtils.AppendAllBytes(Data, p.SerializedBytes());
+                    offset += @string.Length;
+                }
+
+                if (File.Exists(HideList))
+                {
+                    File.Delete(HideList);
+                }
+
+                File.AppendAllLines(HideList, _hideList);
+                File.Delete("data.bak");
+                File.Delete("index.bak");
             }
 
-            if (File.Exists(Index))
+            catch (Exception e)
             {
-                File.Copy(Index, "index.bak");
-                File.Delete(Index);
+                Logger.LogError("Can't rewrite db:\n", e.ToString());
             }
-
-            var all = _posts.Values.ToArray();
-
-            foreach (var p in all)
-            {
-                if (IsHidden(p.GetHash()))
-                    continue;
-                var @string = p.SerializedString();
-                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
-                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(@string.Length.ToString("x8")));
-                FileUtils.AppendAllBytes(Data, p.SerializedBytes());
-                offset += @string.Length;
-            }
-
-            if (File.Exists(HideList))
-            {
-                File.Delete(HideList);
-            }
-
-            File.AppendAllLines(HideList, _hideList);
-            File.Delete("data.bak");
-            File.Delete("index.bak");
         }
 
         public void WriteNewPosts(bool clear = true)
         {
-            int offset = 0;
-
-            if (File.Exists(Data))
+            try
             {
-                string posts = Encoding.UTF8.GetString(File.ReadAllBytes(Data));
-                offset = posts.Length;
+                int offset = 0;
+
+                if (File.Exists(Data))
+                {
+                    string posts = Encoding.UTF8.GetString(File.ReadAllBytes(Data));
+                    offset = posts.Length;
+                }
+
+                foreach (var p in _new)
+                {
+                    var @string = p.SerializedString();
+                    FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
+                    FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(@string.Length.ToString("x8")));
+                    FileUtils.AppendAllBytes(Data, p.SerializedBytes());
+                    offset += @string.Length;
+                }
+
+                if (clear)
+                {
+                    _new.Clear();
+                }
             }
-
-            foreach (var p in _new)
+            catch (Exception e)
             {
-                var @string = p.SerializedString();
-                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
-                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(@string.Length.ToString("x8")));
-                FileUtils.AppendAllBytes(Data, p.SerializedBytes());
-                offset += @string.Length;
-            }
-
-            if (clear)
-            {
-                _new.Clear();
+                Logger.LogError("Error updating db:\n", e.ToString());
             }
         }
 
@@ -398,7 +420,7 @@ namespace nboard
 
             catch(Exception e)
             {
-                Logger.LogError(e.ToString());
+                Logger.LogError("Error while reading posts db:\n" + e.ToString());
             }
         }
 
