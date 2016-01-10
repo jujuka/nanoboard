@@ -49,7 +49,7 @@ namespace nboard
 
                 sb.Append(
                     (
-                        p.Message.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value)
+                        p.Message.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value)
                     ).ToDiv("post", ""));
                 sb.Append(((/*">" + p.Message.StripInput().Replace("\n", "\n>") + "\n"*/"").ToTextArea("", "reply").AddBreak() +
                 ("Отправить".ToButton("", "sendbtn", @"

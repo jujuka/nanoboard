@@ -161,7 +161,74 @@ button
             return s;
         }
 
-        public static string Strip(this string s)
+        private static string ValidateTags(this string s)
+        {
+            var arr = s.Replace("<sp>", "<x>").Replace("</sp>", "</x>").ToCharArray();
+
+            var open = new Dictionary<char, int>();
+            open.Add('b', 0);
+            open.Add('i', 0);
+            open.Add('s', 0);
+            open.Add('u', 0);
+            open.Add('x', 0);
+            open.Add('g', 0);
+
+            var closed = new Dictionary<char, int>();
+            closed.Add('b', 0);
+            closed.Add('i', 0);
+            closed.Add('s', 0);
+            closed.Add('u', 0);
+            closed.Add('x', 0);
+            closed.Add('g', 0);
+
+            char p3 = ' ';
+            char p2 = ' ';
+            char p = ' ';
+
+            foreach (var a in arr)
+            {
+                if (a == '>')
+                {
+                    if (open.ContainsKey(p))
+                    {
+                        if (p2 == '<')
+                        {
+                            open[p] += 1;
+                        }
+                        else if (p2 == '/' && p3 == '<')
+                        {
+                            closed[p] += 1;
+                        }
+                    }
+                }
+
+                p3 = p2;
+                p2 = p;
+                p = a;
+            }
+
+            string check = "bisuxg";
+            bool invalid = false;
+
+            foreach (var c in check)
+            {
+                if (open[c] != closed[c])
+                {
+                    invalid = true;
+                    break;
+                }
+            }
+
+            if (invalid)
+            {
+                s = s.Replace("<", "&lt;");
+                s = s.Replace(">", "&gt;");
+            }
+
+            return s;
+        }
+
+        public static string Strip(this string s, bool validateTags = false)
         {
             s = s.Replace("<", "&lt;");
             s = s.Replace(">", "&gt;");
@@ -191,18 +258,7 @@ button
             s = s.Replace("[png=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/png;base64,");
             s = s.Replace("[gif=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/gif;base64,");
 
-            /*
-            var arr = s.ToCharArray();
-
-            int ob = 0, oi = 0, os = 0, og = 0, osp = 0, ou = 0, oI = 0;
-            int cb = 0, ci = 0, cs = 0, cg = 0, csp = 0, cu = 0, cI = 0;
-
-            foreach (var a in arr)
-            {
-                
-            }
-            */
-
+            if (validateTags) return s.ValidateTags();
             return s;
         }
 

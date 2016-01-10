@@ -130,7 +130,7 @@ namespace nboard
                 {
                     sb.Append(
                         (
-                            pMessage.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            pMessage.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             (("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
                             //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                             ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("","")
@@ -172,7 +172,7 @@ namespace nboard
                 {
                     sb.Append(
                         (
-                            pMessage.Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            pMessage.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value) : "") +
                             "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
