@@ -38,6 +38,14 @@ namespace nboard
         {
             var sb = new StringBuilder();
             ThreadViewHandler.AddHeader(sb);
+
+            sb.Append("[Очистить список]".ToButton("","", @"
+                var x = new XMLHttpRequest(); 
+                x.open('POST', '../save/', true);
+                x.send('');
+                location.reload();
+            ").ToDiv("",""));
+
             var posts = _db.GetNewPosts().ExceptHidden(_db);
             posts = posts.Reverse().ToArray();
 

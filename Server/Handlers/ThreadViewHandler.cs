@@ -59,7 +59,7 @@ namespace nboard
                     ("Наноборда<span style='font-size:0.5em;'><sup>v"+App.Version+"</sup></span>").ToSpan("big noselect","").AddBreak() +
                     ("[Главная]".ToRef("/")) + 
                     ("[Создать PNG]".ToPostRef("/asmpng")) + 
-                    ("[Сохранить базу]".ToPostRef("/save")) + 
+                    //("[Сохранить базу]".ToPostRef("/save")) + 
                     ("[Свежие посты]".ToRef("/fresh")) + 
                     "[Искать посты]".ToPostRef("/aggregate") +
                     "[Картинка&gt;Base64]".ToRefBlank("/image") +
@@ -93,6 +93,18 @@ namespace nboard
             var sb = new StringBuilder();
             AddHeader(sb);
 
+            string s1 = "<a href='#' onclick='location.reload()'>[Обновить]</a>";
+
+            if (thread.Value != _db.RootHash.Value)
+            {
+                if (!_expand)
+                    s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"thread\",\"expand\")'>[Развернуть]</a>";
+                else
+                    s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"expand\",\"thread\")'>[Свернуть]</a>";
+            }
+
+            sb.Append(s1.ToDiv("", ""));
+
             NanoPost[] posts = null;
 
             /*
@@ -112,18 +124,13 @@ namespace nboard
             foreach (var p in posts)
             {
                 string pMessage = p.Message;
+                string hMessage = "[i]Пост " + p.GetHash().Value + " скрыт.[/i]";
+                bool hidden = false;
 
                 if (_db.IsHidden(p.GetHash()))
                 {
-                    if (_db.CountAnswers(p.GetHash()) == 0)
-                    {
-                        continue;
-                    }
-
-                    else
-                    {
-                        pMessage = "[i]Пост " + p.GetHash().Value + " скрыт вами, но все ещё содержит ответы.[/i]";
-                    }
+                    hidden = true;
+                    //pMessage = hMessage;
                 }
 
                 if (first && !p.GetHash().Zero && !p.ReplyTo.Zero)
@@ -172,25 +179,25 @@ namespace nboard
                 {
                     sb.Append(
                         (
-                            pMessage.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            pMessage.Strip(true).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
                             ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value) : "") +
-                            "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
+                            (hidden?"[Вернуть]":"[Удалить]").ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
-                        document.getElementById('" + p.GetHash().Value + @"').parentNode.style.visibility='hidden';") +
+                        var elem = document.getElementById('" + p.GetHash().Value + @"');
+                        if (elem.style.visibility != 'hidden') {
+                            elem.style.visibility='hidden';
+                            elem.style.height = '0px';
+                            innerHTML = '[Вернуть]';
+                        } else { 
+                            elem.style.visibility='visible';
+                            elem.style.height = '100%';
+                            innerHTML = '[Удалить]';
+                        }
+                        ") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                             ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToStyledDiv("post", "", "position:relative;left:" + p.DepthTag * 20 + "px;"));
                 }
-            }
-
-            string s1 = "<a href='#' onclick='location.reload()'>[Обновить]</a>";
-
-            if (thread.Value != _db.RootHash.Value)
-            {
-                if (!_expand)
-                    s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"thread\",\"expand\")'>[Развернуть]</a>";
-                else
-                    s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"expand\",\"thread\")'>[Свернуть]</a>";
             }
 
             sb.Append(s1.ToDiv("", ""));

@@ -33,7 +33,7 @@ namespace nboard
             server.AddHandler("fresh", new FreshPostsHandlder(_db));
             server.AddHandler("asmpng", new AsmPngHandler(_db));
             server.AddHandler("aggregate", new AggregateHandler());
-            server.AddHandler("shutdown", new ShutdownHandler(server));
+            server.AddHandler("shutdown", new ShutdownHandler(server, _db));
             server.AddHandler("status", new NotificationHandler());
             server.AddHandler("image", new ImageBase64ConvertHandler());
             server.AddHandler("convert", new ConvertResultHandler());

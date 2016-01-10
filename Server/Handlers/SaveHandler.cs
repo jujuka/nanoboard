@@ -23,8 +23,8 @@ namespace nboard
 
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
-            _db.WriteNewPosts();
-            NotificationHandler.Instance.AddNotification("База сообщений сохранена на диск.");
+            _db.WriteNewPosts(true);
+            //NotificationHandler.Instance.AddNotification("База сообщений сохранена на диск.");
             return new NanoHttpResponse(StatusCode.Ok, "\n");
         }
     }

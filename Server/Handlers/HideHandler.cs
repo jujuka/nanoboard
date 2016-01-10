@@ -32,7 +32,16 @@ namespace nboard
 
             try
             {
-                _db.Hide(hash);
+                if (_db.IsHidden(hash))
+                {
+                    _db.Unhide(hash);
+                }
+
+                else
+                {
+                    _db.Hide(hash);
+                }
+
                 return new NanoHttpResponse(StatusCode.Ok, "\n");
             }
 
@@ -42,5 +51,4 @@ namespace nboard
             }
         }
     }
-    
 }

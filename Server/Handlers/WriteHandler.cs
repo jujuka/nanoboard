@@ -63,7 +63,7 @@ namespace nboard
             }
 
             var str = Encoding.UTF8.GetString(request.Connection.Raw);
-            str = str.Substring(str.IndexOf("\r\n\r\n")+4);
+            str = str.Substring(str.IndexOf("\r\n\r\n") + 4);
             var post = new NanoPost(thread, "[g]" + GetPostHeader() + "[/g]\n" + str.StripInput());
 
             if (post.Invalid)
@@ -74,7 +74,12 @@ namespace nboard
             else
             {
                 NotificationHandler.Instance.AddNotification("Сообщение добавлено.");
-                _db.AddPost(post);
+
+                if (_db.AddPost(post))
+                {
+                    _db.WriteNewPosts(false);
+                }
+
                 return new NanoHttpResponse(StatusCode.Ok, "");
             }
         }

@@ -106,7 +106,14 @@ namespace nboard
             if (hash.Zero) return;
             if (hash.Value == RootHash.Value) return;
             _hideList.Add(hash.Value);
-            File.AppendAllText(HideList, hash.Value + "\n");
+        }
+
+        public void Unhide(Hash hash)
+        {
+            if (!_hideList.Contains(hash.Value)) return;
+            if (hash.Zero) return;
+            if (hash.Value == RootHash.Value) return;
+            _hideList.Remove(hash.Value);
         }
 
         /*
@@ -301,6 +308,45 @@ namespace nboard
             }
 
             return true;
+        }
+
+        public void RewriteDbExceptHidden(bool clear = true)
+        {
+            int offset = 0;
+
+            if (File.Exists(Data))
+            {
+                File.Copy(Data, "data.bak");
+                File.Delete(Data);
+            }
+
+            if (File.Exists(Index))
+            {
+                File.Copy(Index, "index.bak");
+                File.Delete(Index);
+            }
+
+            var all = _posts.Values.ToArray();
+
+            foreach (var p in all)
+            {
+                if (IsHidden(p.GetHash()))
+                    continue;
+                var @string = p.SerializedString();
+                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
+                FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(@string.Length.ToString("x8")));
+                FileUtils.AppendAllBytes(Data, p.SerializedBytes());
+                offset += @string.Length;
+            }
+
+            if (File.Exists(HideList))
+            {
+                File.Delete(HideList);
+            }
+
+            File.AppendAllLines(HideList, _hideList);
+            File.Delete("data.bak");
+            File.Delete("index.bak");
         }
 
         public void WriteNewPosts(bool clear = true)

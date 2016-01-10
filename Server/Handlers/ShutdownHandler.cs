@@ -15,17 +15,19 @@ namespace nboard
     class ShutdownHandler : IRequestHandler
     {
         private readonly NanoHttpServer _server;
+        private readonly NanoDB _db;
 
-        public ShutdownHandler(NanoHttpServer server)
+        public ShutdownHandler(NanoHttpServer server, NanoDB db)
         {
             _server = server;
+            _db = db;
         }
 
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
+            _db.RewriteDbExceptHidden();
             _server.Stop();
-            return new ErrorHandler(StatusCode.Ok, "Сервер выключен (без сохранения данных)").Handle(request);
+            return new ErrorHandler(StatusCode.Ok, "Сервер выключен, данные автоматически сохранены, посты, помеченные на удаление навсегда удалены из базы.").Handle(request);
         }
     }
-    
 }

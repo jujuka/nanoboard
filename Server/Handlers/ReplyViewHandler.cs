@@ -62,5 +62,4 @@ namespace nboard
             return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());
         }
     }
-    
 }
