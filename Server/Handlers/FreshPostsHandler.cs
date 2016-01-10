@@ -46,7 +46,7 @@ namespace nboard
                 location.reload();
             ").ToDiv("",""));
 
-            var posts = _db.GetNewPosts().ExceptHidden(_db);
+            var posts = _db.GetNewPosts();//.ExceptHidden(_db);
             posts = posts.Reverse().ToArray();
 
             foreach (var p in posts)
@@ -70,9 +70,19 @@ namespace nboard
                     (
                         p.Message.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                         ((answers > ThreadViewHandler.MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
-                        "[-]".ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
+                            (_db.IsHidden(p.GetHash())?"[Вернуть]":"[Удалить]").ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
-                        document.getElementById('" + p.GetHash().Value + @"').parentNode.style.visibility='hidden';") +
+                        var elem = document.getElementById('" + p.GetHash().Value + @"');
+                        if (elem.style.visibility != 'hidden') {
+                            elem.style.visibility='hidden';
+                            elem.style.height = '0px';
+                            innerHTML = '[Вернуть]';
+                        } else { 
+                            elem.style.visibility='visible';
+                            elem.style.height = '100%';
+                            innerHTML = '[Удалить]';
+                        }
+                        ") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                         ("[В тред]").ToRef("/thread/" + p.ReplyTo.Value) +
                         ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
