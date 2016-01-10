@@ -27,7 +27,7 @@ namespace nboard
             }
             catch
             {
-                File.AppendAllText(InfoLog, new string('#', 100) + "\r\n");
+                //File.AppendAllText(InfoLog, new string('#', 100) + "\r\n");
             }
         }
 
@@ -39,7 +39,7 @@ namespace nboard
             }
             catch
             {
-                File.AppendAllText(ErrLog, string.Format(msg + "\r\n", objs));
+                //File.AppendAllText(ErrLog, string.Format(msg + "\r\n", objs));
             };
         }
 
@@ -51,7 +51,7 @@ namespace nboard
             }
             catch
             {
-                File.AppendAllText(InfoLog, string.Format(msg + "\r\n", objs));
+                //File.AppendAllText(InfoLog, string.Format(msg + "\r\n", objs));
             }
         }
     }
