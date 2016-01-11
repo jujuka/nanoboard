@@ -14,6 +14,7 @@ namespace nboard
     static class StatusCode
     {
         public const string Ok = "200 OK";
+        public const string NotModified = "304 Not Modified";
         public const string NotFound = "404 Not Found";
         public const string BadRequest = "400 Bad Request";
         public const string MethodNotAllowed = "405 Method Not Allowed";

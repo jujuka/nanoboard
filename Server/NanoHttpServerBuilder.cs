@@ -37,6 +37,7 @@ namespace nboard
             server.AddHandler("status", new NotificationHandler());
             server.AddHandler("image", new ImageBase64ConvertHandler());
             server.AddHandler("convert", new ConvertResultHandler());
+            server.AddHandler("setstyle", new SetStyleHandler());
             return server;
         }
     }

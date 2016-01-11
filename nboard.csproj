@@ -81,6 +81,7 @@
     <Compile Include="Misc\Salsa20.cs" />
     <Compile Include="Misc\ByteEncryptionUtil.cs" />
     <Compile Include="Server\Handlers\App.cs" />
+    <Compile Include="Server\Handlers\SetStyleHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

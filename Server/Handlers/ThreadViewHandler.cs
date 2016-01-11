@@ -52,6 +52,43 @@ namespace nboard
         }
 ";
 
+        private static string _styles;
+
+        private static string Styles()
+        {
+            if (_styles != null)
+                return _styles;
+
+            string r = "";
+
+            if (Directory.Exists("styles"))
+            {
+                var files = Directory.GetFiles("styles");
+
+                if (files.Length > 0)
+                {
+                    r += "<select id='stylesel' onchange='var x = new XMLHttpRequest(); x.open(\"POST\", \"../setstyle\", true); x.send(value.toString()); location.reload();'>";
+
+                    r += "<option> </option>";
+
+                    foreach (var file in files)
+                    {
+                        if (file.EndsWith(".css"))
+                        {
+                            var file1 = file.Replace("styles/", "").Replace(".css", "");
+                            r += "<option>" + file1 + "</option>";
+                        }
+                    }
+
+                    r += "</select>";
+                }
+            }
+
+            _styles = r;
+
+            return r;
+        }
+
         public static void AddHeader(StringBuilder sb)
         {
             sb.Append(
@@ -66,7 +103,9 @@ namespace nboard
                     ("[Выключить сервер]".ToRef("/shutdown")) +
 
                     "<div id='notif1' style='text-align:right;position:fixed;right:2%;top:10px;'></div>"
-
+                    +
+                    Styles()
+                   
                 ).ToDiv("head", "")
             );
             sb.Append("".ToDiv("step", ""));

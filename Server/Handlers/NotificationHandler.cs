@@ -32,7 +32,7 @@ namespace nboard
 
             catch
             {
-                return new NanoHttpResponse(StatusCode.NotFound, "\n");
+                return new NanoHttpResponse(StatusCode.NotModified, "\n");
             }
         }
 
