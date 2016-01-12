@@ -75,13 +75,14 @@
     <Compile Include="Server\Handlers\ConvertResultHandler.cs" />
     <Compile Include="Misc\GZipUtil.cs" />
     <Compile Include="Database\NanoPostPackUtil.cs" />
-    <Compile Include="Png\PngContainerCreator.cs" />
     <Compile Include="Png\PngUtils.cs" />
     <Compile Include="Png\PngStegoUtil.cs" />
     <Compile Include="Misc\Salsa20.cs" />
     <Compile Include="Misc\ByteEncryptionUtil.cs" />
-    <Compile Include="Server\Handlers\App.cs" />
     <Compile Include="Server\Handlers\SetStyleHandler.cs" />
+    <Compile Include="Png\PngContainerCreatorNew.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="Png\PngContainerCreatorOld.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

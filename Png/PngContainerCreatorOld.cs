@@ -9,7 +9,7 @@ using System.Drawing;
 
 namespace nboard
 {
-    class PngContainerCreator
+    class PngContainerCreatorOld
     {
         private const int Attempts = 10;
         static Random random = new Random();

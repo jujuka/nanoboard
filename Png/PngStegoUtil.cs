@@ -23,6 +23,19 @@ namespace nboard
             _key = File.ReadAllText("key.txt");
         }
 
+        public void HideBytesInPng(Image innocuousBmp, string outputImageFileName, byte[] hiddenBytes)
+        {
+            hiddenBytes = ByteEncryptionUtil.EncryptSalsa20(hiddenBytes, _key);
+            byte[] hiddenLengthBytes = BitConverter.GetBytes(hiddenBytes.Length);
+            byte[] hiddenCombinedBytes = PngUtils.Combine(hiddenLengthBytes, hiddenBytes);
+            byte[] rgbComponents = PngUtils.RgbComponentsToBytes(innocuousBmp);
+            byte[] encodedRgbComponents = EncodeBytes(hiddenCombinedBytes, rgbComponents);
+            Bitmap encodedBmp = PngUtils.ByteArrayToBitmap(encodedRgbComponents, innocuousBmp.Width, innocuousBmp.Height);
+            encodedBmp.Save(outputImageFileName, ImageFormat.Png);
+            encodedBmp.Dispose();
+            innocuousBmp.Dispose();
+        }
+
         public void HideBytesInPng(string inputImageFileName, string outputImageFileName, byte[] hiddenBytes)
         {
             hiddenBytes = ByteEncryptionUtil.EncryptSalsa20(hiddenBytes, _key);

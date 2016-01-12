@@ -248,6 +248,16 @@ namespace nboard
             return _new.ToArray();
         }
 
+        public int GetPostCount()
+        {
+            return _addedPosts.Count;
+        }
+
+        public NanoPost GetPost(int index)
+        {
+            return _addedPosts[index];
+        }
+
         public NanoPost[] GetNLastPosts(int count)
         {
             if (count > _addedPosts.Count)
@@ -317,7 +327,7 @@ namespace nboard
             return true;
         }
 
-        public void RewriteDbExceptHidden(bool clear = true)
+        public void RewriteDbExceptHidden()
         {
             try
             {
@@ -337,10 +347,27 @@ namespace nboard
 
                 var all = _posts.Values.ToArray();
 
+                // recursively hide posts
                 foreach (var p in all)
                 {
                     if (IsHidden(p.GetHash()))
+                    {
+                        var children = GetThreadPosts(p.GetHash());
+
+                        foreach (var child in children)
+                        {
+                            Hide(child.GetHash());
+                        }
+                    }
+                }
+
+                foreach (var p in all)
+                {
+                    if (IsHidden(p.GetHash()))
+                    {
                         continue;
+                    }
+
                     var @string = p.SerializedString();
                     FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(offset.ToString("x8")));
                     FileUtils.AppendAllBytes(Index, Encoding.UTF8.GetBytes(@string.Length.ToString("x8")));
@@ -394,6 +421,14 @@ namespace nboard
             {
                 Logger.LogError("Error updating db:\n", e.ToString());
             }
+        }
+
+        public void ClearDb()
+        {
+            _posts.Clear();
+            _addedPosts.Clear();
+            _threads.Clear();
+            _threadPosts.Clear();
         }
 
         public void ReadPosts()

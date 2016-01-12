@@ -80,7 +80,7 @@ namespace nboard
                 Directory.CreateDirectory(Strings.Upload);
             }
 
-            new PngContainerCreator().SaveToPngContainer(from);
+            new PngContainerCreatorNew().SaveToPngContainer(from);
             from.WriteNewPosts(false);
         }
     }
