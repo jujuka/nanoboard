@@ -83,6 +83,7 @@
     <Compile Include="Png\PngContainerCreatorNew.cs" />
     <Compile Include="App.cs" />
     <Compile Include="Png\PngContainerCreatorOld.cs" />
+    <Compile Include="Server\Handlers\HideAllHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

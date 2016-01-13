@@ -16,6 +16,7 @@ namespace nboard
         public readonly string Message;
 
         public int DepthTag = 0;
+        public string ContainerTag;
 
         // create thread at root
         public static NanoPost Create(string message)

@@ -29,6 +29,7 @@ namespace nboard
             server.AddHandler("reply", new ReplyViewHandler(_db));
             server.AddHandler("write", new WriteHandler(_db));
             server.AddHandler("hide", new HideHandler(_db));
+            server.AddHandler("hideall", new HideAllHandler(_db));
             server.AddHandler("save", new SaveHandler(_db));
             server.AddHandler("fresh", new FreshPostsHandlder(_db));
             server.AddHandler("asmpng", new AsmPngHandler(_db));

@@ -36,6 +36,16 @@ namespace nboard
                     try
                     {   
                         posts = NanoPostPackUtil.Unpack(packed);
+
+                        foreach (var p in posts)
+                        {
+                            if (to.Get(p.GetHash()) != null)
+                            {
+                                // reset known posts so they won't be deleted from spammer's container
+                                // in case if spammer included some existing posts in his container
+                                to.Get(p.GetHash()).ContainerTag = null;
+                            }
+                        }
                     }
                     catch (Exception e)
                     {
