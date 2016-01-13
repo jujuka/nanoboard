@@ -21,6 +21,7 @@ namespace nboard
         private readonly Dictionary<Hash, List<NanoPost>> _threadPosts;
         private readonly HashSet<NanoPost> _new;
         private readonly HashSet<string> _hideList;
+        private readonly HashSet<string> _onceList;
         private readonly HashSet<string> _bookmarks;
 
         public Hash RootHash { get; private set; }
@@ -36,6 +37,7 @@ namespace nboard
             _new = new HashSet<NanoPost>();
             _threadPosts = new Dictionary<Hash, List<NanoPost>>();
             _hideList = new HashSet<string>();
+            _onceList = new HashSet<string>();
             _bookmarks = new HashSet<string>();
             var root = new NanoPost(Hash.CreateZero(), NanoPost.RootStub);
             AddPost(root, false);
@@ -104,7 +106,16 @@ namespace nboard
 
         public bool IsHidden(Hash hash)
         {
-            return _hideList.Contains(hash.Value) || _hideList.Contains(hash.Value + "\n"); // TODO: find correct part
+            return _hideList.Contains(hash.Value) || 
+                   _onceList.Contains(hash.Value);
+       }
+
+        public void HideOnce(Hash hash)
+        {
+            if (_onceList.Contains(hash.Value)) return;
+            if (hash.Zero) return;
+            if (hash.Value == RootHash.Value) return;
+            _onceList.Add(hash.Value);
         }
 
         public void Hide(Hash hash)
@@ -117,10 +128,18 @@ namespace nboard
 
         public void Unhide(Hash hash)
         {
-            if (!_hideList.Contains(hash.Value)) return;
-            if (hash.Zero) return;
-            if (hash.Value == RootHash.Value) return;
+            if (!_hideList.Contains(hash.Value))
+                return;
+            if (hash.Zero)
+                return;
+            if (hash.Value == RootHash.Value)
+                return;
             _hideList.Remove(hash.Value);
+
+            if (_onceList.Contains(hash.Value))
+            {
+                _onceList.Remove(hash.Value);
+            }
         }
 
         /*

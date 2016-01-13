@@ -40,7 +40,7 @@ namespace nboard
 
                     if (p.ContainerTag != null && p.ContainerTag.Equals(tag))
                     {
-                        _db.Hide(p.GetHash());
+                        _db.HideOnce(p.GetHash());
                     }
                 }
 
