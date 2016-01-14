@@ -85,7 +85,7 @@ namespace nboard
                         }
                         ") +
                         (p.ContainerTag != null ?
-                        "[Удалить(+весь контейнер)]".ToButton("","",@"var x = new XMLHttpRequest(); x.open('POST', '../hideall/" + p.GetHash().Value + @"', true);
+                        "[Отклонить контейнер]".ToButton("","",@"var x = new XMLHttpRequest(); x.open('POST', '../hideall/" + p.GetHash().Value + @"', true);
                         x.send('');location.reload();") : "")+
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                         ("[В тред]").ToRef("/thread/" + p.ReplyTo.Value) +

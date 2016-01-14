@@ -84,6 +84,11 @@
     <Compile Include="App.cs" />
     <Compile Include="Png\PngContainerCreatorOld.cs" />
     <Compile Include="Server\Handlers\HideAllHandler.cs" />
+    <Compile Include="Server\Handlers\RawPostHandler.cs" />
+    <Compile Include="Server\Handlers\ChildrenHandler.cs" />
+    <Compile Include="Server\Handlers\PostCountHandler.cs" />
+    <Compile Include="Server\Handlers\LastPostsHandler.cs" />
+    <Compile Include="Server\Handlers\GetPostHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

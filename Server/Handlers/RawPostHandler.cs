@@ -12,12 +12,11 @@ using System.Linq;
 
 namespace nboard
 {
-
-    class ReplyViewHandler : IRequestHandler
+    class RawPostHandler : IRequestHandler
     {
         private readonly NanoDB _db;
 
-        public ReplyViewHandler(NanoDB db)
+        public RawPostHandler(NanoDB db)
         {
             _db = db;
         }
@@ -45,22 +44,26 @@ namespace nboard
             }
 
             var sb = new StringBuilder();
-            ThreadViewHandler.AddHeader(sb);
             var p = _db.Get(thread);
 
-                sb.Append(
-                    (
-                        p.Message.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value)
-                    ).ToDiv("post", ""));
-                sb.Append(((/*">" + p.Message.StripInput().Replace("\n", "\n>") + "\n"*/"").ToTextArea("", "reply").AddBreak() +
-                ("Отправить".ToButton("", "sendbtn", @"
-                    var x = new XMLHttpRequest();
-                    x.open('POST', '../write/"+p.GetHash().Value+@"', true);
-                    x.send(document.getElementById('reply').value);
-                    location.replace('/thread/" + p.GetHash().Value + @"');
-                "))).ToDiv("post", ""));
+            sb.Append("{\n    \"hash\" :    \"");
+            sb.Append(p.GetHash().Value);
+            sb.Append("\", \n    \"isHidden\" : \"");
+            sb.Append(_db.IsHidden(p.GetHash()) ? "1" : "0");
+            sb.Append("\", \n    \"replyTo\" : \"");
+            sb.Append(p.ReplyTo.Value);
+            sb.Append("\", \n    \"message\" : \"");
 
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());
+            string s = p.SerializedString().Substring(32);
+            s = s.Replace("\\", "\\\\");
+            s = s.Replace("\n", "\\n");
+            s = s.Replace("\"", "\\\"");
+            s = s.Replace("\t", "\\t");
+            s = s.Replace("\r", "\\r");
+            sb.Append(s);
+            sb.Append("\"\n}");
+
+            return new NanoHttpResponse(StatusCode.Ok, sb.ToString(), "application/json; charset=utf-8");
         }
     }
 }

@@ -80,7 +80,7 @@ namespace nboard
                     _db.WriteNewPosts(false);
                 }
 
-                return new NanoHttpResponse(StatusCode.Ok, "");
+                return new NanoHttpResponse(StatusCode.Ok, post.GetHash().Value);
             }
         }
     }

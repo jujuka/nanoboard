@@ -33,6 +33,12 @@ namespace nboard
             server.AddHandler("save", new SaveHandler(_db));
             server.AddHandler("fresh", new FreshPostsHandlder(_db));
             server.AddHandler("asmpng", new AsmPngHandler(_db));
+            server.AddHandler("rawpost", new RawPostHandler(_db));
+            server.AddHandler("postcount", new PostCountHandler(_db));
+            server.AddHandler("lastposts", new LastPostsHandler(_db));
+            server.AddHandler("getpost", new GetPostHandler(_db));
+            server.AddHandler("children", new ChildrenHandler(_db, false));
+            server.AddHandler("allchildren", new ChildrenHandler(_db, true));
             server.AddHandler("aggregate", new AggregateHandler());
             server.AddHandler("shutdown", new ShutdownHandler(server, _db));
             server.AddHandler("status", new NotificationHandler());

@@ -16,6 +16,12 @@ namespace nboard
         private readonly string _response;
         private readonly string _content;
 
+        public NanoHttpResponse(string code, string content, string contentType)
+        {
+            _response = "HTTP/1.1 " + code + "\r\nContent-type: " + contentType + (string.IsNullOrEmpty(content) ? "\r\n" : ("\r\n\r\n"));
+            _content = content;
+        }
+
         public NanoHttpResponse(string code, string content)
         {
             _response = "HTTP/1.1 " + code + (string.IsNullOrEmpty(content) ? "\r\n" : ("\r\n\r\n"));

@@ -230,6 +230,7 @@ button
 
         public static string Strip(this string s, bool validateTags = false)
         {
+            s = s.Replace("  ", "&nbsp; ");
             s = s.Replace("<", "&lt;");
             s = s.Replace(">", "&gt;");
             s = s.Replace("[u]", "<u>");
