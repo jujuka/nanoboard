@@ -47,9 +47,9 @@ namespace nboard
                 return new NanoHttpResponse(StatusCode.Ok, "\n");
             }
 
-            catch
+            catch (Exception e)
             {
-                return new ErrorHandler(StatusCode.InternalServerError, "\n").Handle(request);
+                return new ErrorHandler(StatusCode.InternalServerError, e.ToString().Replace("\n", "<br>")).Handle(request);
             }
         }
     }

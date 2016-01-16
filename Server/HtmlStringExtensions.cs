@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace nboard
 {
@@ -154,13 +155,6 @@ button
 
         static int _id = 1;
 
-        public static string StripInput(this string s)
-        {
-            s = s.Replace("<", "&lt;");
-            s = s.Replace(">", "&gt;");
-            return s;
-        }
-
         private static string ValidateTags(this string s)
         {
             var arr = s.Replace("<sp>", "<x>").Replace("</sp>", "</x>").ToCharArray();
@@ -230,6 +224,8 @@ button
 
         public static string Strip(this string s, bool validateTags = false)
         {
+            s = s.Replace("'", "’");
+            s = s.Replace("\"", "“");
             s = s.Replace("  ", "&nbsp; ");
             s = s.Replace("<", "&lt;");
             s = s.Replace(">", "&gt;");
@@ -248,16 +244,16 @@ button
             s = s.Replace("[g]", "<g>");
             s = s.Replace("[/g]", "</g>");
 
-            if (s.Contains("[img="))
-            {
-                s = s.Replace("]", "\" />");
-            }
+            var matches = Regex.Matches(s, "\\[img=[/A-z0-9+=]{16,32768}\\]");
 
-            string imgscript = "onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")'";
-            s = s.Replace("[img=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/jpg;base64,");
-            s = s.Replace("[jpg=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/jpg;base64,");
-            s = s.Replace("[png=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/png;base64,");
-            s = s.Replace("[gif=", "<img id='imgid" + _id++ + "' " + imgscript + "src=\"data:image/gif;base64,");
+            foreach (Match m in matches)
+            {
+                var v = m.Value;
+                v = v.Substring(5, v.Length-6);
+                s = s.Replace(m.Value, string.Format(
+                    "<img id='imgid{0}' onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")' src=\"data:image/jpg;base64,{1}\">",
+                    _id++, v));
+            }
 
             if (validateTags) return s.ValidateTags();
             return s;

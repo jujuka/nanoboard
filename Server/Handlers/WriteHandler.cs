@@ -64,7 +64,7 @@ namespace nboard
 
             var str = Encoding.UTF8.GetString(request.Connection.Raw);
             str = str.Substring(str.IndexOf("\r\n\r\n") + 4);
-            var post = new NanoPost(thread, "[g]" + GetPostHeader() + "[/g]\n" + str.StripInput());
+            var post = new NanoPost(thread, "[g]" + GetPostHeader() + "[/g]\n" + str);
 
             if (post.Invalid)
             {

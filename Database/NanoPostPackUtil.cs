@@ -10,7 +10,7 @@ namespace nboard
 {
     static class NanoPostPackUtil
     {
-        public const int IncomingPostsLimit = 1024;
+        public const int IncomingPostsLimit = 256;
 
         public static byte[] Pack(NanoPost[] posts)
         {

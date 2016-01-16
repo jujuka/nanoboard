@@ -29,9 +29,9 @@ namespace nboard
                 return HandleSafe(request);
             }
 
-            catch
+            catch (Exception e)
             {
-                return new ErrorHandler(StatusCode.InternalServerError, "").Handle(request);
+                return new ErrorHandler(StatusCode.InternalServerError, e.ToString().Replace("\n", "<br>")).Handle(request);
             }
         }
 
