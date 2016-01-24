@@ -19,134 +19,15 @@ namespace nboard
 
         static HtmlStringExtensions()
         {
-            if (!File.Exists("style.css"))
+            if (File.Exists("style.css"))
             {
-                File.WriteAllText("style.css", Style);
+                File.Delete("style.css");
             }
 
-            Style = File.ReadAllText("style.css");
+            Style = File.ReadAllText("styles/Nano.css");
         }
 
-        public static string Style = @"
-body {
-  font-family: 'Trebuchet MS', Trebuchet, sans-serif;
-  background: #eee;
-  line-height: 1.3em;
-  font-size: 0.9em;
-  overflow-x: hidden;
-}
-
-a {
-  color: salmon;
-  text-decoration: none;
-  cursor: pointer;
-  margin: 0 0.2em;
-}
-
-sp {
-  text-decoration: none;
-  color: #bbb;
-  background: #bbb;
-}
-
-g {
-  color: green;
-}
-
-sp:hover {
-  background: #ddd;
-  color: #333;
-}
-
-a:hover {
-  color: darkorange;
-  text-decoration: underline;
-}
-
-.postinner {
-  max-height: 48em;
-  overflow: auto;
-  max-width: 600px;
-  margin-bottom: .5em;
-}
-
-.post {
-  width: auto;
-  border: 1px solid #ccc;
-  border-radius: .5em;
-  display: inline-block;
-  white-space: wrap;
-  background: #ddd;
-  color: #333;
-  margin: 0.25em;
-  float: left;
-  clear: both;
-  padding: 0.7em;
-}
-
-img {
-    max-width: 100px;
-    max-height: 100px;
-}
-
-.fullimg {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.main {
-  background: white;
-}
-
-div {
-    display: inline-block;
-    clear: both;
-    float: left;
-}
-
-.head {
-  background: #654;
-  color: salmon;
-  padding: 1em;
-  width: 100%;
-  margin-left: 0;
-  margin-right: 0;
-  margin-top: 0;
-  position: absolute;
-  top:0;
-  left:0;
-}
-
-.noselect {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: default;
-}
-
-.step {
-  height:5em;
-}
-
-.big {
-    font-size: 2em;
-}
-
-textarea
-{
-  font-size: 0.9em;
-  width: 32em;
-  height: 22em;
-}
-
-button
-{
-  font-size: 0.9em;
-}
-";
+        public static string Style;
 
         public static string AddBreak(this string s)
         {
@@ -254,6 +135,8 @@ button
                     "<img id='imgid{0}' onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")' src=\"data:image/jpg;base64,{1}\">",
                     _id++, v));
             }
+
+            s = Regex.Replace(s, "&gt;[^\\n]*\\n", "<grn>$0</grn>");
 
             if (validateTags) return s.ValidateTags();
             return s;
