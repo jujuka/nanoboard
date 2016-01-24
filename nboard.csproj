@@ -89,6 +89,7 @@
     <Compile Include="Server\Handlers\PostCountHandler.cs" />
     <Compile Include="Server\Handlers\LastPostsHandler.cs" />
     <Compile Include="Server\Handlers\GetPostHandler.cs" />
+    <Compile Include="Database\SpamDetector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

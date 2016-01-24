@@ -71,6 +71,12 @@ namespace nboard
                 NotificationHandler.Instance.AddNotification("Превышен максимальный размер поста.");
                 return new NanoHttpResponse(StatusCode.BadRequest, "");
             }
+
+            if (SpamDetector.IsSpam(post.Message))
+            {
+                NotificationHandler.Instance.AddNotification("Ваш пост из-за своего содержания будет считаться спамом.");
+                return new NanoHttpResponse(StatusCode.BadRequest, "");
+            }
             else
             {
                 NotificationHandler.Instance.AddNotification("Сообщение добавлено.");

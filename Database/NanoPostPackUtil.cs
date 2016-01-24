@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace nboard
 {
@@ -49,7 +50,7 @@ namespace nboard
 
             for (int i = 0; i < count; i++)
             {
-                int size = int.Parse(str.Substring((i+1)*6, 6), System.Globalization.NumberStyles.HexNumber);
+                int size = int.Parse(str.Substring((i + 1) * 6, 6), System.Globalization.NumberStyles.HexNumber);
                 sizes.Add(size);
             }
 
@@ -70,6 +71,12 @@ namespace nboard
             {
                 var p = new NanoPost(raws[i]);
                 p.ContainerTag = containerHashString;
+
+                if (SpamDetector.IsSpam(p.Message))
+                {
+                    continue;
+                }
+
                 posts.Add(p);
             }
 

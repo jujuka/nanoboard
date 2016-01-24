@@ -468,7 +468,12 @@ namespace nboard
                     string rawpost = posts.Substring(
                                      int.Parse(offset, System.Globalization.NumberStyles.HexNumber), 
                                      int.Parse(length, System.Globalization.NumberStyles.HexNumber));
-                    AddPost(new NanoPost(rawpost), false);
+                    var post = new NanoPost(rawpost);
+
+                    if (!SpamDetector.IsSpam(post.Message))
+                    {
+                        AddPost(new NanoPost(rawpost), false);
+                    }
                 }
             }
 
