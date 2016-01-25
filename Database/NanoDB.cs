@@ -482,10 +482,16 @@ namespace nboard
 
         public void ClearDb()
         {
+            var backup = _posts.Where(p => p.Value.NumberTag == int.MaxValue).Select(p => p.Value).ToArray();
             _posts.Clear();
             _addedPosts.Clear();
             _threads.Clear();
             _threadPosts.Clear();
+
+            foreach (var p in backup)
+            {
+                AddPost(p, false);
+            }
         }
 
         public void ReadPosts()

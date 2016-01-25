@@ -148,7 +148,7 @@ namespace nboard
 
             if (thread.Value != _db.RootHash.Value)
             {
-                s1 = "<a href='#' onclick='window.history.back()'>[Назад]</a>";
+                s1 = "<a href='#' onclick='history.go(-1)'>[Назад]</a>";
                 s1 += "<a href='#' onclick='location.reload()'>[Обновить]</a>";
 
                 if (!_expand)
@@ -213,7 +213,7 @@ namespace nboard
                     sb.Append(
                         (
                             (numTag + pMessage.Strip(true)).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            (/*("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +*/
+                            (("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
                                 //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                                 ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post", ""));
