@@ -29,16 +29,8 @@ namespace nboard
         public event Action<NanoPost> Updated = delegate(NanoPost obj) {};
         //public event Action<NanoPost> BookmarkAdded = delegate(NanoPost obj) {};
 
-        public NanoDB()
+        public void Init()
         {
-            _posts = new Dictionary<Hash, NanoPost>();
-            _addedPosts = new List<NanoPost>();
-            _threads = new HashSet<Hash>();
-            _new = new HashSet<NanoPost>();
-            _threadPosts = new Dictionary<Hash, List<NanoPost>>();
-            _hideList = new HashSet<string>();
-            _onceList = new HashSet<string>();
-            _bookmarks = new HashSet<string>();
             var root = new NanoPost(Hash.CreateZero(), NanoPost.RootStub);
             AddPost(root, false);
             RootHash = root.GetHash();
@@ -75,6 +67,20 @@ namespace nboard
             {
                 p.Value.NumberTag = int.MaxValue;
             }
+        }
+
+        public NanoDB()
+        {
+            _posts = new Dictionary<Hash, NanoPost>();
+            _addedPosts = new List<NanoPost>();
+            _threads = new HashSet<Hash>();
+            _new = new HashSet<NanoPost>();
+            _threadPosts = new Dictionary<Hash, List<NanoPost>>();
+            _hideList = new HashSet<string>();
+            _onceList = new HashSet<string>();
+            _bookmarks = new HashSet<string>();
+
+            Init();
 
             try
             {
@@ -482,16 +488,14 @@ namespace nboard
 
         public void ClearDb()
         {
-            var backup = _posts.Where(p => p.Value.NumberTag == int.MaxValue).Select(p => p.Value).ToArray();
             _posts.Clear();
             _addedPosts.Clear();
             _threads.Clear();
             _threadPosts.Clear();
-
-            foreach (var p in backup)
-            {
-                AddPost(p, false);
-            }
+            _new.Clear();
+            _hideList.Clear();
+            _onceList.Clear();
+            Init();
         }
 
         public void ReadPosts()
