@@ -136,7 +136,7 @@ namespace nboard
                     _id++, v));
             }
 
-            s = Regex.Replace(s, "&gt;[^\\n]*\\n", "<grn>$0</grn>");
+            s = Regex.Replace(s, "&gt;[^\\n]*", "<grn>$0</grn>");
 
             if (validateTags) return s.ValidateTags();
             return s;
