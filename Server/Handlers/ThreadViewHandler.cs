@@ -75,7 +75,7 @@ namespace nboard
                     {
                         if (file.EndsWith(".css"))
                         {
-                            var file1 = file.Replace("styles/", "").Replace(".css", "");
+                            var file1 = file.Replace("styles/", "").Replace("styles\\", "").Replace(".css", "");
                             r += "<option>" + file1 + "</option>";
                         }
                     }
