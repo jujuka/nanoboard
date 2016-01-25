@@ -93,7 +93,8 @@ namespace nboard
         {
             sb.Append(
                 (
-                    ("Наноборда<span style='font-size:0.5em;'><sup>v"+App.Version+"</sup></span>").ToSpan("big noselect","").AddBreak() +
+                    //("Наноборда<span style='font-size:0.5em;'><sup>v"+App.Version+"</sup></span>").ToSpan("big noselect","").AddBreak() +
+                    ("Наноборда").ToSpan("big noselect","").AddBreak() +
                     ("[Главная]".ToRef("/")) + 
                     ("[Создать PNG]".ToPostRef("/asmpng")) + 
                     //("[Сохранить базу]".ToPostRef("/save")) + 
@@ -105,14 +106,26 @@ namespace nboard
                     "<div id='notif1' style='text-align:right;position:fixed;right:2%;top:10px;'></div>"
                     +
                     Styles()
-                   
                 ).ToDiv("head", "")
             );
             sb.Append("".ToDiv("step", ""));
+            sb.Append(HtmlStringExtensions.Catalog);
+        }
+
+        public static void AddFooter(StringBuilder sb, long elapsedMs, NanoDB db)
+        {
+            sb.Append("<div style='height:15px'></div>");
+            sb.Append(HtmlStringExtensions.Catalog);
+            sb.Append("<div style='height:15px'></div>");
+            sb.Append("<div style='text-align:center;width:100%;'><g>Сервер nboard_"+App.Version+" // Время генерации: "+elapsedMs+" ms // Постов в базе: "+db.GetPostCount()+"</g></div>");
+            sb.Append("<div style='height:15px'></div>");
         }
 
         private NanoHttpResponse HandleSafe(NanoHttpRequest request)
         {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+
             Hash thread = null;
 
             if (request.Address != "/")
@@ -131,15 +144,21 @@ namespace nboard
 
             var sb = new StringBuilder();
             AddHeader(sb);
-
-            string s1 = "<a href='#' onclick='location.reload()'>[Обновить]</a>";
+            string s1 = "";
 
             if (thread.Value != _db.RootHash.Value)
             {
+                s1 = "<a href='#' onclick='window.history.back()'>[Назад]</a>";
+                s1 += "<a href='#' onclick='location.reload()'>[Обновить]</a>";
+
                 if (!_expand)
                     s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"thread\",\"expand\")'>[Развернуть]</a>";
                 else
                     s1 += "<a href='#' onclick='window.location.href=window.location.toString().replace(\"expand\",\"thread\")'>[Свернуть]</a>";
+            }
+            else
+            {
+                s1 = "<a href='#' onclick='location.reload()'>[Обновить]</a>";
             }
 
             sb.Append(s1.ToDiv("", ""));
@@ -172,12 +191,22 @@ namespace nboard
                     //pMessage = hMessage;
                 }
 
+                string handler = "/expand/";
+
+                if (p.GetHash().Value == "f682830a470200d738d32c69e6c2b8a4" || // root
+                    p.ReplyTo.Value == "f682830a470200d738d32c69e6c2b8a4" ||   // root
+                    p.GetHash().Value == "bdd4b5fc1b3a933367bc6830fef72a35" ||  // categories
+                    p.ReplyTo.Value == "bdd4b5fc1b3a933367bc6830fef72a35")     // categories
+                {
+                    handler = "/thread/";
+                }
+
                 if (first && !p.GetHash().Zero && !p.ReplyTo.Zero)
                 {
                     sb.Append(
                         (
                             pMessage.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            (("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
+                            (/*("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +*/
                             //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                             ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("","")
                         ).ToDiv("post", ""));
@@ -219,10 +248,10 @@ namespace nboard
                 }
                 else
                 {
-                    sb.Append(
+                     sb.Append(
                         (
                             pMessage.Strip(true).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
-                            ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value) : "") +
+                            ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef(handler + p.GetHash().Value) : "") +
                             (hidden?"[Вернуть]":"[Удалить]").ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
                         var elem = document.getElementById('" + p.GetHash().Value + @"');
@@ -244,7 +273,8 @@ namespace nboard
 
             sb.Append(s1.ToDiv("", ""));
 
-            sb.Append("<div style='height:50px'></div>");
+            sw.Stop();
+            AddFooter(sb, sw.ElapsedMilliseconds, _db);
 
             /*
             if (!_expand)

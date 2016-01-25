@@ -17,6 +17,8 @@ namespace nboard
         public const string Break = "<br/>";
         public const string Line = "<hr/>";
 
+        public static string Catalog = "";
+
         static HtmlStringExtensions()
         {
             if (File.Exists("style.css"))
@@ -25,9 +27,36 @@ namespace nboard
             }
 
             Style = File.ReadAllText("styles/Nano.css");
+
+            if (File.Exists("categories.txt"))
+            {
+                var sb = new StringBuilder();
+                var lines = File.ReadAllLines("categories.txt");
+                sb.Append("<div style='font-size:80%;width:80%;margin-bottom:12px;margin-left:12px;'>Категории: [");
+                for (int i = 0; i < lines.Length / 2; i++)
+                {
+                    string hash = lines[i*2];
+                    string name = lines[i*2+1];
+                    sb.Append(string.Format("<a href='/thread/{0}'>{1}</a>", hash, name));
+                    if (i != lines.Length / 2 - 1) sb.Append("/");
+                }
+                sb.Append("]</div>");
+                Catalog = sb.ToString();
+            }
         }
 
         public static string Style;
+
+        private static string NoStyle = @"
+body {
+  font-family: 'Trebuchet MS', Trebuchet, sans-serif;
+  background: #eee;
+  line-height: 1.3em;
+  font-size: 0.9em;
+  overflow-x: hidden;
+  color: #333;
+}
+";
 
         public static string AddBreak(this string s)
         {
@@ -140,6 +169,12 @@ namespace nboard
 
             if (validateTags) return s.ValidateTags();
             return s;
+        }
+
+        public static string ToNoStyleHtmlBody(this string s, string script = "")
+        {
+            return string.Format(
+                "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><style>{1}</style><script>{2}</script></head><body>{0}</body></html>", s, NoStyle, script);
         }
 
         public static string ToHtmlBody(this string s, string script = "")

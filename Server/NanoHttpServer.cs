@@ -22,7 +22,7 @@ namespace nboard
             _handlers = new Dictionary<string, IRequestHandler>();
             _tcp = new TcpServer(port);
             _tcp.ConnectionAdded += OnConnectionAdded;
-            _root = new StubHandler("Page not ready yet".ToHtmlBody());
+            _root = new StubHandler("Page not ready yet".ToNoStyleHtmlBody());
         }
 
         public void SetRootHandler(IRequestHandler handler)

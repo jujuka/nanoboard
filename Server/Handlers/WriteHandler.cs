@@ -79,7 +79,8 @@ namespace nboard
             }
             else
             {
-                NotificationHandler.Instance.AddNotification("Сообщение добавлено.");
+                NotificationHandler.Instance.AddNotification(
+                    "Сообщение добавлено, " + post.SerializedBytes().Length + " байт ("+post.SerializedString().Length+" символов.");
 
                 if (_db.AddPost(post))
                 {

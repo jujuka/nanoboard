@@ -24,7 +24,7 @@ namespace nboard
                 <input type=""submit"" value=""convert"" />
             </form>");
 
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());
+            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToNoStyleHtmlBody());
         }
     }
 }

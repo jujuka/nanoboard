@@ -36,6 +36,9 @@ namespace nboard
 
         private NanoHttpResponse HandleSafe(NanoHttpRequest request)
         {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+
             var sb = new StringBuilder();
             ThreadViewHandler.AddHeader(sb);
 
@@ -95,7 +98,9 @@ namespace nboard
 
             string s1 = "<a href='#' onclick='location.reload()'>[Обновить]</a>";
             sb.Append(s1.ToDiv("",""));
-            sb.Append("<div style='height:50px'></div>");
+
+            sw.Stop();
+            ThreadViewHandler.AddFooter(sb, sw.ElapsedMilliseconds, _db);
 
             return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody(ThreadViewHandler.NotifierScript));
         }

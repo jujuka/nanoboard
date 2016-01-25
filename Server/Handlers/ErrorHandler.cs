@@ -26,7 +26,7 @@ namespace nboard
         {
             return new NanoHttpResponse(
                 _statusLine, 
-                (_statusLine.ToHeader(2) + _description.ToPar()).ToHtmlBody());
+                (_statusLine.ToHeader(2) + _description.ToPar()).ToNoStyleHtmlBody());
         }
     }
 }
