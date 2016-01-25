@@ -67,7 +67,7 @@ namespace nboard
 
                 if (files.Length > 0)
                 {
-                    r += "<select id='stylesel' onchange='var x = new XMLHttpRequest(); x.open(\"POST\", \"../setstyle\", true); x.send(value.toString()); location.reload();'>";
+                    r += "<select id='stylesel' onchange='var x = new XMLHttpRequest(); x.open(\"POST\", \"../setstyle\", true); x.onreadystatechange = function(){location.reload();}; x.send(value.toString());'>";
 
                     r += "<option> </option>";
 
