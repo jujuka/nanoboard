@@ -71,6 +71,11 @@ namespace nboard
             AddPost(new NanoPost(cathash, "[b]Японская культура[/b]"), false);
             AddPost(new NanoPost(cathash, "[b]18+[/b]"), false);
 
+            foreach (var p in _posts)
+            {
+                p.Value.NumberTag = int.MaxValue;
+            }
+
             try
             {
                 if (File.Exists(HideList))
@@ -184,7 +189,34 @@ namespace nboard
 
         public int CountAnswers(Hash thread)
         {
-            return _threadPosts.ContainsKey(thread) ? _threadPosts[thread].ToArray().ExceptHidden(this).Length : 0;
+            return CountAnswersRecursive(thread);
+            //return _threadPosts.ContainsKey(thread) ? _threadPosts[thread].ToArray().ExceptHidden(this).Length : 0;
+        }
+
+        public int CountAnswersRecursive(Hash thread)
+        {
+            if (!_threadPosts.ContainsKey(thread))
+                return 0;
+
+            int res = 0;
+            var stack = new Stack<Hash>();
+            stack.Push(thread);
+
+            while (stack.Count > 0)
+            {
+                var v = stack.Pop();
+
+                if (_threadPosts.ContainsKey(v))
+                {
+                    foreach (var p in _threadPosts[v])
+                    {
+                        res += 1;
+                        stack.Push(p.GetHash());
+                    }
+                }
+            }
+
+            return res;
         }
 
         public NanoPost[] GetExpandedThreadPosts(Hash thread, int depth = 0, List<NanoPost> list = null)
@@ -225,7 +257,9 @@ namespace nboard
                 list.Add(_posts[thread]);
             }
 
-            foreach (var tp in _threadPosts[thread])
+            var tps = _threadPosts[thread].OrderBy(p => p.NumberTag).ToArray();
+
+            foreach (var tp in tps)
             {
                 tp.DepthTag = depth + 1;
                 list.Add(tp);
@@ -299,6 +333,8 @@ namespace nboard
             return posts.ToArray();
         }
 
+        static int _postNo = 0;
+
         public bool AddPost(NanoPost post)
         {
             if (post.Invalid) return false;
@@ -316,6 +352,8 @@ namespace nboard
             {
                 return false;
             }
+
+            post.NumberTag = ++_postNo;
 
             if (isNew)
             {

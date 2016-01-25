@@ -179,9 +179,16 @@ namespace nboard
 
             bool first = true;
 
+            if (!_expand)
+            {
+                posts = posts.OrderByDescending(p => p.NumberTag).ToArray();
+            }
+
             foreach (var p in posts)
             {
+                //string pMessage = p.Message;
                 string pMessage = p.Message;
+                string numTag = (p.NumberTag == int.MaxValue ? "" : "<grn><sup>#" + p.NumberTag + "</sup></grn> ");
                 //string hMessage = "[i]Пост " + p.GetHash().Value + " скрыт.[/i]";
                 bool hidden = false;
 
@@ -194,8 +201,8 @@ namespace nboard
                 string handler = "/expand/";
 
                 if (p.GetHash().Value == "f682830a470200d738d32c69e6c2b8a4" || // root
-                    p.ReplyTo.Value == "f682830a470200d738d32c69e6c2b8a4" ||   // root
-                    p.GetHash().Value == "bdd4b5fc1b3a933367bc6830fef72a35" ||  // categories
+                    p.ReplyTo.Value == "f682830a470200d738d32c69e6c2b8a4" || // root
+                    p.GetHash().Value == "bdd4b5fc1b3a933367bc6830fef72a35" || // categories
                     p.ReplyTo.Value == "bdd4b5fc1b3a933367bc6830fef72a35")     // categories
                 {
                     handler = "/thread/";
@@ -205,10 +212,10 @@ namespace nboard
                 {
                     sb.Append(
                         (
-                            pMessage.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            (numTag + pMessage.Strip(true)).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             (/*("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +*/
-                            //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("","")
+                                //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
+                                ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post", ""));
                     first = false;
                     continue;
@@ -217,31 +224,24 @@ namespace nboard
                 first = false;
                 int answers = _db.CountAnswers(p.GetHash());
                 string ans = "ответ";
-                if (answers != 11 && answers % 10 == 1)
-                {
-                    //
-                }
-                else if (answers == 0 || (answers != 11 && answers % 10 == 5))
-                {
-                    ans += "ов";
-                }
-                else
-                {
-                    ans += "а";
-                }
+
+                int a = answers % 100;
+                if (a == 0 || a % 10 == 0 || (a > 10 && a < 20)) ans += "ов";
+                else if (a % 10 >= 2 && a % 10 <= 4) ans += "а";
+                else if (a % 10 >= 5 && a % 10 <= 9) ans += "ов";
 
                 if (p.GetHash().Value == _db.RootHash.Value)
                 {
                     sb.Append(
                         (
                             (@"    Добро пожаловать на Наноборду!
-    Это корневой нанопост. Отвечая на него вы создаете тред в верхнем уровне.
-    На самом деле тредов тут нет, а есть лишь нанопосты ссылающиеся друг на друга, идущие от корневого.
-    Кому неудобно постоянно переходить все ниже и ниже по ссылкам могут [Развернуть] тред с желаемой точки (обычно после захода в категорию вы видите ""треды"" и зайдя в любой из них можно нажимать ""развернуть""). В то же время никто не мешает делать под-категории или организовать вложенный тред начиная с какого-нибудь поста.
+    Это корневой нанопост. 
+    В целях тестирования на него можно было отвечать в предыдущих версиях. 
+    Это немного засорило Главную. Рекомендуется почистить её у себя вручную.
     Негласное правило: отвечать нужно на конкретное сообщение, а не просто ""в тред"", полагаясь на то, что сообщение выше вашего будет таким же и у других - порядок попадания нанопостов к другим участникам сложно предсказать.
-    Создавать тред желательно в соответствующей категории. Помещать всё в корень - вариант только на первое время. Рекомендуется потихоньку переставать писать в корневые, ""тестовые"" треды а потом и вовсе удалить их у себя, чтобы все было красиво и организованно. Но это только рекомендация."
+    Создавать тред желательно в соответствующей категории."
                             ).Strip().Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            (("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "") + 
+                            //(("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "") + 
                             ("[Развернуть всё (осторожно!)]").ToRef("/expand/f682830a470200d738d32c69e6c2b8a4").ToDiv("", "") +
                             ("[Категории]").ToRef("/thread/bdd4b5fc1b3a933367bc6830fef72a35").ToDiv("", "")
                         ).ToDiv("post main", ""));
@@ -250,8 +250,10 @@ namespace nboard
                 {
                      sb.Append(
                         (
-                            pMessage.Strip(true).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
+                            (numTag+pMessage.Strip(true)).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
                             ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef(handler + p.GetHash().Value) : "") +
+                                (p.GetHash().Value != "bdd4b5fc1b3a933367bc6830fef72a35" ?
+                            (
                             (hidden?"[Вернуть]":"[Удалить]").ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
                         var elem = document.getElementById('" + p.GetHash().Value + @"');
@@ -264,7 +266,7 @@ namespace nboard
                             elem.style.height = '100%';
                             innerHTML = '[Удалить]';
                         }
-                        ") +
+                        ")) : "") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                             ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToStyledDiv("post", "", "position:relative;left:" + p.DepthTag * 20 + "px;"));
