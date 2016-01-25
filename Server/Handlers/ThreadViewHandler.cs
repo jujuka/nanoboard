@@ -184,8 +184,9 @@ namespace nboard
                 posts = posts.OrderByDescending(p => p.NumberTag).ToArray();
             }
 
-            foreach (var p in posts)
+            foreach (var sp in posts)
             {
+                var p = sp;
                 //string pMessage = p.Message;
                 string pMessage = p.Message;
                 string numTag = (p.NumberTag == int.MaxValue ? "" : "<grn><sup>#" + p.NumberTag + "</sup></grn> ");

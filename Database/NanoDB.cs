@@ -20,7 +20,7 @@ namespace nboard
         private readonly HashSet<Hash> _threads;
         private readonly Dictionary<Hash, List<NanoPost>> _threadPosts;
         private readonly HashSet<NanoPost> _new;
-        private readonly HashSet<string> _hideList;
+        private HashSet<string> _hideList;
         private readonly HashSet<string> _onceList;
         private readonly HashSet<string> _bookmarks;
 
@@ -67,6 +67,18 @@ namespace nboard
             {
                 p.Value.NumberTag = int.MaxValue;
             }
+
+            try
+            {
+                if (File.Exists(HideList))
+                {
+                    _hideList = new HashSet<string>(File.ReadAllLines(HideList));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("Error wile reading hide.list\n" + e.ToString());
+            }
         }
 
         public NanoDB()
@@ -81,18 +93,6 @@ namespace nboard
             _bookmarks = new HashSet<string>();
 
             Init();
-
-            try
-            {
-                if (File.Exists(HideList))
-                {
-                    _hideList = new HashSet<string>(File.ReadAllLines(HideList));
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("Error wile reading hide.list\n" + e.ToString());
-            }
 
             /*if (File.Exists(Bookmarks))
             {
@@ -415,7 +415,7 @@ namespace nboard
                 {
                     if (IsHidden(p.GetHash()))
                     {
-                        var children = GetThreadPosts(p.GetHash());
+                        var children = GetExpandedThreadPosts(p.GetHash());
 
                         foreach (var child in children)
                         {
@@ -495,6 +495,7 @@ namespace nboard
             _new.Clear();
             _hideList.Clear();
             _onceList.Clear();
+            _postNo = 0;
             Init();
         }
 
