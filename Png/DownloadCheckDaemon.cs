@@ -21,7 +21,9 @@ namespace nboard
                 while (!stopped)
                 { 
                     Thread.Sleep(5000);
+                    try{
                     mailer.ReadInbox(db);
+                    }catch{}
                 }
             });
         }

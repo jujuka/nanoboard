@@ -10,8 +10,13 @@ namespace nboard
 {
     class PngMailer
     {
+        bool _isReading = false;
+
         public void ReadInbox(NanoDB to)
         {
+            if (_isReading) return;
+            _isReading = true;
+
             if (Directory.Exists(Strings.Download))
             {
                 string[] files = Directory.GetFiles(Strings.Download);
@@ -71,6 +76,8 @@ namespace nboard
                 {
                 }
             }
+
+            _isReading = false;
         }
 
         public void FillOutbox(NanoDB from)
