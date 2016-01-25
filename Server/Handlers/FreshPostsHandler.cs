@@ -91,7 +91,7 @@ namespace nboard
                         "[Отклонить контейнер]".ToButton("","",@"var x = new XMLHttpRequest(); x.open('POST', '../hideall/" + p.GetHash().Value + @"', true);
                         x.send('');location.reload();") : "")+
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                        ("[В тред]").ToRef("/thread/" + p.ReplyTo.Value) +
+                        ("[В тред]").ToRef("/expand/" + p.ReplyTo.Value) +
                         ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                     ).ToDiv("post", ""));
             }
