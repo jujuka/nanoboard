@@ -209,12 +209,12 @@ namespace nboard
                     handler = "/thread/";
                 }
 
-                if (first && !p.GetHash().Zero && !p.ReplyTo.Zero)
+                if (_expand && first && !p.GetHash().Zero && !p.ReplyTo.Zero)
                 {
                     sb.Append(
                         (
                             (numTag + pMessage.Strip(true)).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            (("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value) +
+                            (_expand?("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value):"" +
                                 //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                                 ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post", ""));
