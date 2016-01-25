@@ -21,7 +21,7 @@ namespace nboard
         public TcpServer(int port)
         {
             Console.WriteLine("Listening on port " + port);
-            Console.WriteLine("You can change port in port.txt file");
+            Console.WriteLine("You can change port in port.txt file, ip in ip.txt");
 
             if (!File.Exists("ip.txt"))
             {

@@ -52,6 +52,7 @@ namespace nboard
                 port = 7345;
             }
 
+            Console.WriteLine("Do not terminate manually, use shutdown action in web-interface.");
             var serv = new NanoHttpServerBuilder(db).Build(port);
             serv.Run();
         }

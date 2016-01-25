@@ -80,7 +80,7 @@ namespace nboard
             else
             {
                 NotificationHandler.Instance.AddNotification(
-                    "Сообщение добавлено, " + post.SerializedBytes().Length + " байт ("+post.SerializedString().Length+" символов.");
+                    "Сообщение добавлено, " + post.SerializedBytes().Length + " байт ("+post.SerializedString().Length+" симв.)");
 
                 if (_db.AddPost(post))
                 {
