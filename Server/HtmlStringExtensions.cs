@@ -149,6 +149,8 @@ body {
             s = s.Replace("[I]", "<i>");
             s = s.Replace("[/I]", "</i>");
             s = s.Replace("[/i]", "</i>");
+            s = s.Replace("[spoiler]", "<sp>");
+            s = s.Replace("[/spoiler]", "</sp>");
             s = s.Replace("[sp]", "<sp>");
             s = s.Replace("[/sp]", "</sp>");
             s = s.Replace("[g]", "<g>");
