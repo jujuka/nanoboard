@@ -17,9 +17,11 @@ namespace nboard
         public const int MinAnswers = -1;
         private readonly NanoDB _db;
         private readonly bool _expand;
+        private string[] _places;
 
         public ThreadViewHandler(NanoDB db, bool expand = false)
         {
+            _places = File.ReadAllLines("places.txt");
             _db = db;
             _expand = expand;
         }
@@ -277,6 +279,12 @@ namespace nboard
             sb.Append(s1.ToDiv("", ""));
 
             sw.Stop();
+
+            sb.Append("<div><br>места:");
+            var places = _places.Where(l => !l.StartsWith("#")).ToList();
+            places.ForEach(p => sb.Append(string.Format("<br><a target='_blank' href='{0}'>{0}</a>", p)));
+            sb.Append("</div>");
+
             AddFooter(sb, sw.ElapsedMilliseconds, _db);
 
             /*
