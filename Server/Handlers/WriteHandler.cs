@@ -64,7 +64,17 @@ namespace nboard
 
             var str = Encoding.UTF8.GetString(request.Connection.Raw);
             str = str.Substring(str.IndexOf("\r\n\r\n") + 4);
-            var post = new NanoPost(thread, "[g]" + GetPostHeader() + "[/g]\n" + str);
+            NanoPost post = null;
+
+            if (thread.Value != NanoDB.CategoriesHashValue)
+            {
+                post = new NanoPost(thread, "[g]" + GetPostHeader() + "[/g]\n" + str);
+            }
+
+            else
+            {
+                post = new NanoPost(thread, str);
+            }
 
             if (post.Invalid)
             {

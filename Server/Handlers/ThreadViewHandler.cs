@@ -214,7 +214,7 @@ namespace nboard
                     sb.Append(
                         (
                             (numTag + pMessage.Strip(true)).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            (_expand?("[Вверх]").ToRef("/thread/" + p.ReplyTo.Value):"" +
+                            ("[Вверх]".ToRef("/thread/" + p.ReplyTo.Value) +
                                 //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                                 ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post", ""));

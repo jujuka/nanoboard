@@ -24,7 +24,11 @@ namespace nboard
         private readonly HashSet<string> _onceList;
         private readonly HashSet<string> _bookmarks;
 
+        [Obsolete]
         public Hash RootHash { get; private set; }
+
+        public const string CategoriesHashValue = "bdd4b5fc1b3a933367bc6830fef72a35";
+        public const string RootHashValue = "f682830a470200d738d32c69e6c2b8a4";
 
         public event Action<NanoPost> Updated = delegate(NanoPost obj) {};
         //public event Action<NanoPost> BookmarkAdded = delegate(NanoPost obj) {};
@@ -359,7 +363,15 @@ namespace nboard
                 return false;
             }
 
-            post.NumberTag = ++_postNo;
+            if (post.ReplyTo.Value == CategoriesHashValue)
+            {
+                post.NumberTag = int.MaxValue;
+            }
+
+            else if (post.NumberTag != int.MaxValue)
+            {
+                post.NumberTag = ++_postNo;
+            }
 
             if (isNew)
             {
