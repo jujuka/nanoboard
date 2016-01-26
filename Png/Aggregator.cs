@@ -186,23 +186,25 @@ namespace nboard
             var client = new WebClient();
             client.Headers = _headers;
 
-            if (!Directory.Exists("temp"))
+            try
             {
-                Directory.CreateDirectory("temp");
+                if (!Directory.Exists("temp"))
+                {
+                    Directory.CreateDirectory("temp");
+                }
+
+                if (!Directory.Exists(Strings.Download))
+                {
+                    Directory.CreateDirectory(Strings.Download);
+                }
+            }
+            catch
+            {
             }
 
-            if (!Directory.Exists(Strings.Download))
-            {
-                Directory.CreateDirectory(Strings.Download);
-            }
-
-            string filename = "temp" + Path.DirectorySeparatorChar + new Guid().ToString().Trim('{', '}');
+            string filename = Strings.Download + Path.DirectorySeparatorChar + new Guid().ToString().Trim('{', '}');
             client.DownloadFileCompleted += (object sender, System.ComponentModel.AsyncCompletedEventArgs e) => {
                 InProgress -= 1;
-                if (!e.Cancelled)
-                {
-                    File.Move(filename, Strings.Download + Path.DirectorySeparatorChar + new Guid().ToString().Trim('{', '}'));
-                }
                 GC.Collect();
             };
 
