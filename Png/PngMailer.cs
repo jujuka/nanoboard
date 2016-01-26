@@ -29,6 +29,7 @@ namespace nboard
                     try
                     {
                         packed = new PngStegoUtil().ReadHiddenBytesFromPng(pathToPng);
+                        GC.Collect();
                     }
                     catch (Exception)
                     {
