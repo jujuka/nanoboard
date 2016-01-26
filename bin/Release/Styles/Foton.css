@@ -1,0 +1,126 @@
+body {
+  font-family: "Trebuchet MS",Trebuchet,tahoma,serif;
+  line-height: 1.3em;
+  font-size: 0.85em;
+  overflow-x: hidden;
+  color: #688bbc;
+  background-color: #212121;
+}
+
+grn {
+  color: #7ca35e;
+}
+
+a {
+  color: #c9bf86;
+  text-decoration: underline;
+  cursor: pointer;
+  margin: 0 0.2em;
+}
+
+sp {
+  text-decoration: none;
+  color: #575757;
+  background: #575757;
+}
+
+g {
+  font-style: none;
+  color: #b7b9c2;
+  line-height: 2em;
+  font-size: 85%;
+}
+
+sp:hover {
+  background: #575757;
+  color: #6095e0;
+}
+
+a:hover {
+  color: #edef81;
+  text-decoration: underline;
+}
+
+.postinner {
+  max-height: 48em;
+  overflow: auto;
+  max-width: 700px;
+  margin-bottom: .5em;
+}
+
+.post {
+  width: auto;
+  border: 1px solid #575757;
+  border-radius: 4px;
+  display: inline-block;
+  white-space: wrap;
+  background: #2c2c2c;
+  color: #688bbc;
+  margin: 0.25em;
+  float: left;
+  clear: both;
+  padding: 0.5em 1.5em;
+}
+
+img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.fullimg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.main {
+  color: #6095e0;
+  background: #494444;
+}
+
+div {
+  display: inline-block;
+  clear: both;
+  float: left;
+}
+
+.head {
+  font-weight: none;
+  color: #6095e0;
+  border-bottom: 2px dotted #6095e0;
+  padding: 1em;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.step {
+  height: 5em;
+}
+
+.big {
+  font-size: 2em;
+}
+
+textarea {
+  font-size: 0.9em;
+  width: 32em;
+  height: 22em;
+}
+
+button {
+  font-size: 0.9em;
+}

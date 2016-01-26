@@ -1,0 +1,142 @@
+body {
+  font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+  line-height: 1.3em;
+  font-size: 0.8em;
+  overflow-x: hidden;
+  background-color: #ffffff;
+  color: #000000;
+  margin: 0 auto;
+  width: 70%;
+  cursor: default;
+}
+
+grn {
+  color: #618943;
+}
+
+a {
+  text-decoration: none;
+  color: #91a6c9;
+  cursor: pointer;
+  padding: 3px;
+  margin: 2px;
+  line-height: 1.3em;
+  font-size: 90%;
+}
+
+button {
+  font-size: 90%;
+  outline: none;
+  border: 0;
+  border-radius: 2px;
+  background: #687fa5;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 6px;
+  margin: 3px;
+  line-height: 1.3em;
+}
+
+sp {
+  text-decoration: none;
+  color: #777;
+  background: #777;
+}
+
+g {
+  font-weight: bold;
+  color: #687fa5;
+  line-height: 2em;
+  font-size: 90%;
+}
+
+button:hover {
+  background-color: #7790ba;
+}
+
+a:hover {
+  background-color: #d5deed;
+}
+
+sp:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.postinner {
+  max-height: 48em;
+  overflow: auto;
+  max-width: 700px;
+  margin-bottom: .5em;
+}
+
+.post {
+  width: auto;
+  border: .5px solid #c9d1dd;
+  border-radius: 2px;
+  display: inline-block;
+  white-space: wrap;
+  background: #ffffff;
+  color: #000000;
+  margin: 0.15em;
+  float: left;
+  clear: both;
+  padding: 0.5em 1.5em;
+}
+
+img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.fullimg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.main {
+  background: #e3eaf4;
+  color: #8594ad;
+}
+
+div {
+  display: inline-block;
+  clear: both;
+  float: left;
+}
+
+.head {
+  font-weight: none;
+  background: #687fa5;
+  border-radius: 8px;
+  color: #ffffff;
+  padding: 1em;
+  width: 100%;
+  margin: -12px auto;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.step {
+  height: 5em;
+}
+
+.big {
+  font-size: 2em;
+}
+
+textarea {
+  font-size: 0.9em;
+  width: 32em;
+  height: 22em;
+}
+

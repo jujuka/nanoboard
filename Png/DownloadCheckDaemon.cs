@@ -26,6 +26,13 @@ namespace nboard
                     }catch{}
                 }
             });
+            ThreadPool.QueueUserWorkItem(state => {
+                while (!stopped)
+                {
+                    Thread.Sleep(1000);
+                    GC.Collect();
+                }
+            });
         }
 
         public void Stop()

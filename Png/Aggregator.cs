@@ -164,7 +164,6 @@ namespace nboard
                 return;
             _downloaded.Add(address);
 
-
             try
             {
                 File.AppendAllText(Downloaded, address + "\n");
@@ -187,41 +186,30 @@ namespace nboard
             var client = new WebClient();
             client.Headers = _headers;
 
-            client.DownloadDataCompleted += (object sender, DownloadDataCompletedEventArgs e) => 
+            if (!Directory.Exists("temp"))
             {
+                Directory.CreateDirectory("temp");
+            }
+
+            if (!Directory.Exists(Strings.Download))
+            {
+                Directory.CreateDirectory(Strings.Download);
+            }
+
+            string filename = "temp" + Path.DirectorySeparatorChar + new Guid().ToString().Trim('{', '}');
+            client.DownloadFileCompleted += (object sender, System.ComponentModel.AsyncCompletedEventArgs e) => {
                 InProgress -= 1;
-
-                try
+                if (!e.Cancelled)
                 {
-                    if (!Directory.Exists("temp"))
-                    {
-                        Directory.CreateDirectory("temp");
-                    }
-
-                    if (!Directory.Exists(Strings.Download))
-                    {
-                        Directory.CreateDirectory(Strings.Download);
-                    }
-
-                    var name = Guid.NewGuid().ToString().Trim('{', '}');
-                    File.WriteAllBytes("temp" + Path.DirectorySeparatorChar + name, e.Result);
-                    File.Move("temp" + Path.DirectorySeparatorChar + name, Strings.Download + Path.DirectorySeparatorChar + name);
+                    File.Move(filename, Strings.Download + Path.DirectorySeparatorChar + new Guid().ToString().Trim('{', '}'));
                 }
-
-                catch (Exception ex)
-                {
-                    Logger.LogErrorDrawLine();
-                    Logger.LogError(address);
-                    if (e.Error != null)
-                        Logger.LogError(e.Error.Message);
-                    Logger.LogError(ex.Message);
-                }
+                GC.Collect();
             };
 
             InProgress += 1;
-            address = address.Replace("2ch.hk", "m2-ch.ru");
+            address = address.Replace("2ch.hk", "m2-ch.ru"); // TODO: move to config
             NotificationHandler.Instance.AddNotification(address);
-            client.DownloadDataAsync(new Uri(address));
+            client.DownloadFileAsync(new Uri(address), filename);
         }
     }
 }
