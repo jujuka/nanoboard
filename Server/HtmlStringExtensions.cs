@@ -133,6 +133,11 @@ body {
             return s;
         }
 
+        private static string CreateBoardRefs(this string s)
+        {
+            return Regex.Replace(s, "/(thread|expand)/[a-f0-9]{32}", "<a href='$0'>$0</a>");
+        }
+
         public static string Strip(this string s, bool validateTags = false)
         {
             s = s.Replace("'", "’");
@@ -169,6 +174,8 @@ body {
             }
 
             s = Regex.Replace(s, "&gt;[^\\n]*", "<grn>$0</grn>");
+
+            s = s.CreateBoardRefs();
 
             if (validateTags) return s.ValidateTags();
             return s;

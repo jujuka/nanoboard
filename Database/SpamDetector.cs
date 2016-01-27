@@ -15,12 +15,12 @@ namespace nboard
 
         static SpamDetector()
         {
-            if (!File.Exists("antispam.txt"))
+            if (!File.Exists("spamfilter.txt"))
             {
-                File.WriteAllText("antispam.txt", "[0-9a-f]{32}\n^[0-9a-f]*$");
+                File.WriteAllText("spamfilter.txt", "");
             }
 
-            _regexps = new List<string>(File.ReadAllLines("antispam.txt"));
+            _regexps = new List<string>(File.ReadAllLines("spamfilter.txt"));
         }
 
         public static bool IsSpam(string msg)
