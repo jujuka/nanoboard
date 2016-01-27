@@ -12,12 +12,16 @@ using System.Linq;
 
 namespace nboard
 {
-    class ConvertResultHandler : IRequestHandler
+    class CompressImageHandler : IRequestHandler
     {
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
             try
             {
+                var @params = request.Address.Split('-');
+                int q = int.Parse(@params[1]);
+                int s = int.Parse(@params[2]);
+
                 var sb = new StringBuilder();
 
                 int offset = Encoding.ASCII.GetString(request.Connection.Raw).IndexOf("\r\n\r\n");
@@ -44,18 +48,33 @@ namespace nboard
                     }
                 }
 
-                sb.Append("[img=");
-                sb.Append(Convert.ToBase64String(request.Connection.Raw, offset + 4, length - offset - 4 - stepBack));
-                sb.Append("]");
+                byte[] slice = new byte[length - offset - 4];
+
+                for (int i = 0; i < length - offset - 4; i++)
+                {
+                    slice[i] = request.Connection.Raw[i + offset + 4];
+                }
+
+                slice = ImageCompressor.Compress(slice, q, s/100.0f);
+                sb.Append("<img src='data:image/jpg;base64,");
+                sb.Append(Convert.ToBase64String(slice, 0, slice.Length));
+                sb.Append("' >");
                 string prep = "";
                 if (sb.Length > 16384) prep = "Превышен лимит в 16384 символа. Такой нанопост будет хуже ретранслироваться другими.\n";
-                if (sb.Length > 32768) prep = "Превышен лимит в 32768 символов. Такая картинка не отобразится.\n";
-                return new NanoHttpResponse(StatusCode.Ok, prep + sb.ToString(), "text/plain; charset=utf-8");
+                if (sb.Length > 32768) prep = "Превышен лимит в 32768 символов. Такая картикна не отобразится.\n";
+                prep += string.Format("Размер: {0}, base64: {1}", slice.Length, sb.Length);
+                prep += "<br>";
+
+                sb.Append("<br>[img=");
+                sb.Append(Convert.ToBase64String(slice, 0, slice.Length));
+                sb.Append("]");
+
+                return new NanoHttpResponse(StatusCode.Ok, prep + sb.ToString(), "text/html; charset=utf-8");
             }
 
-            catch
+            catch (Exception e)
             {
-                return new NanoHttpResponse(StatusCode.Ok, "Error");
+                return new NanoHttpResponse(StatusCode.Ok, "Error" + e.ToString());
             }
         }
     }

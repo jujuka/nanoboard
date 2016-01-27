@@ -45,6 +45,7 @@ namespace nboard
             server.AddHandler("image", new ImageBase64ConvertHandler());
             server.AddHandler("convert", new ConvertResultHandler());
             server.AddHandler("setstyle", new SetStyleHandler());
+            server.AddHandler("compress", new CompressImageHandler());
             return server;
         }
     }
