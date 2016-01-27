@@ -37,6 +37,7 @@ namespace nboard
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 return null;
             }
         }
