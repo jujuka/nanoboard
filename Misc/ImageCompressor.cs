@@ -19,7 +19,7 @@ namespace nboard
         {
             if (!Directory.Exists("temp"))
                 Directory.CreateDirectory("temp");
-            string file = new Guid().ToString().Trim('{', '}');
+            string file = Guid.NewGuid().ToString().Trim('{', '}');
             char sep = Path.DirectorySeparatorChar;
             string path = "temp" + sep + file;
 
@@ -31,8 +31,10 @@ namespace nboard
                 bmp = Sharpen(bmp);
                 SaveJpeg(path + ".jpg", bmp, quality0to100);
                 var bytes =  File.ReadAllBytes(path + ".jpg");
+                try{
                 File.Delete(path);
                 File.Delete(path + ".jpg");
+                }catch{}
                 return bytes;
             }
             catch (Exception e)
