@@ -1,0 +1,129 @@
+body {
+  font-family: 'Georgia', serif;
+  line-height: 1.3em;
+  font-size: 0.95em;
+  overflow-x: hidden;
+  color: #4d0026;
+  background: url(data:image/jpg;base64,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) repeat;
+}
+
+grn {
+  color: #618943;
+}
+
+a {
+  color: #c42172;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0 0.2em;
+}
+
+sp {
+  text-decoration: none;
+  color: #cc0066;
+  background: #cc0066;
+}
+
+g {
+  font-style: italic;
+  color: #e60074;
+  line-height: 2em;
+  font-size: 85%;
+}
+
+sp:hover {
+  background: #ffb3d8;
+  color: #4d0026;
+}
+
+a:hover {
+  color: #ff3399;
+  text-decoration: underline;
+}
+
+.postinner {
+  max-height: 48em;
+  overflow: auto;
+  word-wrap: break-word;
+  position: justify;
+  max-width: 700px;
+  margin-bottom: .5em;
+}
+
+.post {
+  width: auto;
+  border: .5px solid #99004d;
+  border-radius: 2px;
+  box-shadow: 2px 2px 4px #b30059;
+  display: inline-block;
+  white-space: wrap;
+  background: #ffb3d8;
+  color: #4d0026;
+  margin: 0.5em;
+  float: left;
+  clear: both;
+  padding: 0.5em 1.5em;
+}
+
+img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.fullimg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.main {
+  background: white;
+}
+
+div {
+  display: inline-block;
+  clear: both;
+  float: left;
+}
+
+.head {
+  background: #4d0026;
+  color: #ff1a8d;
+  padding: 1em;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.step {
+  height: 5em;
+}
+
+.big {
+  font-size: 2em;
+}
+
+textarea {
+  font-size: 0.9em;
+  width: 32em;
+  height: 22em;
+}
+
+button {
+  font-size: 0.9em;
+}
+
+
