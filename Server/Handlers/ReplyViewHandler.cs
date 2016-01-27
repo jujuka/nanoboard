@@ -57,7 +57,7 @@ namespace nboard
                     var x = new XMLHttpRequest();
                     x.open('POST', '../write/"+p.GetHash().Value+@"', true);
                     x.send(document.getElementById('reply').value);
-                    location.replace('/thread/" + p.GetHash().Value + @"');
+                    location.replace('/expand/" + p.GetHash().Value + @"');
                 "))).ToDiv("post", ""));
 
             return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());

@@ -202,13 +202,22 @@ namespace nboard
                 }
 
                 string handler = "/expand/";
+                bool corePost = false;
 
-                if (p.GetHash().Value == "f682830a470200d738d32c69e6c2b8a4" || // root
-                    p.ReplyTo.Value == "f682830a470200d738d32c69e6c2b8a4" || // root
-                    p.GetHash().Value == "bdd4b5fc1b3a933367bc6830fef72a35" || // categories
-                    p.ReplyTo.Value == "bdd4b5fc1b3a933367bc6830fef72a35")     // categories
+                if (p.GetHash().Value == NanoDB.RootHashValue || // root
+                    p.ReplyTo.Value == NanoDB.RootHashValue || // root
+                    p.GetHash().Value == NanoDB.CategoriesHashValue || // categories
+                    p.ReplyTo.Value == NanoDB.CategoriesHashValue)     // categories
                 {
                     handler = "/thread/";
+                    corePost = true;
+                }
+
+                if (_db.Get(p.ReplyTo) != null && 
+                    (_db.Get(p.ReplyTo).ReplyTo.Value == NanoDB.CategoriesHashValue ||
+                     _db.Get(p.ReplyTo).ReplyTo.Value == NanoDB.RootHashValue))
+                {
+                    corePost = true;
                 }
 
                 if (_expand && first && !p.GetHash().Zero && !p.ReplyTo.Zero)
@@ -216,7 +225,7 @@ namespace nboard
                     sb.Append(
                         (
                             (numTag + pMessage.Strip(true)).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            ("[Вверх]".ToRef("/thread/" + p.ReplyTo.Value) +
+                            ("[Вверх]".ToRef((corePost?"/thread/":"/expand/") + p.ReplyTo.Value) +
                                 //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                                 ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post", ""));

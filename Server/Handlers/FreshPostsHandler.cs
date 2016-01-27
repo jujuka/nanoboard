@@ -75,7 +75,7 @@ namespace nboard
                 sb.Append(
                     (
                         p.Message.Strip(true).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
-                        ((answers > ThreadViewHandler.MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/thread/" + p.GetHash().Value):"") +
+                        ((answers > ThreadViewHandler.MinAnswers ? ("[" + answers + " " + ans + "]").ToRef("/expand/" + p.GetHash().Value):"") +
                             (hidden?"[Вернуть]":"[Удалить]").ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
                         var elem = document.getElementById('" + p.GetHash().Value + @"');
