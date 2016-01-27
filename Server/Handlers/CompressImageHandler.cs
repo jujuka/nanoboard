@@ -65,9 +65,10 @@ namespace nboard
                 prep += string.Format("Размер: {0}, base64: {1}", slice.Length, sb.Length);
                 prep += "<br>";
 
-                sb.Append("<br>[img=");
+                sb.Append("<br><br>Triple-click, Cmd/Ctrl+C<br><div style='font-size:25%'>[img=");
                 sb.Append(Convert.ToBase64String(slice, 0, slice.Length));
                 sb.Append("]");
+                sb.Append("</div><br>");
 
                 return new NanoHttpResponse(StatusCode.Ok, prep + sb.ToString(), "text/html; charset=utf-8");
             }
