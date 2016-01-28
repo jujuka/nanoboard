@@ -159,6 +159,7 @@ namespace nboard
             };
 
             InProgress += 1;
+            address = address.Replace("https://2ch.hk", "http://m2-ch.ru");
             address = address.Replace("2ch.hk", "m2-ch.ru");
             NotificationHandler.Instance.AddNotification(address);
             client.DownloadDataAsync(new Uri(address));
