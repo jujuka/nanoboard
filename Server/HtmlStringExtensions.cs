@@ -152,7 +152,7 @@ body {
 
             try
             {
-                var matches = Regex.Matches(s, "(ADD|DEL)(</b>|)\\s+https?://[^\\s]+");
+                var matches = Regex.Matches(s, "(ADD|DEL)(ETE|)(</b>|)\\s+https?://[^\\s]+");
 
                 foreach (Match m in matches)
                 {
