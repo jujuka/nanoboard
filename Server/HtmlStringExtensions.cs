@@ -15,6 +15,17 @@ namespace nboard
 {
     static class HtmlStringExtensions
     {
+        private static List<string> _places;
+
+        public static List<string> UpdatePlaces()
+        {
+            if (File.Exists(Strings.Places))
+                _places = File.ReadAllLines(Strings.Places).ToList();
+            else
+                _places = new List<string>();
+            return _places;
+        }
+
         public const string Break = "<br/>";
         public const string Line = "<hr/>";
 
@@ -22,6 +33,8 @@ namespace nboard
 
         static HtmlStringExtensions()
         {
+            UpdatePlaces();
+
             if (File.Exists("style.css"))
             {
                 File.Delete("style.css");
@@ -135,7 +148,26 @@ body {
 
         private static string CreateBoardRefs(this string s)
         {
-            return Regex.Replace(s, "/(thread|expand)/[a-f0-9]{32}", "<a href='$0'>$0</a>");
+            s = Regex.Replace(s, "/(thread|expand)/[a-f0-9]{32}", "<a href='$0'>$0</a>");
+
+            try
+            {
+                var matches = Regex.Matches(s, "(ADD|DEL)(</b>|)\\s+https?://[^\\s]+");
+
+                foreach (Match m in matches)
+                {
+                    string v = m.Value.Split(' ', '\t')[1];
+                    s = s.Replace(v, v 
+                        + "<a target='_blank' href='/add/" + v + "'>[+]</a>"
+                        + (_places.Contains(v)?"<i><sup>added</sup></i>":"")
+                        + "<a target='_blank' href='/del/" + v + "'>[-]</a>");
+                }
+            }
+            catch
+            {
+            }
+
+            return s;
         }
 
         public static string Strip(this string s, bool validateTags = false)

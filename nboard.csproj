@@ -91,6 +91,8 @@
     <Compile Include="Database\SpamDetector.cs" />
     <Compile Include="Misc\ImageCompressor.cs" />
     <Compile Include="Server\Handlers\CompressImageHandler.cs" />
+    <Compile Include="Server\Handlers\AddPlaceHandler.cs" />
+    <Compile Include="Server\Handlers\DelPlaceHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

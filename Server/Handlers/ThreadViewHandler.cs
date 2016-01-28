@@ -21,7 +21,6 @@ namespace nboard
 
         public ThreadViewHandler(NanoDB db, bool expand = false)
         {
-            _places = File.ReadAllLines("places.txt");
             _db = db;
             _expand = expand;
         }
@@ -125,6 +124,7 @@ namespace nboard
 
         private NanoHttpResponse HandleSafe(NanoHttpRequest request)
         {
+            _places = HtmlStringExtensions.UpdatePlaces().ToArray();
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
 
@@ -291,7 +291,8 @@ namespace nboard
 
             sb.Append("<div><br>места:");
             var places = _places.Where(l => !l.StartsWith("#")).ToList();
-            places.ForEach(p => sb.Append(string.Format("<br><a target='_blank' href='{0}'>{0}</a>", p)));
+            places.ForEach(p => sb.Append(string.Format("<br><a target='_blank' href='{0}'>{0}</a>"+
+            "<a target='_blank' href='/del/{0}'>[-]</a>", p)));
             sb.Append("</div>");
 
             AddFooter(sb, sw.ElapsedMilliseconds, _db);

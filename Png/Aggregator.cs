@@ -34,11 +34,24 @@ namespace nboard
 
         public event Action ProgressChanged = delegate {};
 
-        private readonly List<string> _places;
+        private List<string> _places;
 
         private readonly HashSet<string> _downloaded;
 
         private readonly WebHeaderCollection _headers;
+
+        private void CheckUpdatePlacesConfig()
+        {
+            if (File.Exists(Config))
+            {
+                _places = new List<string>(File.ReadAllLines(Config));
+            }
+            else
+            {
+                File.WriteAllText(Config, "# put urls to threads here, each at new line:\n");
+                _places = new List<string>();
+            }
+        }
 
         public Aggregator()
         {
@@ -65,15 +78,7 @@ namespace nboard
                     _downloaded = new HashSet<string>();
                 }
 
-                if (File.Exists(Config))
-                {
-                    _places = new List<string>(File.ReadAllLines(Config));
-                }
-                else
-                {
-                    File.WriteAllText(Config, "# put urls to threads here, each at new line:\n");
-                    _places = new List<string>();
-                }
+                CheckUpdatePlacesConfig();
             }
             catch (Exception e)
             {
@@ -85,6 +90,7 @@ namespace nboard
         {
             try
             {
+                CheckUpdatePlacesConfig();
                 bool empty = true;
 
                 foreach (string place in _places)

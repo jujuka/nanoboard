@@ -46,6 +46,8 @@ namespace nboard
             server.AddHandler("convert", new ConvertResultHandler());
             server.AddHandler("setstyle", new SetStyleHandler());
             server.AddHandler("compress", new CompressImageHandler());
+            server.AddHandler("add", new AddPlaceHandler());
+            server.AddHandler("del", new DelPlaceHandler());
             return server;
         }
     }
