@@ -48,6 +48,14 @@ namespace nboard
             ThreadViewHandler.AddHeader(sb);
             var p = _db.Get(thread);
 
+            bool corePost = false;
+
+            if ( p.GetHash().Value == NanoDB.CategoriesHashValue || // создал категорию - не разворачивать все категории
+                 p.ReplyTo.Value == NanoDB.CategoriesHashValue) // создал тред в одной из категорий - не разворачивать все треды
+            {
+                corePost = true;
+            }
+
                 sb.Append(
                     (
                         p.Message.Strip(true).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value)
@@ -57,7 +65,7 @@ namespace nboard
                     var x = new XMLHttpRequest();
                     x.open('POST', '../write/"+p.GetHash().Value+@"', true);
                     x.send(document.getElementById('reply').value);
-                    location.replace('/expand/" + p.GetHash().Value + @"');
+                    location.replace('/"+(corePost?"thread":"expand")+"/" + p.GetHash().Value + @"');
                 "))).ToDiv("post", ""));
 
             return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());

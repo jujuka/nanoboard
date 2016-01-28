@@ -26,6 +26,7 @@ namespace nboard
 
             set
             {
+                if (value < 0) value = 0;
                 _inProgress = value;
                 ProgressChanged();
             }
@@ -142,7 +143,6 @@ namespace nboard
 
                 catch (Exception ex)
                 {
-                    InProgress -= 1;
                     Logger.LogErrorDrawLine();
                     Logger.LogError(imageAddress);
                     if (e.Error != null)

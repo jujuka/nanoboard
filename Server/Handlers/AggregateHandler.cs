@@ -31,9 +31,15 @@ namespace nboard
 
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
-            if (_agg.InProgress == 0)
+            if (_agg.InProgress <= 0)
             {
                 NotificationHandler.Instance.AddNotification("Начат поиск сообщений.");
+                _agg.Aggregate();
+            }
+
+            else
+            {
+                NotificationHandler.Instance.AddNotification("Повторно начат поиск сообщений.");
                 _agg.Aggregate();
             }
 
