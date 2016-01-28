@@ -146,21 +146,43 @@ body {
             return s;
         }
 
+        public static string ReplaceFirst(this string text, string search, string replace)
+        {
+          int pos = text.IndexOf(search);
+          if (pos < 0)
+          {
+            return text;
+          }
+          return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+        }
+
         private static string CreateBoardRefs(this string s)
         {
             s = Regex.Replace(s, "/(thread|expand)/[a-f0-9]{32}", "<a href='$0'>$0</a>");
 
             try
             {
-                var matches = Regex.Matches(s, "(ADD|DEL)(ETE|)(</b>|)\\s+https?://[^\\s]+");
+                var matches = Regex.Matches(s, "(ADD|DEL|DELETE)(</b>|)\\s+https?://[^\\s]+");
+
+
+                List<string> masks = new List<string>();
+                List<string> origs = new List<string>();
 
                 foreach (Match m in matches)
                 {
-                    string v = m.Value.Split(' ', '\t')[1];
-                    s = s.Replace(v, v 
-                        + "<a target='_blank' href='/add/" + v + "'>[+]</a>"
-                        + (_places.Contains(v)?"<i><sup>added</sup></i>":"")
-                        + "<a target='_blank' href='/del/" + v + "'>[-]</a>");
+                    masks.Add(Guid.NewGuid().ToString());
+                    origs.Add(m.Value.Split(' ', '\t')[1]);
+                    s = s.ReplaceFirst(origs.Last(), masks.Last());
+                }
+
+                for (int i = 0; i < masks.Count; i++)
+                {
+                    string v = masks[i];
+                    string o = origs[i];
+                    s = s.ReplaceFirst(v, o
+                        + " <a target='_blank' href='/add/" + o + "'>[+]</a>"
+                        + (_places.Contains(o)?"<i><sup>added</sup></i>":"")
+                        + "<a target='_blank' href='/del/" + o + "'>[-]</a>");
                 }
             }
             catch
