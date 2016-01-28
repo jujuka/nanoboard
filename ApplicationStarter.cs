@@ -62,15 +62,11 @@ namespace nboard
             if (!Directory.Exists(Strings.Containers))
             {
                 Directory.CreateDirectory(Strings.Containers);
-                string file = Strings.Containers + Path.DirectorySeparatorChar + "dummy" + Strings.PngExt;
-                Bitmap bmp = new Bitmap(512, 512);
-                bmp.Save(file, System.Drawing.Imaging.ImageFormat.Png);
             }
-            else if (new DirectoryInfo(Strings.Containers).GetFiles().Length == 0)
+
+            if (new DirectoryInfo(Strings.Containers).GetFiles().Length == 0)
             {
-                string file = Strings.Containers + Path.DirectorySeparatorChar + "dummy" + Strings.PngExt;
-                Bitmap bmp = new Bitmap(512, 512);
-                bmp.Save(file, System.Drawing.Imaging.ImageFormat.Png);
+                Console.WriteLine("No containers in containers folder");
             }
 
             if (!Directory.Exists(Strings.Upload))
