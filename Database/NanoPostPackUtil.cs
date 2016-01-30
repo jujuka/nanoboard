@@ -40,11 +40,6 @@ namespace nboard
 
             int count = int.Parse(str.Substring(0, 6), System.Globalization.NumberStyles.HexNumber);
 
-            if (count > IncomingPostsLimit)
-            {
-                count = IncomingPostsLimit;
-            }
-
             List<int> sizes = new List<int>();
             List<string> raws = new List<string>();
 
@@ -56,7 +51,7 @@ namespace nboard
 
             int offset = count * 6 + 6;
 
-            for (int i = 0; i < sizes.Count; i++)
+            for (int i = 0; i < Math.Min(sizes.Count, IncomingPostsLimit); i++)
             {
                 int size = sizes[i];
                 raws.Add(str.Substring(offset, size));
@@ -67,7 +62,7 @@ namespace nboard
             var containerHashString = "";
             containerHash.ToList().ForEach(b => containerHashString += b.ToString("x2"));
 
-            for (int i = 0; i < raws.Count; i++)
+            for (int i = 0; i < Math.Min(raws.Count, IncomingPostsLimit); i++)
             {
                 var p = new NanoPost(raws[i]);
                 p.ContainerTag = containerHashString;
