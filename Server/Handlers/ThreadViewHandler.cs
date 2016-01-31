@@ -18,6 +18,7 @@ namespace nboard
         private readonly NanoDB _db;
         private readonly bool _expand;
         private string[] _places;
+        private List<string> _allowed;
 
         public ThreadViewHandler(NanoDB db, bool expand = false)
         {
@@ -125,6 +126,7 @@ namespace nboard
         private NanoHttpResponse HandleSafe(NanoHttpRequest request)
         {
             _places = HtmlStringExtensions.UpdatePlaces().ToArray();
+            _allowed = HtmlStringExtensions.UpdateAllowed();
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
 
@@ -303,7 +305,7 @@ namespace nboard
             else
                 sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
             */
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody(NotifierScript));
+            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().AddVideo().ToHtmlBody(NotifierScript));
         }
     }
 }

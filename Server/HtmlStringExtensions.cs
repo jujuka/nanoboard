@@ -16,6 +16,11 @@ namespace nboard
     static class HtmlStringExtensions
     {
         private static List<string> _places;
+        private static List<string> _allowed;
+
+        private static string JQueryUiMinCss = File.ReadAllText("js/jquery-ui.min.css");
+        private static string JQueryMinJs = File.ReadAllText("js/jquery.min.js");
+        private static string JQueryUiMinJs = File.ReadAllText("js/jquery-ui.min.js");
 
         public static List<string> UpdatePlaces()
         {
@@ -24,6 +29,15 @@ namespace nboard
             else
                 _places = new List<string>();
             return _places;
+        }
+
+        public static List<string> UpdateAllowed()
+        {
+            if (File.Exists(Strings.Allowed))
+                _allowed = File.ReadAllLines(Strings.Allowed).ToList();
+            else
+                _allowed = new List<string>();
+            return _allowed;
         }
 
         public const string Break = "<br/>";
@@ -75,6 +89,35 @@ body {
         public static string AddBreak(this string s)
         {
             return s + Break;
+        }
+
+        public static string AddVideo(this string s)
+        {
+            return s+@"<style>"+JQueryUiMinCss+"</style>"+"<script>"+JQueryMinJs+"</script>"+
+            @"<script>"+JQueryUiMinJs+"</script>"+@"
+<style>html,body,#container{height:100%}.vc{visibility: hidden;padding:5px;background-color:#f81;position:fixed;}}</style>
+<div class =""vc""><video title=""Не злоупотребляйте постингом картинок со сторонних ресурсов, давайте сохраним наноборду независимой!"" controls class =""vd""></div>
+<script>
+$(document).ready(function(){
+    $('.vc').resizable({aspectRatio: true, resize: fetch_size}).draggable()
+});
+$('body:not(.svid)').on(""click"", function(e) {
+if (!$(e.target).hasClass('vc') && !$(e.target).hasClass('vd')&& !$(e.target).hasClass('svid')){
+      hide_vd();
+    }
+});
+function show_vd(src) {
+    $('.vc').css(""visibility"",""visible"")
+    $('.vd').attr(""src"",src)
+}
+function hide_vd() {
+    $('.vc').css(""visibility"",""hidden"")
+    $('.vd')[0].pause()
+}
+function fetch_size() {
+    $('.vd').width($('.vc').width())
+}
+</script>";
         }
 
         static int _id = 1;
@@ -192,6 +235,25 @@ body {
             return s;
         }
 
+        public static string GetHost(string path)
+        {
+            var url = new Uri(path);
+            return url.Host;
+        }
+
+        public static bool IsAllowedHost(string path)
+        {
+            try
+            {
+                return _allowed.Contains(GetHost(path));
+            }
+
+            catch (System.UriFormatException)
+            {
+                return false;
+            }
+        }
+
         public static string Strip(this string s, bool validateTags = false)
         {
             s = s.Replace("'", "’");
@@ -225,6 +287,41 @@ body {
                 s = s.Replace(m.Value, string.Format(
                     "<img id='imgid{0}' onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")' src=\"data:image/jpg;base64,{1}\">",
                     _id++, v));
+            }
+
+            //image with src
+            var matches2 = Regex.Matches(s, "\\[simg=[/A-z0-9+=.:]{3,300}\\]");
+            foreach (Match m in matches2)
+            {
+                var v = m.Value;
+                v = v.Substring(6, v.Length-7);
+                if (IsAllowedHost (v)){
+                    s = s.Replace (m.Value, string.Format (
+                        "<small>Источник:{2}</small><br><img title=\"е злоупотребляйте постингом картинок со сторонних ресурсов, давайте сохраним наноборду независимой!\" id='imgid{0}' onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")' src=\"{1}\">",
+                        _id++, v,GetHost(v)));
+                }
+                else {
+                    s = s.Replace (m.Value, string.Format (
+                        "<small>Запрещенный источник:{1}</small><br><a src=\"{0}\">{0}<a>",
+                        v,GetHost(v)));
+                }
+            }
+            //video with src
+            var matches3 = Regex.Matches(s, "\\[svid=[/A-z0-9+=.:]{3,300}\\]");
+            foreach (Match m in matches3)
+            {
+                var v = m.Value;
+                v = v.Substring(6, v.Length-7);
+                if (IsAllowedHost (v)){
+                    s = s.Replace (m.Value, string.Format (
+                        "<small>Источник:{1}</small><br><a class=\"svid\" onclick=show_vd(\"{0}\")>[Показать видео]</a>",
+                        v,GetHost(v)));
+                }
+                else {
+                    s = s.Replace (m.Value, string.Format (
+                        "<small>Запрещенный источник:{1}</small><br><a src=\"{0}\">{0}<a>",
+                        v,GetHost(v)));
+                }
             }
 
             s = Regex.Replace(s, "&gt;[^\\n]*", "<grn>$0</grn>");
