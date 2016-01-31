@@ -261,16 +261,19 @@ namespace nboard
                 var fmPattern = "\\[fm=[()t *0-9a-fxA-F|><!%:^&.\\-+/?=~gl;rnsp]+\\]";
                 var music = Regex.Matches(pMessage, fmPattern);
 
+                int musicNum = 0;
+
                 foreach (var m in music)
                 {
+                    musicNum += 1;
                     var value = (m as Match).Value;
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ");
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
     <small><pre>{1}</pre></small><button id='mb{0}'>Сгенерировать</button>
-    <audio style='visibility:hidden;' controls='false' id='au{0}'></audio>", sp.GetHash().Value, formula);
-                    postScript += "document.getElementById('mb"+sp.GetHash().Value+
+    <audio style='visibility:hidden;' controls='false' id='au{0}'></audio>", sp.GetHash().Value+musicNum, formula);
+                    postScript += "document.getElementById('mb"+sp.GetHash().Value+musicNum+
                     "').onclick = function() { addFractalMusic(function(t){return "+formula+
-                    ";}, 210*8000, 'au"+sp.GetHash().Value+"');"+
+                    ";}, 210*8000, 'au"+sp.GetHash().Value+musicNum+"');"+
                         "this.parentNode.removeChild(this);"
                     +"}\n";
                     pMessage = pMessage.Replace(value, replacement);
