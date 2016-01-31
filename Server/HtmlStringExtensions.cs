@@ -302,7 +302,7 @@ function fetch_size() {
                 }
                 else {
                     s = s.Replace (m.Value, string.Format (
-                        "<small>Источник не разрешен (см. allowed.txt): {1}</small><br><a src=\"{0}\">{0}<a>",
+                        "<small>Источник не разрешен (см. allowed.txt): {1}</small><br><a target='_blank' href=\"{0}\">{0}<a>",
                         v,GetHost(v)));
                 }
             }
@@ -319,7 +319,7 @@ function fetch_size() {
                 }
                 else {
                     s = s.Replace (m.Value, string.Format (
-                        "<small>Источник не разрешен (см. allowed.txt): {1}</small><br><a src=\"{0}\">{0}<a>",
+                        "<small>Источник не разрешен (см. allowed.txt): {1}</small><br><a target='_blank' href=\"{0}\">{0}<a>",
                         v,GetHost(v)));
                 }
             }
