@@ -9,6 +9,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace nboard
 {
@@ -39,6 +40,49 @@ namespace nboard
             }
         }
 
+        public const string FractalMusicScript = @"
+   var sampleRate = 8000;
+
+    function encodeAudio8bit(data) {
+      var n = data.length;
+      var integer = 0,
+        i;
+      var header = 'RIFF<##>WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00<##><##>\x01\x00\x08\x00data<##>';
+
+      function insertLong(value) {
+        var bytes = '';
+        for (i = 0; i < 4; ++i) {
+          bytes += String.fromCharCode(value % 256);
+          value = Math.floor(value / 256);
+        }
+        header = header.replace('<##>', bytes);
+      }
+
+      insertLong(36 + n);
+      insertLong(sampleRate);
+      insertLong(sampleRate);
+      insertLong(n);
+
+      for (var i = 0; i < n; ++i) {
+        header += String.fromCharCode(Math.round(Math.min(1, Math.max(-1, data[i])) * 127 + 127));
+      }
+      return 'data:audio/wav;base64,' + btoa(header);
+    }
+
+    function addFractalMusic(func,len,id) {
+        var elem = document.getElementById(id);
+      var arr = []
+      for (var t = 0; t < len; t++) {
+        arr[t] = func(t);
+        arr[t] = (arr[t] & 0xff) / 256.0;
+      }
+      var dataUri = encodeAudio8bit(arr);
+      elem.setAttribute('src', dataUri);
+      elem.style.visibility = 'visible';
+      elem.setAttribute('controls', true);
+    }
+";
+
         public const string NotifierScript = @"
         window.onload = function() {
              setInterval(function() { 
@@ -53,6 +97,24 @@ namespace nboard
             }, 1000);
         }
 ";
+
+        public static string PostScript (string other)
+        {
+            return @"
+        window.onload = function() {" + other + @"
+             setInterval(function() { 
+                var elem = document.getElementById('notif1');
+                var x = new XMLHttpRequest();
+                x.open('POST', '/status', true);
+                x.onreadystatechange = function() {
+                    if (x.readyState != 4 || x.status != 200) return;
+                    elem.innerHTML = x.responseText;
+                }
+                x.send('');
+            }, 1000);
+        }
+";
+        }
 
         private static string _styles;
 
@@ -188,11 +250,32 @@ namespace nboard
                 posts = posts.OrderByDescending(p => p.NumberTag).ToArray();
             }
 
+            string postScript = "";
+
             foreach (var sp in posts)
             {
                 var p = sp;
                 //string pMessage = p.Message;
-                string pMessage = p.Message;
+                string pMessage = p.Message.Strip(true);
+
+                var fmPattern = "\\[fm=[()t *0-9a-fxA-F|><!%:^&.\\-+/?=~gl;rnsp]+\\]";
+                var music = Regex.Matches(pMessage, fmPattern);
+
+                foreach (var m in music)
+                {
+                    var value = (m as Match).Value;
+                    var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ");
+                    var replacement = string.Format(@"<b>Фрактальная музыка:</b>
+    <small><pre>{1}</pre></small><button id='mb{0}'>Сгенерировать</button>
+    <audio style='visibility:hidden;' controls='false' id='au{0}'></audio>", sp.GetHash().Value, formula);
+                    postScript += "document.getElementById('mb"+sp.GetHash().Value+
+                    "').onclick = function() { addFractalMusic(function(t){return "+formula+
+                    ";}, 210*8000, 'au"+sp.GetHash().Value+"');"+
+                        "this.parentNode.removeChild(this);"
+                    +"}\n";
+                    pMessage = pMessage.Replace(value, replacement);
+                }
+
                 string numTag = (p.NumberTag == int.MaxValue ? "" : "<grn><sup>#" + p.NumberTag + "</sup></grn> ");
                 //string hMessage = "[i]Пост " + p.GetHash().Value + " скрыт.[/i]";
                 bool hidden = false;
@@ -226,7 +309,7 @@ namespace nboard
                 {
                     sb.Append(
                         (
-                            (numTag + pMessage.Strip(true)).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            (numTag + pMessage).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             ("[Вверх]".ToRef((corePost?"/thread/":"/expand/") + p.ReplyTo.Value) +
                                 //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
                                 ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
@@ -264,7 +347,7 @@ namespace nboard
                 {
                      sb.Append(
                         (
-                            (numTag+pMessage.Strip(true)).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
+                            (numTag+pMessage).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
                             ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef(handler + p.GetHash().Value) : "") +
                                 (p.GetHash().Value != "bdd4b5fc1b3a933367bc6830fef72a35" ?
                             (
@@ -299,13 +382,15 @@ namespace nboard
 
             AddFooter(sb, sw.ElapsedMilliseconds, _db);
 
+            var result = sb.ToString();
+
             /*
             if (!_expand)
                 sb.Append("Развернуть".ToButton("", "", "window.location.href=window.location.toString().replace('thread','expand')").ToDiv("",""));
             else
                 sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
             */
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().AddVideo().ToHtmlBody(NotifierScript));
+            return new NanoHttpResponse(StatusCode.Ok, result.AddVideo().ToHtmlBody(FractalMusicScript + PostScript(postScript)));
         }
     }
 }
