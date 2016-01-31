@@ -60,9 +60,9 @@ namespace nboard
                 sb.Append(Convert.ToBase64String(slice, 0, slice.Length));
                 sb.Append("' >");
                 string prep = "";
-                bool tooBig = sb.Length > 32768;
+                bool tooBig = sb.Length > 64512;
                 if (sb.Length > 16384) prep = "Превышен лимит в 16384 символа. Такой нанопост будет хуже ретранслироваться другими.\n";
-                if (tooBig) prep = "Превышен лимит в 32768 символов. Такая картикна не отобразится.\n";
+                if (tooBig) prep = "Превышен лимит в 64512 символов. Такая картикна не отобразится.\n";
                 prep += string.Format("Размер: {0}, base64: {1}", slice.Length, sb.Length);
                 prep += "<br>";
 

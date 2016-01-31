@@ -278,7 +278,7 @@ function fetch_size() {
             s = s.Replace("[g]", "<g>");
             s = s.Replace("[/g]", "</g>");
 
-            var matches = Regex.Matches(s, "\\[img=[/A-z0-9+=]{16,32768}\\]");
+            var matches = Regex.Matches(s, "\\[img=[/A-z0-9+=]{16,64512}\\]");
 
             foreach (Match m in matches)
             {
