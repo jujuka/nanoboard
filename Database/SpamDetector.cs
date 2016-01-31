@@ -13,6 +13,14 @@ namespace nboard
     {
         private static List<string> _regexps;
 
+        public static int RuleCount
+        {
+            get
+            {
+                return _regexps.Count;
+            }
+        }
+
         static SpamDetector()
         {
             if (!File.Exists("spamfilter.txt"))

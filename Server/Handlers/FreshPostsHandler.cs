@@ -42,7 +42,7 @@ namespace nboard
             var sb = new StringBuilder();
             ThreadViewHandler.AddHeader(sb);
 
-            sb.Append("<div>Заметили много несуразных или поехавших постов? Это может быть спам, попробуйте отклонить контейнер.</div>");
+            sb.Append(string.Format("<div>Количество правил игнорирования постов: {0}. Настройте spamfilter.txt под себя.</div>", SpamDetector.RuleCount));
 
             sb.Append("[Очистить список]".ToButton("","", @"
                 var x = new XMLHttpRequest(); 
