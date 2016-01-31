@@ -297,12 +297,12 @@ function fetch_size() {
                 v = v.Substring(6, v.Length-7);
                 if (IsAllowedHost (v)){
                     s = s.Replace (m.Value, string.Format (
-                        "<small>Источник:{2}</small><br><img title=\"е злоупотребляйте постингом картинок со сторонних ресурсов, давайте сохраним наноборду независимой!\" id='imgid{0}' onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")' src=\"{1}\">",
+                        "<small>Источник: {2}</small><br><img title=\"Не злоупотребляйте постингом картинок со сторонних ресурсов, давайте сохраним наноборду независимой!\" id='imgid{0}' onclick='document.getElementById(this.id).classList.toggle(\"fullimg\")' src=\"{1}\">",
                         _id++, v,GetHost(v)));
                 }
                 else {
                     s = s.Replace (m.Value, string.Format (
-                        "<small>Запрещенный источник:{1}</small><br><a src=\"{0}\">{0}<a>",
+                        "<small>Источник не разрешен (см. allowed.txt): {1}</small><br><a src=\"{0}\">{0}<a>",
                         v,GetHost(v)));
                 }
             }
@@ -314,12 +314,12 @@ function fetch_size() {
                 v = v.Substring(6, v.Length-7);
                 if (IsAllowedHost (v)){
                     s = s.Replace (m.Value, string.Format (
-                        "<small>Источник:{1}</small><br><a class=\"svid\" onclick=show_vd(\"{0}\")>[Показать видео]</a>",
+                        "<small>Источник: {1}</small><br><a class=\"svid\" onclick=show_vd(\"{0}\")>[Показать видео]</a>",
                         v,GetHost(v)));
                 }
                 else {
                     s = s.Replace (m.Value, string.Format (
-                        "<small>Запрещенный источник:{1}</small><br><a src=\"{0}\">{0}<a>",
+                        "<small>Источник не разрешен (см. allowed.txt): {1}</small><br><a src=\"{0}\">{0}<a>",
                         v,GetHost(v)));
                 }
             }
