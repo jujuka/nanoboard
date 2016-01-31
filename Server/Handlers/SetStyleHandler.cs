@@ -23,8 +23,10 @@ namespace nboard
 
                 try
                 {
-                    var style = File.ReadAllText("styles/" + name.Replace(".css", "") + ".css");
+                    var filename = "styles/" + name.Replace(".css", "") + ".css";
+                    var style = File.ReadAllText(filename);
                     HtmlStringExtensions.Style = style;
+                    File.WriteAllText("setstyle.txt", filename);
                 }
                 catch
                 {

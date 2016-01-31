@@ -54,7 +54,14 @@ namespace nboard
                 File.Delete("style.css");
             }
 
-            Style = File.ReadAllText("styles/Nano.css");
+            var stylePath = "styles/Nano.css";
+
+            if (File.Exists("setstyle.txt"))
+            {
+                stylePath = File.ReadAllText("setstyle.txt");
+            }
+
+            Style = File.ReadAllText(stylePath);
 
             if (File.Exists("categories.txt"))
             {
