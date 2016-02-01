@@ -270,23 +270,21 @@ namespace nboard
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ");
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
     <small><pre>{1}</pre></small><button id='mb{0}'>Сгенерировать</button>
-    <audio style='visibility:hidden;' controls='false' id='au{0}'></audio>", sp.GetHash().Value+musicNum, formula);
-                    postScript += "document.getElementById('mb"+sp.GetHash().Value+musicNum+
-                    "').onclick = function() { addFractalMusic(function(t){return "+formula+
-                    ";}, 210*8000, 'au"+sp.GetHash().Value+musicNum+"');"+
-                        "this.parentNode.removeChild(this);"
-                    +"}\n";
+    <audio style='visibility:hidden;' controls='false' id='au{0}'></audio>", sp.GetHash().Value + musicNum, formula);
+                    postScript += "document.getElementById('mb" + sp.GetHash().Value + musicNum +
+                    "').onclick = function() { addFractalMusic(function(t){return " + formula +
+                    ";}, 210*8000, 'au" + sp.GetHash().Value + musicNum + "');" +
+                    "this.parentNode.removeChild(this);"
+                    + "}\n";
                     pMessage = pMessage.Replace(value, replacement);
                 }
 
-                string numTag = (p.NumberTag == int.MaxValue ? "" : "<grn><sup>#" + p.NumberTag + "</sup></grn> ");
-                //string hMessage = "[i]Пост " + p.GetHash().Value + " скрыт.[/i]";
+                string numTag = (p.NumberTag == int.MaxValue ? "" : "<grn><sup>#" + p.GetHash().Value.ShortenHash() + "</sup></grn> ");
                 bool hidden = false;
 
                 if (_db.IsHidden(p.GetHash()))
                 {
                     hidden = true;
-                    //pMessage = hMessage;
                 }
 
                 string handler = "/expand/";
@@ -301,21 +299,50 @@ namespace nboard
                     corePost = true;
                 }
 
-                if (_db.Get(p.ReplyTo) != null && 
+                if (_db.Get(p.ReplyTo) != null &&
                     (_db.Get(p.ReplyTo).ReplyTo.Value == NanoDB.CategoriesHashValue ||
-                     _db.Get(p.ReplyTo).ReplyTo.Value == NanoDB.RootHashValue))
+                    _db.Get(p.ReplyTo).ReplyTo.Value == NanoDB.RootHashValue))
                 {
                     corePost = true;
                 }
 
+                Func<NanoPost,string> addRefs = pst => {
+                    var children = _db.GetThreadPosts(pst.GetHash(), eraseDepth:false);
+                    var refs1 = "<br/><div><small>";
+                    int line = 0;
+                    foreach (var ch in children)
+                    {
+                        if (ch.GetHash().Value != pst.GetHash().Value)
+                        {
+                            line += 1;
+                            refs1 += "<a href='#" + ch.GetHash().Value + "'><i>&gt;&gt;" + ch.GetHash().Value.ShortenHash() + "</i></a>";
+                            if (line > 5) 
+                            {
+                                line = 0;
+                                refs1 += "</br>";
+                            }
+                        }
+                    }
+                    refs1 += "</small></div>";
+                    return refs1;
+                };
+
                 if (_expand && first && !p.GetHash().Zero && !p.ReplyTo.Zero)
                 {
+                    string refs = "";
+
+                    if (p.ReplyTo.Value != NanoDB.CategoriesHashValue &&
+                        p.ReplyTo.Value != NanoDB.RootHashValue && _expand)
+                    {
+                        refs = addRefs(p);
+                    }
+
                     sb.Append(
                         (
-                            (numTag + pMessage).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
-                            ("[Вверх]".ToRef((corePost?"/thread/":"/expand/") + p.ReplyTo.Value) +
+                            (numTag + pMessage + refs).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
+                            ("[Вверх]".ToRef((corePost ? "/thread/" : "/expand/") + p.ReplyTo.Value) +
                                 //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                                ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
+                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post", ""));
                     first = false;
                     continue;
@@ -326,9 +353,12 @@ namespace nboard
                 string ans = "ответ";
 
                 int a = answers % 100;
-                if (a == 0 || a % 10 == 0 || (a > 10 && a < 20)) ans += "ов";
-                else if (a % 10 >= 2 && a % 10 <= 4) ans += "а";
-                else if (a % 10 >= 5 && a % 10 <= 9) ans += "ов";
+                if (a == 0 || a % 10 == 0 || (a > 10 && a < 20))
+                    ans += "ов";
+                else if (a % 10 >= 2 && a % 10 <= 4)
+                    ans += "а";
+                else if (a % 10 >= 5 && a % 10 <= 9)
+                    ans += "ов";
 
                 if (p.GetHash().Value == _db.RootHash.Value)
                 {
@@ -348,9 +378,17 @@ namespace nboard
                 }
                 else
                 {
+                    string refs = "";
+
+                    if (p.ReplyTo.Value != NanoDB.CategoriesHashValue &&
+                        p.ReplyTo.Value != NanoDB.RootHashValue && _expand)
+                    {
+                        refs = addRefs(p);
+                    }
+
                      sb.Append(
                         (
-                            (numTag+pMessage).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
+                            ((_expand?("<a href='#"+p.ReplyTo.Value+"'><i>&gt;&gt;"+p.ReplyTo.Value.ShortenHash()+"</i></a><br/>"):"") + numTag+pMessage+refs).Replace("\n", "<br/>").ToStyledDiv("postinner", p.GetHash().Value, hidden?"visibility:hidden;height:0px;":"") +
                             ((answers > MinAnswers ? ("[" + answers + " " + ans + "]").ToRef(handler + p.GetHash().Value) : "") +
                                 (p.GetHash().Value != "bdd4b5fc1b3a933367bc6830fef72a35" ?
                             (

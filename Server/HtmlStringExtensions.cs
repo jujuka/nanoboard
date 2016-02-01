@@ -93,6 +93,11 @@ body {
 }
 ";
 
+        public static string ShortenHash(this string s)
+        {
+            return s.Substring(0, 4) + ".." + s.Substring(28);
+        }
+
         public static string AddBreak(this string s)
         {
             return s + Break;
