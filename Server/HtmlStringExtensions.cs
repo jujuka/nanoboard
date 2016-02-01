@@ -54,7 +54,14 @@ namespace nboard
                 File.Delete("style.css");
             }
 
-            Style = File.ReadAllText("styles/Nano.css");
+            var stylePath = "styles/Nano.css";
+
+            if (File.Exists("setstyle.txt"))
+            {
+                stylePath = File.ReadAllText("setstyle.txt");
+            }
+
+            Style = File.ReadAllText(stylePath);
 
             if (File.Exists("categories.txt"))
             {
@@ -85,6 +92,11 @@ body {
   color: #333;
 }
 ";
+
+        public static string ShortenHash(this string s)
+        {
+            return s.Substring(0, 4) + ".." + s.Substring(28);
+        }
 
         public static string AddBreak(this string s)
         {
@@ -332,7 +344,7 @@ function fetch_size() {
             s = s.Replace("[g]", "<g>");
             s = s.Replace("[/g]", "</g>");
 
-            var matches = Regex.Matches(s, "\\[img=[/A-z0-9+=]{16,32768}\\]");
+            var matches = Regex.Matches(s, "\\[img=[/A-z0-9+=]{16,64512}\\]");
 
             foreach (Match m in matches)
             {

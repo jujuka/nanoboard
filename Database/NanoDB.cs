@@ -279,7 +279,7 @@ namespace nboard
             return list.Distinct().ToArray();
         }
 
-        public NanoPost[] GetThreadPosts(Hash thread)
+        public NanoPost[] GetThreadPosts(Hash thread, bool eraseDepth = true)
         {
             if (!_threadPosts.ContainsKey(thread))
             {
@@ -302,7 +302,8 @@ namespace nboard
             }
 
             list.AddRange(_threadPosts[thread].ToArray().Sorted());
-            list.ForEach(p => p.DepthTag = 0);
+            if (eraseDepth)
+                list.ForEach(p => p.DepthTag = 0);
             return list.ToArray();
         }
 

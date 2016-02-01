@@ -38,7 +38,7 @@ namespace nboard
 
             while (true)
             {
-                var matches = Regex.Matches(msg, "\\[img=[/A-z0-9+=]{16,32768}\\]");
+                var matches = Regex.Matches(msg, "\\[img=[/A-z0-9+=]{16,64512}\\]");
 
                 if (matches.Count > 0)
                 {
