@@ -270,7 +270,7 @@ namespace nboard
                             (
                             (hidden?"[Вернуть]":"[Удалить]").ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
-                        var elem = document.getElementById('" + p.GetHash().Value + @"');
+                        var elem = document.getElementById('" + p.GetHash().Value + @");
                         if (elem.style.visibility != 'hidden') {
                             elem.style.visibility='hidden';
                             elem.style.height = '0px';
@@ -282,7 +282,7 @@ namespace nboard
                         }
                         ")) : "") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
+                     ("<a onclick='show_reply(\""+p.GetHash().Value+"\")'>[Ответить]</a>")).ToDiv("", "")
                         ).ToStyledDiv("post", "", "position:relative;left:" + p.DepthTag * 20 + "px;"));
                 }
             }
@@ -305,7 +305,7 @@ namespace nboard
             else
                 sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
             */
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().AddVideo().ToHtmlBody(NotifierScript));
+            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().AddVideo().AddReply().ToHtmlBody(NotifierScript));
         }
     }
 }
