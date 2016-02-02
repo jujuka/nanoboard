@@ -8,7 +8,7 @@ namespace nboard
     {
         public const int HashCrop = 16;
 
-        public static Hash Calculate(string raw)
+        public static string Calculate(string raw)
         {
             byte[] bhash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(raw));
             StringBuilder sb = new StringBuilder();
@@ -18,21 +18,7 @@ namespace nboard
                 sb.Append(bhash[i].ToString("x2"));
             }
 
-            return new Hash(sb.ToString());
-        }
-
-        [Obsolete]
-        public static Hash CalculateOld(string raw)
-        {
-            byte[] bhash = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(raw));
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < HashCrop; i++)
-            {
-                sb.Append(bhash[i].ToString("x2"));
-            }
-
-            return new Hash(sb.ToString());
+            return sb.ToString();
         }
     }
 }

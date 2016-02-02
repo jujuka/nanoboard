@@ -15,16 +15,6 @@ namespace nboard
     {
         public ApplicationStarter()
         {
-            PrepareFolders();
-
-            var db = new NanoDB();
-            new DownloadCheckDaemon(db);
-            db.ReadPosts();
-            /*form.FormClosed += (object sender, FormClosedEventArgs e) => {
-                daemon.Stop();
-                new PngMailer().FillOutbox(db);
-            };*/
-
             try
             {
                 if (!File.Exists("port.txt"))
@@ -53,31 +43,8 @@ namespace nboard
             }
 
             Console.WriteLine("Do not terminate manually, use shutdown action in web-interface.");
-            var serv = new NanoHttpServerBuilder(db).Build(port);
+            var serv = new NanoHttpServerBuilder().Build(port);
             serv.Run();
-        }
-
-        private void PrepareFolders()
-        {
-            if (!Directory.Exists(Strings.Containers))
-            {
-                Directory.CreateDirectory(Strings.Containers);
-            }
-
-            if (new DirectoryInfo(Strings.Containers).GetFiles().Length == 0)
-            {
-                Console.WriteLine("No containers in containers folder");
-            }
-
-            if (!Directory.Exists(Strings.Upload))
-            {
-                Directory.CreateDirectory(Strings.Upload);
-            }
-
-            if (!Directory.Exists(Strings.Download))
-            {
-                Directory.CreateDirectory(Strings.Download);
-            }
         }
     }
     

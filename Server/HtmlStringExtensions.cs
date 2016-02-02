@@ -24,10 +24,6 @@ namespace nboard
 
         public static List<string> UpdatePlaces()
         {
-            if (File.Exists(Strings.Places))
-                _places = File.ReadAllLines(Strings.Places).ToList();
-            else
-                _places = new List<string>();
             return _places;
         }
 

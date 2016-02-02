@@ -14,8 +14,6 @@ namespace nboard
 {
     class WriteHandler : IRequestHandler
     {
-        private readonly NanoDB _db;
-
         static string ToMonthName(int i)
         {
             switch (i)
@@ -43,11 +41,6 @@ namespace nboard
             return string.Format("{0:00}/{1}/{2}, {3:00}:{4:00}:{5:00} (UTC), client: nboard v" + App.Version, now.Day, ToMonthName(now.Month), now.Year, now.Hour, now.Minute, now.Second);
         }
 
-        public WriteHandler(NanoDB db)
-        {
-            _db = db;
-        }
-
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
             if (string.IsNullOrEmpty(request.Content))
@@ -55,49 +48,20 @@ namespace nboard
                 return new ErrorHandler(StatusCode.BadRequest, "Empty message").Handle(request);
             }
 
-            Hash thread = new Hash(request.Address.Split('/').Last());
-
-            if (thread.Invalid)
-            {
-                return new ErrorHandler(StatusCode.BadRequest, "Invalid hash").Handle(request);
-            }
+            string thread = request.Address.Split('/').Last();
 
             var str = Encoding.UTF8.GetString(request.Connection.Raw);
             str = str.Substring(str.IndexOf("\r\n\r\n") + 4);
-            NanoPost post = null;
 
-            if (thread.Value != NanoDB.CategoriesHashValue)
-            {
-                post = new NanoPost(thread, "[g]" + GetPostHeader() + "[/g]\n" + str);
-            }
-
-            else
-            {
-                post = new NanoPost(thread, str);
-            }
-
-            if (post.Invalid)
-            {
-                NotificationHandler.Instance.AddNotification("Превышен максимальный размер поста.");
-                return new NanoHttpResponse(StatusCode.BadRequest, "");
-            }
-
-            if (SpamDetector.IsSpam(post.Message))
+            if (SpamDetector.IsSpam(str))
             {
                 NotificationHandler.Instance.AddNotification("Ваш пост из-за своего содержания будет считаться спамом.");
                 return new NanoHttpResponse(StatusCode.BadRequest, "");
             }
             else
             {
-                NotificationHandler.Instance.AddNotification(
-                    "Сообщение добавлено, " + post.SerializedBytes().Length + " байт ("+post.SerializedString().Length+" симв.)");
-
-                if (_db.AddPost(post))
-                {
-                    _db.WriteNewPosts(false);
-                }
-
-                return new NanoHttpResponse(StatusCode.Ok, post.GetHash().Value);
+                //if (_db.AddPost(post))
+                return new NanoHttpResponse(StatusCode.Ok, HashCalculator.Calculate(thread + str));
             }
         }
     }

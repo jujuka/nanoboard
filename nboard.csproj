@@ -34,24 +34,20 @@
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>bin\Release\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Strings.cs" />
     <Compile Include="ApplicationStarter.cs" />
-    <Compile Include="Database\NanoDB.cs" />
     <Compile Include="Server\NanoHttpRequest.cs" />
     <Compile Include="Server\NanoHttpResponse.cs" />
     <Compile Include="Server\NanoHttpServer.cs" />
     <Compile Include="Server\NanoHttpServerBuilder.cs" />
-    <Compile Include="Png\PngMailer.cs" />
-    <Compile Include="Png\Aggregator.cs" />
-    <Compile Include="Png\DownloadCheckDaemon.cs" />
     <Compile Include="Misc\FileUtils.cs" />
-    <Compile Include="Database\Hash.cs" />
     <Compile Include="Database\HashCalculator.cs" />
-    <Compile Include="Database\NanoPostExtensions.cs" />
-    <Compile Include="Database\NanoPost.cs" />
     <Compile Include="Misc\Logger.cs" />
     <Compile Include="Server\StatusCode.cs" />
     <Compile Include="Server\HtmlStringExtensions.cs" />
@@ -60,39 +56,16 @@
     <Compile Include="Server\Handlers\StubHandler.cs" />
     <Compile Include="Server\Handlers\IRequestHandler.cs" />
     <Compile Include="Server\Handlers\ErrorHandler.cs" />
-    <Compile Include="Server\Handlers\ThreadViewHandler.cs" />
-    <Compile Include="Server\Handlers\ReplyViewHandler.cs" />
     <Compile Include="Server\Handlers\WriteHandler.cs" />
-    <Compile Include="Server\Handlers\HideHandler.cs" />
     <Compile Include="Server\Handlers\ShutdownHandler.cs" />
-    <Compile Include="Server\Handlers\AggregateHandler.cs" />
-    <Compile Include="Server\Handlers\SaveHandler.cs" />
-    <Compile Include="Server\Handlers\AsmPngHandler.cs" />
-    <Compile Include="Server\Handlers\FreshPostsHandler.cs" />
     <Compile Include="Server\Handlers\NotificationHandler.cs" />
     <Compile Include="Server\Handlers\ImageBase64ConvertHandler.cs" />
     <Compile Include="Server\Handlers\ConvertResultHandler.cs" />
-    <Compile Include="Misc\GZipUtil.cs" />
-    <Compile Include="Database\NanoPostPackUtil.cs" />
-    <Compile Include="Png\PngUtils.cs" />
-    <Compile Include="Png\PngStegoUtil.cs" />
-    <Compile Include="Misc\Salsa20.cs" />
-    <Compile Include="Misc\ByteEncryptionUtil.cs" />
-    <Compile Include="Server\Handlers\SetStyleHandler.cs" />
-    <Compile Include="Png\PngContainerCreatorNew.cs" />
     <Compile Include="App.cs" />
-    <Compile Include="Png\PngContainerCreatorOld.cs" />
-    <Compile Include="Server\Handlers\HideAllHandler.cs" />
     <Compile Include="Server\Handlers\RawPostHandler.cs" />
-    <Compile Include="Server\Handlers\ChildrenHandler.cs" />
-    <Compile Include="Server\Handlers\PostCountHandler.cs" />
-    <Compile Include="Server\Handlers\LastPostsHandler.cs" />
-    <Compile Include="Server\Handlers\GetPostHandler.cs" />
     <Compile Include="Database\SpamDetector.cs" />
     <Compile Include="Misc\ImageCompressor.cs" />
     <Compile Include="Server\Handlers\CompressImageHandler.cs" />
-    <Compile Include="Server\Handlers\AddPlaceHandler.cs" />
-    <Compile Include="Server\Handlers\DelPlaceHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
