@@ -107,7 +107,7 @@ body {
         {
             return s+@"
 <style>.reply,reply-head,reply-footer{visibility: hidden;min-height: 80px;min-width: 350px;padding:4px 12px 12px 4px; position: fixed}.close{float:right;}.reply-head{width:100%;height:18px; display: inline-block;}.reply-title{display: inline-block;}.reply-body{width:100%;resize: none;}.reply-footer{height:28px; width:100%;}</style>
-<div class =""reply post"">
+<div class =""reply post"" style=""box-shadow: 0px 0px 5px #000000;"">
     <div class=""reply-head""><div class=""reply-title""></div><a class=""close"" onclick=""$('.reply').css('visibility','hidden')"">[X]</a></div>
     <textarea class=""reply-body""></textarea>
     <div class=reply-footer>
