@@ -342,7 +342,7 @@ namespace nboard
                             (numTag + pMessage + refs).Replace("\n", "<br/>").ToDiv("postinner", p.GetHash().Value) +
                             ("[Вверх]".ToRef((corePost ? "/thread/" : "/expand/") + p.ReplyTo.Value) +
                                 //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
+                     ("<a onclick='show_reply(\""+p.GetHash().Value+"\")'>[Быстрый ответ]</a>")+("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToDiv("post", ""));
                     first = false;
                     continue;
@@ -406,7 +406,7 @@ namespace nboard
                         }
                         ")) : "") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
-                            ("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
+                     ("<a onclick='show_reply(\""+p.GetHash().Value+"\")'>[Быстрый ответ]</a>")+("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToStyledDiv("post", "", "position:relative;left:" + p.DepthTag * 20 + "px;"));
                 }
             }
@@ -431,7 +431,7 @@ namespace nboard
             else
                 sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
             */
-            return new NanoHttpResponse(StatusCode.Ok, result.AddVideo().ToHtmlBody(FractalMusicScript + PostScript(postScript)));
+            return new NanoHttpResponse(StatusCode.Ok, result.AddVideo().AddReply().ToHtmlBody(FractalMusicScript + PostScript(postScript)));
         }
     }
 }

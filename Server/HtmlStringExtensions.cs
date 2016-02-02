@@ -103,11 +103,64 @@ body {
             return s + Break;
         }
 
+        public static string AddReply(this string s)
+        {
+            return s+@"
+<style>.reply,reply-head,reply-footer{visibility: hidden;background-color:#687fa5;min-height: 80px;min-width: 350px;padding:4px 12px 12px 4px; position: fixed}.close{float:right;}.reply-head{width:100%;height:18px; display: inline-block;}.reply-title{display: inline-block;}.reply-body{width:100%;resize: none;}.reply-footer{height:28px; width:100%;}</style>
+<div class =""reply"">
+    <div class=""reply-head""><div class=""reply-title""></div><a class=""close"" onclick=""$('.reply').css('visibility','hidden')"">[X]</a></div>
+    <textarea class=""reply-body""></textarea>
+    <div class=reply-footer>
+        <button class=""send_bt"">Отправить</button>
+        <a onclick=add_tag_to_reply(""[i][/i]"")>[<i>i</i>]</a>
+        <a onclick=add_tag_to_reply(""[b][/b]"")>[<b>b</b>]</a>
+        <a onclick=add_tag_to_reply(""[u][/u]"")>[<u>u</u>]</a>
+        <a onclick=add_tag_to_reply(""[s][/s]"")>[<s>s</s>]</a>
+        <a onclick=add_tag_to_reply(""[sp][/sp]"")>[sp]</a>
+        <a onclick=add_tag_to_reply(""[img=]"")>[img=]</a>
+        <a onclick=add_tag_to_reply(""[simg=]"")>[simg=]</a>
+        <a onclick=add_tag_to_reply(""[svid=]"")>[svid=]</a>
+    </div>
+</div>
+<script>
+
+function send(path) {
+    var x = new XMLHttpRequest();
+    x.open('POST', '../write/'+path, true);
+    console.log($('.reply-body').val())
+    x.send($('.reply-body').val());
+    $('.reply').css('visibility','hidden');
+    $('.reply-body').val()
+}
+function add_tag_to_reply(tag) {
+    var cursorPos = $('.reply-body').prop('selectionStart');
+    v = $('.reply-body').val();
+    textBefore = v.substring(0,  cursorPos );
+    textAfter  = v.substring( cursorPos, v.length );
+    $('.reply-body').val( textBefore+tag+textAfter );
+}
+function show_reply(path) {
+    $('.reply').css(""visibility"",""visible"");
+    $('.reply-title').text('Ответ на:'+path);
+    $('.send_bt').on(""click"", function() {
+        send(path);
+    })
+}
+function fetch_respond_size() {
+    $('.reply-body').height($('.reply').height()-60);
+}
+$(function(){
+    $('.reply').draggable().resizable({resize: fetch_respond_size})
+    fetch_respond_size();
+});
+</script>";
+        }
+
         public static string AddVideo(this string s)
         {
             return s+@"<style>"+JQueryUiMinCss+"</style>"+"<script>"+JQueryMinJs+"</script>"+
             @"<script>"+JQueryUiMinJs+"</script>"+@"
-<style>html,body,#container{height:100%}.vc{visibility: hidden;padding:5px;background-color:#f81;position:fixed;}}</style>
+<style>html,body,#container{height:100%}.vc{visibility: hidden;padding:5px;background-color:#f81;position:fixed;}</style>
 <div class =""vc""><video title=""Не злоупотребляйте постингом картинок со сторонних ресурсов, давайте сохраним наноборду независимой!"" controls class =""vd""></div>
 <script>
 $(document).ready(function(){
