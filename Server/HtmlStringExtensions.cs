@@ -106,8 +106,8 @@ body {
         public static string AddReply(this string s)
         {
             return s+@"
-<style>.reply,reply-head,reply-footer{visibility: hidden;background-color:#687fa5;min-height: 80px;min-width: 350px;padding:4px 12px 12px 4px; position: fixed}.close{float:right;}.reply-head{width:100%;height:18px; display: inline-block;}.reply-title{display: inline-block;}.reply-body{width:100%;resize: none;}.reply-footer{height:28px; width:100%;}</style>
-<div class =""reply"">
+<style>.reply,reply-head,reply-footer{visibility: hidden;min-height: 80px;min-width: 350px;padding:4px 12px 12px 4px; position: fixed}.close{float:right;}.reply-head{width:100%;height:18px; display: inline-block;}.reply-title{display: inline-block;}.reply-body{width:100%;resize: none;}.reply-footer{height:28px; width:100%;}</style>
+<div class =""reply post"">
     <div class=""reply-head""><div class=""reply-title""></div><a class=""close"" onclick=""$('.reply').css('visibility','hidden')"">[X]</a></div>
     <textarea class=""reply-body""></textarea>
     <div class=reply-footer>
@@ -141,7 +141,7 @@ function add_tag_to_reply(tag) {
 }
 function show_reply(path) {
     $('.reply').css(""visibility"",""visible"");
-    $('.reply-title').text('Ответ на:'+path);
+    $('.reply-title').text('Ответ на: '+path);
     $('.send_bt').on(""click"", function() {
         send(path);
     })
