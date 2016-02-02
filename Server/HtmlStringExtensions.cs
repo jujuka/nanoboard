@@ -133,7 +133,6 @@ function send(path) {
     $('.reply-body').val()
 }
 function add_tag_to_reply(tag) {
-    //$('.reply-body').val($('.reply-body').val()+tag)
     var cursorPos = $('.reply-body').prop('selectionStart');
     v = $('.reply-body').val();
     textBefore = v.substring(0,  cursorPos );
