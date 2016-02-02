@@ -106,20 +106,21 @@ body {
         public static string AddReply(this string s)
         {
             return s+@"
-<style>.reply,reply-head,reply-footer{visibility: hidden;min-height: 80px;min-width: 350px;padding:4px 12px 12px 4px; position: fixed}.close{float:right;}.reply-head{width:100%;height:18px; display: inline-block;}.reply-title{display: inline-block;}.reply-body{width:100%;resize: none;}.reply-footer{height:28px; width:100%;}</style>
+<style>.reply,reply-head,reply-footer{visibility: hidden;min-height: 120px;min-width: 250px;padding:4px 12px 12px 4px; position: fixed}.close{float:right;}.reply-head{width:100%;display: inline-block;}.reply-title{display: inline-block; cursor:default;}.reply-body{width:100%;resize: none;}.reply-footer{width:100%;}</style>
 <div class =""reply post"" style=""box-shadow: 0px 0px 5px #000000;"">
     <div class=""reply-head""><div class=""reply-title""></div><a class=""close"" onclick=""$('.reply').css('visibility','hidden')"">[X]</a></div>
     <textarea class=""reply-body""></textarea>
     <div class=reply-footer>
-        <button class=""send_bt"">Отправить</button>
-        <a onclick=add_tag_to_reply(""[i][/i]"")>[<i>i</i>]</a>
-        <a onclick=add_tag_to_reply(""[b][/b]"")>[<b>b</b>]</a>
-        <a onclick=add_tag_to_reply(""[u][/u]"")>[<u>u</u>]</a>
-        <a onclick=add_tag_to_reply(""[s][/s]"")>[<s>s</s>]</a>
-        <a onclick=add_tag_to_reply(""[sp][/sp]"")>[sp]</a>
-        <a onclick=add_tag_to_reply(""[img=]"")>[img=]</a>
-        <a onclick=add_tag_to_reply(""[simg=]"")>[simg=]</a>
-        <a onclick=add_tag_to_reply(""[svid=]"")>[svid=]</a>
+<a onclick=surround_with_tag(""i"")><small>[<i>Курсив</i>]</small></a>
+<a onclick=surround_with_tag(""b"")><small>[<b>Жирный</b>]</small></a>
+<a onclick=surround_with_tag(""u"")><small>[<u>Подчерк.</u>]</small></a>
+<a onclick=surround_with_tag(""s"")><small>[<s>Зачерк.</s>]</small></a>
+<a onclick=surround_with_tag(""sp"")><small>[<sp>Спойлер</sp>]</small></a><br/>
+<a onclick=add_tag_to_reply(""[img=]"")><small>[Base64-картинка]</small></a>
+<a onclick=add_tag_to_reply(""[simg=]"")><small>[Картинка извне]</small></a>
+<a onclick=add_tag_to_reply(""[svid=]"")><small>[Видео извне]</small></a>
+<a onclick=add_tag_to_reply(""[fm=]"")><small>[Fractal music]</small></a><br/>
+<button class=""send_bt"">Отправить</button>
     </div>
 </div>
 <script>
@@ -147,28 +148,39 @@ function send(path) {
     }
     x.send($('.reply-body').val());
     $('.reply').css('visibility','hidden');
-    $('.reply-body').val();
+    $('.reply-body').val('');
 }
 function add_tag_to_reply(tag) {
     var cursorPos = $('.reply-body').prop('selectionStart');
     v = $('.reply-body').val();
-    textBefore = v.substring(0,  cursorPos );
-    textAfter  = v.substring( cursorPos, v.length );
+    var textBefore = v.substring(0,  cursorPos );
+    var textAfter  = v.substring(cursorPos);
     $('.reply-body').val( textBefore+tag+textAfter );
+}
+function surround_with_tag(tag) {
+    var cursorPos = $('.reply-body').prop('selectionStart');
+    var end = $('.reply-body').prop('selectionEnd');
+    v = $('.reply-body').val();
+    var textBefore = v.substring(0,  cursorPos);
+    var textInside = v.substring(cursorPos, end);
+    var textAfter  = v.substring( end );
+    $('.reply-body').val( textBefore+'['+tag+']'+textInside+'[/'+tag+']'+textAfter );
 }
 function show_reply(path) {
     $('.reply').css(""visibility"",""visible"");
-    $('.reply-title').text('Ответ на: '+path);
+    $('.reply-title').html('Ответ на: <a href=""#'+path+'"">&gt;&gt;'+path.substring(0,4)+'..'+path.substring(28)+'</a>');
     $('.send_bt').on(""click"", function() {
         send(path);
     })
 }
+// TODO: fix resize
+/*
 function fetch_respond_size() {
     $('.reply-body').height($('.reply').height()-60);
 }
+*/
 $(function(){
-    $('.reply').draggable().resizable({resize: fetch_respond_size})
-    fetch_respond_size();
+    $('.reply').draggable();//.resizable({resize: fetch_respond_size})
 });
 </script>";
         }
