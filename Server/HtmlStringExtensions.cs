@@ -128,6 +128,10 @@ function send(path) {
     var x = new XMLHttpRequest();
     x.open('POST', '../write/'+path, true);
     console.log($('.reply-body').val())
+    x.onreadystatechange = function() {
+        console.log(window.location.href+'#'+x.responseText);
+        //window.location.assign(window.location.href+='#'+x.responseText);
+    }
     x.send($('.reply-body').val());
     $('.reply').css('visibility','hidden');
     $('.reply-body').val()
