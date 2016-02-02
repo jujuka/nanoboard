@@ -124,17 +124,30 @@ body {
 </div>
 <script>
 
+var h = window.location.href.toString();
+if (h.contains('#')) {
+h = h.substring(h.indexOf('#')+1);
+var element = document.getElementById(h);
+element.style.border = '1px dotted #333';
+element.scrollIntoView({block: 'start', behavior: 'smooth'});
+}
+
 function send(path) {
     var x = new XMLHttpRequest();
     x.open('POST', '../write/'+path, true);
-    console.log($('.reply-body').val())
     x.onreadystatechange = function() {
-        console.log(window.location.href+'#'+x.responseText);
-        //window.location.assign(window.location.href+='#'+x.responseText);
+        if (x.readyState != 4 || x.status != 200) return;
+        var h = window.location.href.toString();
+        if (h.contains('#')) h = h.substring(0, h.indexOf('#'));
+        while (h.endsWith('#')) h = h.substring(0,h.length-1);
+        h += '#' + x.responseText;
+        location.href = '#';
+        location.href = h;
+        location.reload();
     }
     x.send($('.reply-body').val());
     $('.reply').css('visibility','hidden');
-    $('.reply-body').val()
+    $('.reply-body').val();
 }
 function add_tag_to_reply(tag) {
     var cursorPos = $('.reply-body').prop('selectionStart');
