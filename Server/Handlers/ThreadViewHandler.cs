@@ -394,7 +394,7 @@ namespace nboard
                             (
                             (hidden?"[Вернуть]":"[Удалить]").ToButton("", "", @"var x = new XMLHttpRequest(); x.open('POST', '../hide/" + p.GetHash().Value + @"', true);
                         x.send('');
-                        var elem = document.getElementById('" + p.GetHash().Value + @");
+                        var elem = document.getElementById('" + p.GetHash().Value + @"');
                         if (elem.style.visibility != 'hidden') {
                             elem.style.visibility='hidden';
                             elem.style.height = '0px';
