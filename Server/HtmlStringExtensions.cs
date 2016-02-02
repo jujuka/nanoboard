@@ -116,7 +116,7 @@ body {
 <a onclick=surround_with_tag(""u"")><small>[<u>Подчерк.</u>]</small></a>
 <a onclick=surround_with_tag(""s"")><small>[<s>Зачерк.</s>]</small></a>
 <a onclick=surround_with_tag(""sp"")><small>[<sp>Спойлер</sp>]</small></a><br/>
-<a onclick=add_tag_to_reply(""[img=]"")><small>[Base64-картинка]</small></a>
+<a target='_blank' href='/image'><small>[Base64-картинка]</small></a>
 <a onclick=add_tag_to_reply(""[simg=]"")><small>[Картинка извне]</small></a>
 <a onclick=add_tag_to_reply(""[svid=]"")><small>[Видео извне]</small></a>
 <a onclick=add_tag_to_reply(""[fm=]"")><small>[Fractal music]</small></a><br/>
