@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace nboard
 {
@@ -258,7 +259,7 @@ namespace nboard
                 //string pMessage = p.Message;
                 string pMessage = p.Message.Strip(true);
 
-                var fmPattern = "\\[fm=[()t *0-9a-fxA-F|><!%:^&.\\-+/?=~gl;rnsp]+\\]";
+                var fmPattern = "\\[fm=.*\\]";
                 var music = Regex.Matches(pMessage, fmPattern);
 
                 int musicNum = 0;
@@ -267,6 +268,9 @@ namespace nboard
                 {
                     musicNum += 1;
                     var value = (m as Match).Value;
+					value = value.Replace ("post", "dummy0");
+					value = value.Replace ("XMLHttpRequest", "dummy1");
+					value = value.Replace ("eval", "dummy2");
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ");
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
     <small><pre>{1}</pre></small><button id='mb{0}'>Сгенерировать</button>
