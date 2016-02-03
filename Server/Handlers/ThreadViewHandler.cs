@@ -271,6 +271,8 @@ namespace nboard
 					value = value.Replace ("post", "dummy0");
 					value = value.Replace ("XMLHttpRequest", "dummy1");
 					value = value.Replace ("eval", "dummy2");
+					value = value.Replace ("ajax", "dummy3");
+					value = value.Replace ("get", "dummy4");
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ").
 						Replace("’", "'").Replace("“", "\"");
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
