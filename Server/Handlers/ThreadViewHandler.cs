@@ -281,9 +281,8 @@ namespace nboard
                     value = value.Replace ("}", "dummy9");
 					value = value.Replace ("{", "dummy10");
                     value = value.Replace ("this", "dummy11");
-					value = value.Replace (";", "");
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ").
-						Replace("’", "'").Replace("“", "\"");
+						Replace("’", "'").Replace("“", "\"").Replace(";", "");
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
     <small><pre>{1}</pre></small><button id='mb{0}'>Сгенерировать</button>
     <audio style='visibility:hidden;' controls='false' id='au{0}'></audio>", sp.GetHash().Value + musicNum, formula);
