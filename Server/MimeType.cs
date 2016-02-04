@@ -16,6 +16,7 @@ namespace NServer
         public const string Json = "application/json; charset=utf-8";
         public const string Js = "application/javascript; charset=utf-8";
         public const string Css = "text/css; charset=utf-8";
+        public const string Plain = "text/plain; charset=utf-8";
         public const string Image = "image/png";
     }
     

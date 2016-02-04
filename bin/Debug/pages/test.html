@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>
+      Test
+    </title>
+    <style>
+      input {
+        width: 400px;
+      }
+    </style>
+    <script src='/scripts/jquery.min.js'></script>
+    <script>
+      $(function(){
+        $('button').click(function(){
+          $.post('../api/add/' + $('input').val(), 
+                 $('textarea').val(),
+                 function(data) {
+                  $('input').val(JSON.parse(data).hash);
+                 });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Welcome! Добро пожаловать!</h1>
+    <input type='text'></input><br/>
+    <textarea></textarea><br/>
+    <button>send</button>
+  </body>
+</html>

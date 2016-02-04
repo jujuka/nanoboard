@@ -37,9 +37,10 @@ namespace NServer
         }
 
         public HttpResponse(string code, string content)
+            : this(code, content, MimeType.Plain)
         {
-            _response = "HTTP/1.1 " + code + (string.IsNullOrEmpty(content) ? "\r\n" : ("\r\n\r\n"));
-            _content = content;
+            //_response = "HTTP/1.1 " + code + (string.IsNullOrEmpty(content) ? "\r\n" : ("\r\n\r\n"));
+            //_content = content;
         }
 
         public string GetResponse()
