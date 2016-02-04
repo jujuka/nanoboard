@@ -11,6 +11,7 @@ namespace NDB
     class PostDb : IPostDb
     {
         private readonly string _index = "index.json";
+		private const string DiffFile = "diff.list";
         private const string DeletedStub = "post was deleted";
         private const string DataPrefix = "";
         private const string DataSuffix = ".db";
@@ -102,16 +103,51 @@ namespace NDB
             _ordered.Add(r.hash);
         }
 
+		private void UpdateDbRef(DbPostRef r)
+		{
+			bool isNew = !_refs.ContainsKey(r.hash);
+			_refs[r.hash] = r;
+			if (!r.deleted && _deleted.Contains(r.hash)) {
+				_deleted.Remove(r.hash);
+			}
+			if (!_rrefs.ContainsKey(r.replyTo))
+				_rrefs[r.replyTo] = new List<DbPostRef>();
+			_rrefs[r.replyTo].Add(r);
+			if (r.deleted)
+				_deleted.Add(r.hash);
+			if (r.deleted && r.length > 0)
+				_free.Add(r.hash);
+			if (isNew)
+				_ordered.Add(r.hash);
+		}
+
         private void ReadRefs()
         {
-            if (!File.Exists(_index)) return;
-            var indexString = File.ReadAllText(_index);
-            var refs = JsonConvert.DeserializeObject<Index>(indexString).indexes;
+			if (File.Exists (_index)) 
+			{
+				var indexString = File.ReadAllText(_index);
+				var refs = JsonConvert.DeserializeObject<Index> (indexString).indexes;
 
-            foreach (var r in refs)
+				foreach (var r in refs) 
+				{
+					AddDbRef (r);
+				}
+			}
+
+            if (File.Exists(DiffFile))
             {
-                AddDbRef(r);
+                var diffs = File.ReadAllLines(DiffFile);
+
+                foreach (var diff in diffs)
+                {
+                    var r = JsonConvert.DeserializeObject<DbPostRef>(diff);
+                    UpdateDbRef(r);
+                }
+
+                File.WriteAllText(DiffFile, "");
             }
+
+			Flush();
         }
 
         #region INanoDb implementation
@@ -133,6 +169,7 @@ namespace NDB
             {
                 _free.Remove(r.hash);
                 FileUtil.Write(r.file, bytes, r.offset);
+				File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
                 return true;
             }
 
@@ -166,6 +203,7 @@ namespace NDB
                     FileUtil.Write(best.file, bytes, r.offset);
                     r.file = best.file;
                     best.file = null;
+					File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
                     return true;
                 }
             }
@@ -173,6 +211,7 @@ namespace NDB
             r.offset = FileUtil.Append(_data, bytes);
             r.file = _data;
             IncreaseCheckDataSize(r.length);
+			File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
             return true;
         }
 
@@ -225,6 +264,7 @@ namespace NDB
                     r.file = best.file;
                     best.file = null;
                     AddDbRef(r);
+					File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
                     return true;
                 }
             }
@@ -233,6 +273,7 @@ namespace NDB
             r.file = _data;
             IncreaseCheckDataSize(r.length);
             AddDbRef(r);
+			File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
             return true;
         }
 
@@ -303,7 +344,6 @@ namespace NDB
         {
             var index = new Index();
             index.indexes = _refs.Values.ToArray();
-            //var json = JsonConvert.SerializeObject(index, Formatting.Indented);
             var json = JsonConvert.SerializeObject(index, Formatting.None);
             File.WriteAllText(_index, json);
         }
