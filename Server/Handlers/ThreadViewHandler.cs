@@ -278,7 +278,7 @@ namespace nboard
                     value = value.Replace ("HTML", "dummy6");
 					value = value.Replace ("append", "dummy7");
 					value = value.Replace ("script", "dummy8");
-					value = value.Replace ("btoa", "dummy9");
+					value = value.Replace ("this", "dummy11");
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ").
 						Replace("’", "'").Replace("“", "\"");
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
