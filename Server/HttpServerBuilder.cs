@@ -1,0 +1,37 @@
+﻿using System;
+using System.Security.Cryptography;
+using System.Text;
+using System.Collections.Generic;
+using System.IO;
+using System.Drawing;
+using System.Threading;
+using System.Net.Sockets;
+using System.Net;
+using NDB;
+
+namespace NServer
+{
+    class HttpServerBuilder
+    {
+        private readonly PostDb _db;
+
+        public HttpServerBuilder(PostDb db)
+        {
+            _db = db;
+        }
+
+        public HttpServer Build()
+        {
+            string ip = Configurator.Instance.GetValue("ip", "127.0.0.1");
+            int port = int.Parse(Configurator.Instance.GetValue("port", "7345"));
+            var server = new HttpServer(ip, port);
+            server.SetRootHandler(new ErrorHandler(StatusCode.NotFound, "Under construction"));
+            server.AddHandler("api", new DbApiHandler(_db));
+            server.AddHandler("pages", new FileHandler("pages", MimeType.Html));
+            server.AddHandler("scripts", new FileHandler("scripts", MimeType.Js));
+            server.AddHandler("styles", new FileHandler("styles", MimeType.Css));
+            server.AddHandler("images", new FileHandler("images", MimeType.Image, true));
+            return server;
+        }
+    }
+}

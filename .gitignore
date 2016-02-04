@@ -1,3 +1,7 @@
+*.sln
+*.userprefs
+*.db
+*.json
 obj/
 bin/
 .DS_Store
