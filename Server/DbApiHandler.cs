@@ -105,7 +105,7 @@ namespace NServer
 
                 else
                 {
-                    return new ErrorHandler(StatusCode.BadRequest, "No such command. Available commands: " + JsonConvert.SerializeObject(_handlers.Keys.ToArray())).Handle(request);
+                    return new ErrorHandler(StatusCode.BadRequest, "No such command: " + cmd + ". Available commands: " + JsonConvert.SerializeObject(_handlers.Keys.ToArray())).Handle(request);
                 }
             }
 

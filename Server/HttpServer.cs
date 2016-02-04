@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace NServer
 {
@@ -70,7 +72,8 @@ namespace NServer
 
             else
             {
-                connection.Response(new ErrorHandler(StatusCode.BadRequest, "Unknown endpoint: " + endpoint).Handle(request));
+                connection.Response(new ErrorHandler(StatusCode.BadRequest, 
+                    "Unknown endpoint: " + endpoint + ". Supported: " + JsonConvert.SerializeObject(_handlers.Keys.ToArray())).Handle(request));
             }
         }
 

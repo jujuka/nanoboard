@@ -103,6 +103,7 @@ namespace NDB
             _ordered.Add(r.hash);
         }
 
+        // reading diff
 		private void UpdateDbRef(DbPostRef r)
 		{
 			bool isNew = !_refs.ContainsKey(r.hash);
@@ -112,11 +113,14 @@ namespace NDB
 			}
 			if (!_rrefs.ContainsKey(r.replyTo))
 				_rrefs[r.replyTo] = new List<DbPostRef>();
-			_rrefs[r.replyTo].Add(r);
+            if (isNew) 
+                _rrefs[r.replyTo].Add(r);
 			if (r.deleted)
 				_deleted.Add(r.hash);
 			if (r.deleted && r.length > 0)
 				_free.Add(r.hash);
+            if (r.deleted && r.length == 0)
+                _free.Remove(r.hash);
 			if (isNew)
 				_ordered.Add(r.hash);
 		}
