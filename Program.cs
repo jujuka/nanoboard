@@ -9,6 +9,7 @@ namespace NDB
     {
         public static void Main(string[] args)
         {
+            // jsfiddle.net/handtrix/xztfbx1m/
             var serv = new HttpServerBuilder(new PostDb()).Build();
             serv.Run();
         }
