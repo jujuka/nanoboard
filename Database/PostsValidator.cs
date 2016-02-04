@@ -21,7 +21,7 @@ namespace NDB
 
             p.hash = HashCalculator.Calculate(p.replyto + p.message);
 
-            if (p.replyto.Length > 32)
+            if (p.replyto.Length != 32)
                 return false;
 
             foreach (var ch in p.replyto)

@@ -13,7 +13,7 @@ namespace NDB
         public Post[] Read(string pathToJson)
         {
             var json = File.ReadAllText(pathToJson);
-            var posts = JsonConvert.DeserializeObject<Posts>(json).posts;
+            var posts = JsonConvert.DeserializeObject<Post[]>(json);
             return PostsValidator.Validate(posts);
         }
     }

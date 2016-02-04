@@ -45,7 +45,6 @@
     <Compile Include="Database\HashCalculator.cs" />
     <Compile Include="Database\Index.cs" />
     <Compile Include="Database\Post.cs" />
-    <Compile Include="Database\Posts.cs" />
     <Compile Include="Database\PostsReader.cs" />
     <Compile Include="Database\PostsValidator.cs" />
     <Compile Include="Database\FileUtil.cs" />

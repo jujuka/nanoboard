@@ -204,6 +204,7 @@ namespace NDB
                     FileUtil.Write(best.file, bytes, r.offset);
                     r.file = best.file;
                     best.file = null;
+                    File.AppendAllText(DiffFile, JsonConvert.SerializeObject(best) + "\n");
 					File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
                     return true;
                 }
@@ -265,6 +266,7 @@ namespace NDB
                     r.file = best.file;
                     best.file = null;
                     AddDbRef(r);
+                    File.AppendAllText(DiffFile, JsonConvert.SerializeObject(best) + "\n");
 					File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
                     return true;
                 }
@@ -288,6 +290,7 @@ namespace NDB
             _deleted.Add(hash);
             _free.Add(hash);
             FileUtil.Write(_data, new byte[_refs[hash].length], _refs[hash].offset);
+            File.AppendAllText(DiffFile, JsonConvert.SerializeObject(_refs[hash]) + "\n");
             return true;
         }
 
