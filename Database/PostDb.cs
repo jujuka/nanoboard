@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NDB
 {
-    class PostDb : IPostDb
+    class PostDb
     {
         private readonly string _index = "index.json";
 		private const string DiffFile = "diff.list";
@@ -152,6 +152,7 @@ namespace NDB
 
         #region INanoDb implementation
 
+        [Obsolete]
         public string[] GetAllHashes()
         {
             return _ordered.Where(k => !_deleted.Contains(k)).ToArray();
@@ -340,7 +341,7 @@ namespace NDB
             return res;
         }
 
-        public void Flush()
+        private void Flush()
         {
             var index = new Index();
             index.indexes = _refs.Values.ToArray();

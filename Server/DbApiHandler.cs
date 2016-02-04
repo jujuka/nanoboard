@@ -26,6 +26,8 @@ namespace NServer
             _handlers["delete"] = DeletePost;
             _handlers["add"] = AddPost;
             _handlers["replies"] = GetReplies;
+            _handlers["count"] = GetPostCount;
+            _handlers["nget"] = GetNthPost;
         }
 
         private HttpResponse GetPostByHash(string hash, string notUsed = null)
@@ -38,6 +40,23 @@ namespace NServer
             }
 
             return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(post));
+        }
+
+        private HttpResponse GetNthPost(string n, string notUsed = null)
+        {
+            var post = _db.GetNthPost(int.Parse(n));
+
+            if (post == null)
+            {
+                return new ErrorHandler(StatusCode.NotFound, "No such post.").Handle(null);
+            }
+
+            return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(post));
+        }
+
+        private HttpResponse GetPostCount(string notUsed1, string notUsed = null)
+        {
+            return new HttpResponse(StatusCode.Ok, _db.GetPostCount().ToString());
         }
 
         private HttpResponse GetReplies(string hash, string notUsed = null)
@@ -75,9 +94,9 @@ namespace NServer
         {
             try
             {
-                var splitted = request.Address.Split('/');
-                var cmd = splitted.Skip(splitted.Length-2).First();
-                var arg = splitted.Last();
+                var splitted = request.Address.Split(new char[]{'/'}, StringSplitOptions.RemoveEmptyEntries);
+                var cmd = splitted.Length < 2 ? "" : splitted[1];
+                var arg = splitted.Length < 3 ? "" : splitted[2];
 
                 if (_handlers.ContainsKey(cmd))
                 {
@@ -86,7 +105,7 @@ namespace NServer
 
                 else
                 {
-                    return new ErrorHandler(StatusCode.BadRequest, "No such command.").Handle(request);
+                    return new ErrorHandler(StatusCode.BadRequest, "No such command. Available commands: " + JsonConvert.SerializeObject(_handlers.Keys.ToArray())).Handle(request);
                 }
             }
 
