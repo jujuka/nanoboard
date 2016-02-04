@@ -162,6 +162,16 @@ namespace NDB
             return _ordered.Where(k => !_deleted.Contains(k)).ToArray();
         }
 
+        public int GetPresentCount()
+        {
+            return _ordered.Where(k => !_deleted.Contains(k)).ToArray().Length;
+        }
+
+        public Post[] RangePresent(int skip, int count)
+        {
+            return _ordered.Where(k => !_deleted.Contains(k)).Skip(skip).Take(count).Select(h => GetPost(h)).ToArray();
+        }
+
         private bool ReputPost(Post p)
         {
             var r = _refs[p.hash];

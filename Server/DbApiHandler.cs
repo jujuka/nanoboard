@@ -28,6 +28,17 @@ namespace NServer
             _handlers["replies"] = GetReplies;
             _handlers["count"] = GetPostCount;
             _handlers["nget"] = GetNthPost;
+            _handlers["prange"] = GetPresentRange;
+            _handlers["pcount"] = GetPresentCount;
+        }
+
+        private HttpResponse GetPresentRange(string fromto, string notUsed = null)
+        {
+            var spl = fromto.Split('-');
+            int skip = int.Parse(spl[0]);
+            int count = int.Parse(spl[1]);
+            var posts = _db.RangePresent(skip, count);
+            return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(posts));
         }
 
         private HttpResponse GetPostByHash(string hash, string notUsed = null)
@@ -57,6 +68,11 @@ namespace NServer
         private HttpResponse GetPostCount(string notUsed1, string notUsed = null)
         {
             return new HttpResponse(StatusCode.Ok, _db.GetPostCount().ToString());
+        }
+
+        private HttpResponse GetPresentCount(string notUsed1, string notUsed = null)
+        {
+            return new HttpResponse(StatusCode.Ok, _db.GetPresentCount().ToString());
         }
 
         private HttpResponse GetReplies(string hash, string notUsed = null)
