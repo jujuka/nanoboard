@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"> 
+<script type="text/javascript" src="bpgdec8a.js"></script>
+<script src='../scripts/jquery.min.js'> </script>
+<style>
+* {
+  font-family: 'Verdana', sans-serif;
+  font-size: 13px;
+}
+
+.reply {
+  margin: 0.5em;
+}
+
+.reply-button {
+  float: right;
+  margin-bottom: 0.4em;
+}
+
+gr {
+  color: green;
+}
+
+textarea {
+  width: 300px;
+  height: 130px;
+  outline: 0;
+}
+
+.post {
+  background-color: #ddd;
+  border: 1px solid #aaa;
+  border-radius: .4em;
+  margin: .4em 0;
+  max-width: 500px;
+}
+
+.reply-div {
+  display: inline-block;
+}
+
+a {
+  text-decoration: none;
+  color: darkorange;
+}
+
+a:hover {
+  color: salmon;
+}
+
+.high {
+  background-color: moccasin;
+  border-style: dotted;
+}
+
+sp {
+  background-color: #222;
+}
+
+.post-inner {
+  word-break: normal;
+  overflow: auto;
+  max-height: 6em;
+  padding: 0em 0.25em;
+  margin: .5em;
+}
+</style>
+<script>
+var _categories = 'bdd4b5fc1b3a933367bc6830fef72a35';
+
+function shortenHash(hash) {
+	return hash.substring(0,4) + '..' + hash.substring(28,32);
+}
+
+function replaceAll(text, search, replace) {
+  return text.split(search).join(replace);
+}
+
+(function($) {
+  $.fn.extend({
+    addTemporaryClass: function(className, duration) {
+      var elements = this;
+      setTimeout(function() {
+        elements.removeClass(className);
+      }, duration);
+      return this.each(function() {
+        $(this).addClass(className);
+      });
+    }
+  });
+})(jQuery);
+
+function escapeTags(text) {
+  return text
+    .replace(/>/gim, '&gt;')
+    .replace(/</gim, '&lt;');
+}
+
+function detectImages(text) {
+  var prefix = 'data:image/jpeg;base64,';
+  var matches = text.match(/\[img=[A-z0-9+\/=]{4,64512}\]/g);
+  if (matches != null) {
+    for (var i = 0; i < matches.length; i++) {
+      var value = matches[i].toString();
+      value = value.substring(5);
+      value = value.substring(0, value.length - 1);
+      value = '<img src="' + prefix + value + '" />';
+      text = replaceAll(text, matches[i], value);
+    }
+  }
+  return text;
+}
+
+function applyFormatting(text) {
+  text = text.replace(/\[sp(oiler|)\]/gim, '[x]');
+  text = text.replace(/\[\/sp(oiler|)\]/gim, '[/x]');
+  var tags = 'biusx';
+  for (var x = 0; x < tags.length; x++) {
+    var ch = tags.charAt(x);
+    text = text
+      .replace(new RegExp("\\[" + ch + "\\]", 'gim'), '<' + ch + '>')
+      .replace(new RegExp("\\[/" + ch + "\\]", 'gim'), '</' + ch + '>');
+  }
+  text = detectImages(text);
+  text = replaceAll(text, '\n', '<br/>');
+  text = replaceAll(text, '  ', '&nbsp; ')
+  return text
+    .replace(/<x>/gim, '<sp>')
+    .replace(/<\/x>/gim, '</sp>');
+}
+
+function sendPostToDb(post) {
+  $.post('../api/add/' + post.replyTo, post.message)
+  	.done(function(response){
+  		addPost(response, function(d){ d.insertAfter($('#'+post.replyTo)); });
+  	});
+}
+
+function deletePostFromDb(hash) {
+  $.post('../api/delete/' + hash);
+}
+
+function addReplyForm(id) {
+  $('<div>')
+    .addClass('post').addClass('reply-div')
+    .insertAfter($('#' + id))
+    .css('margin-left', parseInt($('#' + id).css('margin-left')) + 1 + 'em')
+    .append($('<div>').addClass('reply')
+      .append($('<textarea>'))
+      .append($('<br>'))
+      .append($('<button>')
+        .addClass('reply-button')
+        .text('Cancel')
+        .click(function() {
+          $(this).parent().parent().remove();
+        }))
+      .append($('<button>')
+        .text('Send')
+        .addClass('reply-button')
+        .click(function() {
+          sendPostToDb({
+            'replyTo': id,
+            'message': $(this).parent().find('textarea').val()
+          });
+          $(this).parent().parent().remove();
+        }))
+    );
+}
+
+function addPost(post, appendFunc) {
+  var d = $(document.createElement('div'));
+  d
+    .addClass('post')
+    .attr('id', post.hash);
+  d
+    .append('<gr>#' + shortenHash(post.hash) + '&nbsp;</gr>');
+  $('<a>')
+    .attr('href', '#' + post.replyTo)
+    .click(function() {
+      $('#' + post.replyTo)
+        .addTemporaryClass('high', 1000)
+    })
+    .appendTo(d)
+    .html('^' + shortenHash(post.replyTo));
+  d.append('&nbsp;');
+  d
+    .append($('<a>')
+      .attr('href', '#')
+      .text('[Reply]')
+      .click(function() {
+        addReplyForm(post.hash);
+        d.next().find('textarea').focus();
+      }));
+  d.append('&nbsp;');
+  d
+    .append($('<a>')
+      .attr('href', '#')
+      .text('[Show]')
+      .click(function() {
+      	loadThread(post.hash);
+      }));
+  d.append('&nbsp;');
+  d
+    .append($('<a>')
+      .attr('href', '#')
+      .text('[X]')
+      .attr('title', 'Double click to delete post.')
+      .dblclick(function() {
+        deletePostFromDb(post.hash);
+        d.remove();
+      }));
+  appendFunc(d);
+  //d.appendTo($('#thread'));
+  $('<div>')
+    .addClass('post-inner')
+    .html(applyFormatting(escapeTags(post.message)))
+    .appendTo(d);
+}
+
+function loadThread(hash) {
+	$.get('../api/replies/' + hash)
+		.done(function(arr){
+			arr = JSON.parse(arr);
+			if (arr.length > 0) {
+				$('#thread').empty();
+			} else { return; }
+			$.get('../api/get/' + hash)
+				.done(function(post){
+					post = JSON.parse(post);
+					addPost(post, function(d){ d.appendTo($('#thread')); });
+					for (var i = 0; i < arr.length; i++) {
+						addPost(arr[i], function(d) { d.appendTo($('#thread')); });
+					}
+				});
+		});
+}
+
+loadThread(_categories);
+</script>
+</head>
+<body>
+<div>
+<a href='img2base64_.html' target='_blank'>[Image→Base64]</a>
+<a href='../shutdown'>[Shutdown]</a>
+</div>
+<hr>
+<div id='thread'>
+
+</div>
+</body>
+</html>

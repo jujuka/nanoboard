@@ -3,6 +3,10 @@
 *.db
 *.json
 obj/
-bin/
+bin/Debug/*.mdb
+bin/Debug/*.exe
+bin/Debug/*.db
+bin/Debug/*.json
+bin/Debug/*.list
 .DS_Store
 *.mdb
