@@ -259,7 +259,7 @@ namespace nboard
                 //string pMessage = p.Message;
                 string pMessage = p.Message.Strip(true);
 
-                var fmPattern = "\\[fm=.*\\]";
+				var fmPattern = "\\[fm=[()t *0-9a-fxA-F|><!%:^&.\\-+/?=~gl;rnsp]+\\]";
                 var music = Regex.Matches(pMessage, fmPattern);
 
                 int musicNum = 0;
@@ -268,21 +268,11 @@ namespace nboard
                 {
                     musicNum += 1;
                     var value = (m as Match).Value;
-					value = value.Replace ("post", "dummy0");
-					value = value.Replace ("XMLHttpRequest", "dummy1");
-					value = value.Replace ("eval", "dummy2");
-					value = value.Replace ("ajax", "dummy3");
-                    value = value.Replace ("get", "dummy4");
-                    value = value.Replace ("document", "dummy5");
-                    value = value.Replace ("create", "dummy6");
-                    value = value.Replace ("HTML", "dummy6");
-					value = value.Replace ("append", "dummy7");
-                    value = value.Replace ("script", "dummy8");
-                    value = value.Replace ("}", "dummy9");
-					value = value.Replace ("{", "dummy10");
-                    value = value.Replace ("this", "dummy11");
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ").
 						Replace("’", "'").Replace("“", "\"").Replace(";", "");
+					var strictFmPattern = "[()t *0-9a-fxA-F|><!%:^&.\\-+/?=~]{1,8192}";
+					if (!Regex.IsMatch (formula, strictFmPattern))
+						continue;
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
     <small><pre>{1}</pre></small><button id='mb{0}'>Сгенерировать</button>
     <audio style='visibility:hidden;' controls='false' id='au{0}'></audio>", sp.GetHash().Value + musicNum, formula);
