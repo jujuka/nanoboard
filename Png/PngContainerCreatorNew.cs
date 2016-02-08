@@ -37,7 +37,8 @@ namespace nboard
             db.ClearDb();
             db.ReadPosts();
 
-            var files = new DirectoryInfo(Strings.Containers).GetFiles("*.png");
+            string[] ext = new[] { ".png", ".jpg" };
+            var files = new DirectoryInfo(Strings.Containers).GetFiles().Where(f => ext.Contains(f.Extension.ToLower())).ToArray();
 
             if (files.Length == 0)
             {
