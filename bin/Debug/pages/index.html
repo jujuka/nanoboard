@@ -159,7 +159,7 @@ function deletePostFromDb(hash) {
 }
 
 function addReplyForm(id) {
-  $('<div>')
+  var form = $('<div>')
     .addClass('post').addClass('reply-div')
     .insertAfter($('#' + id))
     .css('margin-left', parseInt($('#' + id).css('margin-left')) + 10 + 'px')
@@ -183,6 +183,12 @@ function addReplyForm(id) {
           $(this).parent().parent().remove();
         }))
     );
+    var offset = form.offset();
+    offset.top -= 100;
+    $('html, body').animate({
+    	scrollTop: offset.top,
+    	scrollLeft: offset.left
+	});
 }
 
 function addPost(post, appendFunc, hasShowButton) {
