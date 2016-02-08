@@ -152,7 +152,7 @@ function addReplyForm(id) {
   $('<div>')
     .addClass('post').addClass('reply-div')
     .insertAfter($('#' + id))
-    .css('margin-left', parseInt($('#' + id).css('margin-left')) + 1 + 'em')
+    .css('margin-left', parseInt($('#' + id).css('margin-left')) + 10 + 'px')
     .append($('<div>').addClass('reply')
       .append($('<textarea>'))
       .append($('<br>'))
