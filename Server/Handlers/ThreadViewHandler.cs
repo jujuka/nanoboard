@@ -271,7 +271,8 @@ namespace nboard
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ").
 						Replace("’", "'").Replace("“", "\"").Replace(";", "");
                     var strictFmPattern = "()t *0123456789abcdefxABCDEF|><!%:^&.-+/?=~";
-                    bool invalid = false;
+                    bool invalid = formula.Length > 8192;
+                    if (!invalid)
                     foreach (var ch in formula)
                     {
                         if (!strictFmPattern.Contains(ch))
