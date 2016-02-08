@@ -372,7 +372,7 @@ function fetch_size() {
             s = s.Replace("[g]", "<g>");
             s = s.Replace("[/g]", "</g>");
 
-            var matches = Regex.Matches(s, "\\[img=[/A-z0-9+=]{16,64512}\\]");
+            var matches = Regex.Matches(s, "\\[img=[/A-Za-z0-9+=]{16,64512}\\]");
 
             foreach (Match m in matches)
             {
@@ -384,7 +384,7 @@ function fetch_size() {
             }
 
             //image with src
-            var matches2 = Regex.Matches(s, "\\[simg=[/A-z0-9+=.:]{3,300}\\]");
+            var matches2 = Regex.Matches(s, "\\[simg=[/A-Za-z0-9+=.:]{3,300}\\]");
             foreach (Match m in matches2)
             {
                 var v = m.Value;
@@ -401,7 +401,7 @@ function fetch_size() {
                 }
             }
             //video with src
-            var matches3 = Regex.Matches(s, "\\[svid=[/A-z0-9+=.:]{3,300}\\]");
+            var matches3 = Regex.Matches(s, "\\[svid=[/A-Za-z0-9+=.:]{3,300}\\]");
             foreach (Match m in matches3)
             {
                 var v = m.Value;
