@@ -14,7 +14,7 @@ namespace nboard
         private const string UserAgentConfig = "useragent.config";
         private const string Downloaded = "downloaded.txt";
         private const string Config = "places.txt";
-        private const string ImgPattern = "href=\"[:A-z0-9/\\-\\.]*\\.png\"";
+        private const string ImgPattern = "href=\"[:A-Za-z0-9/\\-\\.]*\\.png\"";
 
         private int _inProgress = 0;
         public int InProgress
@@ -126,7 +126,7 @@ namespace nboard
                 try
                 {
                     string text = Encoding.UTF8.GetString(e.Result);
-                    string host = Regex.Match(address, "https?://[A-z\\.0-9-]*").Value;
+                    string host = Regex.Match(address, "https?://[A-Za-z\\.0-9-]*").Value;
 
                     var images = Regex.Matches(text, ImgPattern);
 
