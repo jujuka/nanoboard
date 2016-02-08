@@ -115,7 +115,7 @@ function updateImage(loader) {
   var reader = new FileReader();
   reader.onloadend = function() {
     var res = reader.result;
-    if ($('#imgtype').val()=='No compression') {
+    if ($('#imgtype').val().startsWith('No compression')) {
       $('#result').text(res.toString());
         $('#info').html('Length (base64): ' + res.length +
           '<br>Max allowed: 64512');

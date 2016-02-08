@@ -227,6 +227,8 @@ function addPost(post, appendFunc, hasShowButton) {
     .addClass('post-inner')
     .html(applyFormatting(escapeTags(post.message)))
     .appendTo(d);
+  d.slideUp(0);
+  d.slideDown(250);
   return d;
 }
 
@@ -263,6 +265,14 @@ function loadThread(hash) {
 									loadThread(post.replyTo);
 								}));
 					}
+					$('#thread').append('&nbsp;');
+					$('#thread').append(
+						$('<a>')
+							.attr('href','#')
+							.text('[Refresh]')
+							.click(function(){
+								loadThread(hash);
+							}));
 					addPost(post, function(d){ d.appendTo($('#thread')); }, false);
 					for (var i = 0; i < arr.length; i++) {
 						addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
@@ -280,7 +290,7 @@ loadThread(_categories);
 </head>
 <body>
 <div>
-<a href='img2base64_.html' target='_blank'>[Image→Base64]</a>
+<a href='img2base64.html' target='_blank'>[Image→Base64]</a>
 <a href='../shutdown'>[Shutdown]</a>
 </div>
 <hr>
