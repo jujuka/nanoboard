@@ -69,6 +69,9 @@ sp {
 </style>
 <script>
 var _categories = 'bdd4b5fc1b3a933367bc6830fef72a35';
+var _mainpost = 'f682830a470200d738d32c69e6c2b8a4';
+var _rootpost = '00000000000000000000000000000000';
+var _depth = 0;
 
 function shortenHash(hash) {
 	return hash.substring(0,4) + '..' + hash.substring(28,32);
@@ -79,6 +82,8 @@ function replaceAll(text, search, replace) {
 }
 
 (function($) {
+  //jQuery.fx.off = true;
+
   $.fn.extend({
     addTemporaryClass: function(className, duration) {
       var elements = this;
@@ -134,7 +139,8 @@ function applyFormatting(text) {
 function sendPostToDb(post) {
   $.post('../api/add/' + post.replyTo, post.message)
   	.done(function(response){
-  		addPost(response, function(d){ d.insertAfter($('#'+post.replyTo)); });
+  		addPost(JSON.parse(response), function(d){ d.insertAfter($('#'+post.replyTo)); }, false)
+  			.addTemporaryClass('high', 1000);
   	});
 }
 
@@ -169,7 +175,8 @@ function addReplyForm(id) {
     );
 }
 
-function addPost(post, appendFunc) {
+function addPost(post, appendFunc, hasShowButton) {
+  if (_depth > 1) hasShowButton = false;
   var d = $(document.createElement('div'));
   d
     .addClass('post')
@@ -193,14 +200,17 @@ function addPost(post, appendFunc) {
         addReplyForm(post.hash);
         d.next().find('textarea').focus();
       }));
-  d.append('&nbsp;');
-  d
-    .append($('<a>')
-      .attr('href', '#')
-      .text('[Show]')
-      .click(function() {
-      	loadThread(post.hash);
-      }));
+  if (hasShowButton) {
+	  d.append('&nbsp;');
+	  d
+	    .append($('<a>')
+	      .attr('href', '#')
+	      .text('[Show]')
+	      .click(function() {
+	      	_depth += 1;
+	      	loadThread(post.hash);
+	      }));
+  }
   d.append('&nbsp;');
   d
     .append($('<a>')
@@ -217,6 +227,20 @@ function addPost(post, appendFunc) {
     .addClass('post-inner')
     .html(applyFormatting(escapeTags(post.message)))
     .appendTo(d);
+  return d;
+}
+
+function loadReplies(hash, offset) {
+	$.get('../api/replies/' + hash)
+		.done(function(arr){
+			arr = JSON.parse(arr);
+			if (arr.length == 0) return;
+			for (var i = arr.length-1; i >= 0; i--) {
+				addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
+					.css('margin-left', offset * 10 + 'px');
+				loadReplies(arr[i].hash, offset + 1);
+			}
+		});
 }
 
 function loadThread(hash) {
@@ -229,9 +253,23 @@ function loadThread(hash) {
 			$.get('../api/get/' + hash)
 				.done(function(post){
 					post = JSON.parse(post);
-					addPost(post, function(d){ d.appendTo($('#thread')); });
+					if (_depth > 0) {
+						$('#thread').append(
+							$('<a>')
+								.attr('href','#')
+								.text('[Up]')
+								.click(function(){
+									_depth -= 1;
+									loadThread(post.replyTo);
+								}));
+					}
+					addPost(post, function(d){ d.appendTo($('#thread')); }, false);
 					for (var i = 0; i < arr.length; i++) {
-						addPost(arr[i], function(d) { d.appendTo($('#thread')); });
+						addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
+							.css('margin-left',  10 + 'px');
+						if (_depth > 1) {
+							loadReplies(arr[i].hash, 2);
+						}
 					}
 				});
 		});
