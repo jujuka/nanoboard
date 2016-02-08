@@ -259,7 +259,7 @@ namespace nboard
                 //string pMessage = p.Message;
                 string pMessage = p.Message.Strip(true);
 
-				var fmPattern = "\\[fm=[()t *0-9a-fxA-F|><!%:^&.\\-+/?=~gl;rnsp]+\\]";
+                var fmPattern = "\\[fm=.*\\]";
                 var music = Regex.Matches(pMessage, fmPattern);
 
                 int musicNum = 0;
@@ -270,8 +270,17 @@ namespace nboard
                     var value = (m as Match).Value;
                     var formula = value.Substring(4).TrimEnd(']').Replace("&gt;", ">").Replace("&lt;", "<").Replace("<grn>", "").Replace("</grn>", "").Replace("&nbsp;", " ").
 						Replace("’", "'").Replace("“", "\"").Replace(";", "");
-					var strictFmPattern = "[()t *0-9a-fxA-F|><!%:^&.\\-+/?=~]{1,8192}";
-					if (!Regex.IsMatch (formula, strictFmPattern))
+                    var strictFmPattern = "()t *0123456789abcdefxABCDEF|><!%:^&.-+/?=~";
+                    bool invalid = false;
+                    foreach (var ch in formula)
+                    {
+                        if (!strictFmPattern.Contains(ch))
+                        {
+                            invalid = true;
+                            break;
+                        }
+                    }
+					if (invalid)
 						continue;
                     var replacement = string.Format(@"<b>Фрактальная музыка:</b>
     <small><pre>{1}</pre></small><button id='mb{0}'>Сгенерировать</button>
