@@ -19,112 +19,43 @@ namespace nboard
             var sb = new StringBuilder();
             //ThreadViewHandler.AddHeader(sb);
 
-            sb.Append("<br>Не применять сжатие:</br>");
+            sb.Append("<br>Картинка -&gt; Base64:</br>");
 
-            sb.Append(@"<form action=""convert"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
+			// Changes form's action on change of select
+			sb.Append(@"<script>function change_action(select){
+				var selected = select.options[select.selectedIndex].id;
+				var form = document.getElementById(""upload-form"");
+				if(selected == ""No""){
+					form.action = ""convert"";
+				} else {
+					form.action = ""compress/"" + selected;
+				}
+			}</script>");
 
-            sb.Append("<br>Пожать незримо:</br>");
-            sb.Append(@"<form action=""compress/-90-90"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать слегка:</br>");
-            sb.Append(@"<form action=""compress/-80-85"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать умеренно:</br>");
-            sb.Append(@"<form action=""compress/-70-80"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать весьма:</br>");
-            sb.Append(@"<form action=""compress/-60-75"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать нехило:</br>");
-            sb.Append(@"<form action=""compress/-50-70"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать ощутимо:</br>");
-            sb.Append(@"<form action=""compress/-45-65"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать основательно:</br>");
-            sb.Append(@"<form action=""compress/-40-60"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать конкретно:</br>");
-            sb.Append(@"<form action=""compress/-35-55"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать строго:</br>");
-            sb.Append(@"<form action=""compress/-30-50"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать безжалостно:</br>");
-            sb.Append(@"<form action=""compress/-25-45"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать бескомпромиссно:</br>");
-            sb.Append(@"<form action=""compress/-20-40"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать сильно:</br>");
-            sb.Append(@"<form action=""compress/-20-30"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать неистово:</br>");
-            sb.Append(@"<form action=""compress/-15-25"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать безумно:</br>");
-            sb.Append(@"<form action=""compress/-15-20"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать кошмарно:</br>");
-            sb.Append(@"<form action=""compress/-10-15"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать чудовищно:</br>");
-            sb.Append(@"<form action=""compress/-10-10"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
-                <input type=""submit"" value=""convert"" />
-            </form>");
-
-            sb.Append("<br>Пожать бессмысленно:</br>");
-            sb.Append(@"<form action=""compress/-5-10"" method=""post"" enctype=""multipart/form-data"">
-                <input type=""file"" name=""file"" />
+			// Default - "Умеренно". To change default: change action in form and change selected option
+			sb.Append(@"<form id=""upload-form"" action=""compress/-70-80"" method=""post"" enctype=""multipart/form-data"">
+				<input type=""file"" name=""file"" />
+				<label for=""compression-level"">Степень сжатия: </label>
+				<select id=""compression-level"" onchange=""change_action(this);"" >
+					<option id=""No"">Без сжатия</option>
+					<option id=""-90-90"">Незримо</option>
+					<option id=""-80-85"">Слегка</option>
+					<option id=""-70-80"" selected>Умеренно</option>
+					<option id=""-60-75"">Весьма</option>
+					<option id=""-50-70"">Нехило</option>
+					<option id=""-45-65"">Ощутимо</option>
+					<option id=""-40-60"">Основательно</option>
+					<option id=""-35-55"">Конкретно</option>
+					<option id=""-30-50"">Строго</option>
+					<option id=""-25-45"">Безжалостно</option>
+					<option id=""-20-40"">Бескомпромиссно</option>
+					<option id=""-20-30"">Сильно</option>
+					<option id=""-15-25"">Неистово</option>
+					<option id=""-15-20"">Безумно</option>
+					<option id=""-10-15"">Кошмарно</option>
+					<option id=""-10-10"">Чудовищно</option>
+					<option id=""-5-10"">Бессмысленно</option>
+				</select>	
                 <input type=""submit"" value=""convert"" />
             </form>");
 
