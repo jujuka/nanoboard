@@ -78,7 +78,7 @@ namespace nboard
 
             catch (Exception e)
             {
-                return new NanoHttpResponse(StatusCode.Ok, "Error" + e.ToString());
+                return new NanoHttpResponse(StatusCode.Ok, "Error" + e.ToString(), "text/html; charset=utf-8");
             }
         }
     }
