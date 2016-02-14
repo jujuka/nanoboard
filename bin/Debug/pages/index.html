@@ -290,7 +290,7 @@ function loadThread(hash, highlight) {
 			arr = JSON.parse(arr);
 			if (arr.length > 0) {
 				$('#thread').empty();
-			} else { return; }
+			} else { _depth -= 1; return; }
 			$.get('../api/get/' + hash)
 				.done(function(post){
 					post = JSON.parse(post);
