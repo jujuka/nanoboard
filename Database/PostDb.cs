@@ -175,7 +175,7 @@ namespace NDB
         private bool ReputPost(Post p)
         {
             var r = _refs[p.hash];
-            var bytes = Encoding.UTF8.GetBytes(p.message);
+            var bytes = Encoding.UTF8.GetBytes(p.message.FromB64());
             r.length = bytes.Length;
             r.deleted = false;
             _deleted.Remove(r.hash);
@@ -246,7 +246,7 @@ namespace NDB
             var r = new DbPostRef();
             r.hash = p.hash;
             r.replyTo = p.replyto;
-            var bytes = Encoding.UTF8.GetBytes(p.message);
+            var bytes = Encoding.UTF8.GetBytes(p.message.FromB64());
             r.length = bytes.Length;
 
             if (_free.Any())
@@ -328,7 +328,7 @@ namespace NDB
             var p = new Post();
             p.hash = hash;
             p.replyto = r.replyTo;
-            p.message = Encoding.UTF8.GetString(chunk);
+            p.message = Encoding.UTF8.GetString(chunk).ToB64();
 
             if (_cache.Keys.Count > CacheLimit)
             {

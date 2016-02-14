@@ -20,7 +20,7 @@ namespace NDB
         {
             replyto = r;
             message = m;
-            hash = HashCalculator.Calculate(r + m);
+            hash = HashCalculator.Calculate(r + m.FromB64());
         }
     }
 }
