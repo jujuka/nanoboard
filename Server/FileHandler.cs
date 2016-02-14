@@ -34,6 +34,11 @@ namespace NServer
         {
             try
             {
+                if (request.Address == "" || request.Address == "/") 
+                {
+                    return new HttpResponse(StatusCode.Ok, "<a href='/pages/index.html'>[Enter]</a>", _mime);
+                }
+
                 var name = request.Address.Split('/').Last();
                 var path = _folder + Path.DirectorySeparatorChar + name;
 

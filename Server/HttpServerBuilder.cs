@@ -25,9 +25,10 @@ namespace NServer
             string ip = Configurator.Instance.GetValue("ip", "127.0.0.1");
             int port = int.Parse(Configurator.Instance.GetValue("port", "7345"));
             var server = new HttpServer(ip, port);
-            server.SetRootHandler(new ErrorHandler(StatusCode.NotFound, "Under construction"));
+            var pagesHandler = new FileHandler("pages", MimeType.Html);
+            server.SetRootHandler(pagesHandler);
             server.AddHandler("api", new DbApiHandler(_db));
-            server.AddHandler("pages", new FileHandler("pages", MimeType.Html));
+            server.AddHandler("pages", pagesHandler);
             server.AddHandler("scripts", new FileHandler("scripts", MimeType.Js));
             server.AddHandler("styles", new FileHandler("styles", MimeType.Css));
             server.AddHandler("images", new FileHandler("images", MimeType.Image, true));
