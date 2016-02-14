@@ -23,6 +23,12 @@ gr {
   color: green;
 }
 
+g {
+  color: #888;
+  font-style: italic; 
+  font-size: 75%;
+}
+
 textarea {
   width: 300px;
   height: 130px;
@@ -34,7 +40,8 @@ textarea {
   border: 1px solid #aaa;
   border-radius: .4em;
   margin: .4em 0;
-  max-width: 500px;
+  max-width: 600px;
+  margin-right: auto;
 }
 
 .reply-div {
@@ -66,13 +73,17 @@ a:hover {
 }
 
 sp {
-  background-color: #222;
+  background-color: #000;
+}
+
+sp:hover {
+  background-color: #ddd;
 }
 
 .post-inner {
   word-break: normal;
   overflow: auto;
-  max-height: 36em;
+  max-height: 40em;
   padding: 0em 0.25em;
   margin: .5em;
 }
@@ -134,7 +145,7 @@ function detectImages(text) {
 function applyFormatting(text) {
   text = text.replace(/\[sp(oiler|)\]/gim, '[x]');
   text = text.replace(/\[\/sp(oiler|)\]/gim, '[/x]');
-  var tags = 'biusx';
+  var tags = 'biusxg';
   for (var x = 0; x < tags.length; x++) {
     var ch = tags.charAt(x);
     text = text
