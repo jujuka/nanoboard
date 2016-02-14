@@ -231,14 +231,14 @@ namespace NDB
             return true;
         }
 
-        public bool PutPost(Post p)
+        public bool PutPost(Post p, bool allowReput = false)
         {
             if (!PostsValidator.Validate(p))
                 return false;
             if (_refs.ContainsKey(p.hash) && !_deleted.Contains(p.hash))
                 return false;
 
-            if (_deleted.Contains(p.hash))
+            if (allowReput && _deleted.Contains(p.hash))
             {
                 return ReputPost(p);
             }

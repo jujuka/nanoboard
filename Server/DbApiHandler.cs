@@ -25,6 +25,7 @@ namespace NServer
             _handlers["get"] = GetPostByHash;
             _handlers["delete"] = DeletePost;
             _handlers["add"] = AddPost;
+            _handlers["readd"] = ReAddPost;
             _handlers["replies"] = GetReplies;
             _handlers["count"] = GetPostCount;
             _handlers["nget"] = GetNthPost;
@@ -85,6 +86,19 @@ namespace NServer
         {
             var post = new Post(replyTo, content);
             var added = _db.PutPost(post);
+
+            if (!added)
+            {
+                return new ErrorHandler(StatusCode.BadRequest, "Can't add post, probably already exists").Handle(null);
+            }
+
+            return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(post));
+        }
+
+        private HttpResponse ReAddPost(string replyTo, string content)
+        {
+            var post = new Post(replyTo, content);
+            var added = _db.PutPost(post, true);
 
             if (!added)
             {
