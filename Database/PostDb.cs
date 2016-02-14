@@ -40,7 +40,6 @@ namespace NDB
                 {
                     break;
                 }
-
                 else
                 {
                     long length = new System.IO.FileInfo(_data).Length;
@@ -50,7 +49,6 @@ namespace NDB
                     {
                         continue;
                     }
-
                     else
                     {
                         break;
@@ -65,12 +63,14 @@ namespace NDB
             _cache = new Dictionary<string, Post>();
             _ordered = new List<string>();
             ReadRefs();
-            PutPost(new Post("f682830a470200d738d32c69e6c2b8a4", 
-            "W2Jd0JrQkNCi0JXQk9Ce0KDQmNCYWy9iXQrQp9GC0L7QsdGLINGB0L7Qt9C00LDRgtG"+
-            "MINC90L7QstGD0Y4g0LrQsNGC0LXQs9C+0YDQuNGOLCDQvtGC0LLQtdGC0YzRgtC1IN"+
-            "C90LAg0Y3RgtC+INGB0L7QvtCx0YnQtdC90LjQtS4K0J7RgtCy0LXRgtGM0YLQtSDQv"+
-            "dCwINC+0LTQvdGDINC40Lcg0LrQsNGC0LXQs9C+0YDQuNC5LCDRh9GC0L7QsdGLINGB"+
-            "0L7Qt9C00LDRgtGMINGC0LDQvCDRgtGA0LXQtC4="), true);
+
+            var initialPostsStr = @"[{'hash':'bdd4b5fc1b3a933367bc6830fef72a35','message':'W2Jd0JrQkNCi0JXQk9Ce0KDQmNCYWy9iXQrQp9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINC90L7QstGD0Y4g0LrQsNGC0LXQs9C+0YDQuNGOLCDQvtGC0LLQtdGC0YzRgtC1INC90LAg0Y3RgtC+INGB0L7QvtCx0YnQtdC90LjQtS4K0J7RgtCy0LXRgtGM0YLQtSDQvdCwINC+0LTQvdGDINC40Lcg0LrQsNGC0LXQs9C+0YDQuNC5LCDRh9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINGC0LDQvCDRgtGA0LXQtC4=','replyTo':'f682830a470200d738d32c69e6c2b8a4'},{'hash':'cd94a3d60f2f521806abebcd3dc3f549','message':'W2Jd0JHRgNC10LQv0KDQsNC30L3QvtC1Wy9iXQ==','replyTo':'bdd4b5fc1b3a933367bc6830fef72a35'},{'hash':'cd94a3d60f2f521806abebcd3dc3f549','message':'W2Jd0JHRgNC10LQv0KDQsNC30L3QvtC1Wy9iXQ==','replyTo':'bdd4b5fc1b3a933367bc6830fef72a35'},{'hash':'bdd4b5fc1b3a933367bc6830fef72a35','message':'W2Jd0JrQkNCi0JXQk9Ce0KDQmNCYWy9iXQrQp9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINC90L7QstGD0Y4g0LrQsNGC0LXQs9C+0YDQuNGOLCDQvtGC0LLQtdGC0YzRgtC1INC90LAg0Y3RgtC+INGB0L7QvtCx0YnQtdC90LjQtS4K0J7RgtCy0LXRgtGM0YLQtSDQvdCwINC+0LTQvdGDINC40Lcg0LrQsNGC0LXQs9C+0YDQuNC5LCDRh9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINGC0LDQvCDRgtGA0LXQtC4=','replyTo':'f682830a470200d738d32c69e6c2b8a4'},{'hash':'f682830a470200d738d32c69e6c2b8a4','message':'e1dlbGNvbWUgdG8gTmFub2JvYXJkfQ==','replyTo':'00000000000000000000000000000000'}]";
+            var initialPosts = JsonConvert.DeserializeObject<Post[]>(initialPostsStr);
+
+            foreach (var p in initialPosts)
+            {
+                PutPost(p, true);
+            }
         }
 
         public Post GetNthPost(int n)
