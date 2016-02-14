@@ -331,12 +331,11 @@ function loadRootThread(hash) {
   fn();
 }
 
-$(function() {
-  $('#lasta').click(function(){
+function showLast(N){
     $.get('../api/pcount')
       .done(function(cnt){
         cnt = parseInt(cnt);
-        $.get('../api/prange/'+Math.max(cnt-50,0)+'-'+50)
+        $.get('../api/prange/'+Math.max(cnt-N,0)+'-'+N)
           .done(function(arr){
             arr = JSON.parse(arr);
             if (arr.length > 0) {
@@ -344,6 +343,9 @@ $(function() {
             } else { return; }
             for (var i = arr.length - 1; i >= 0; i--) {
               var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, false);
+              if (arr[i].hash != _categories && 
+                  arr[i].replyTo != _categories && 
+                  arr[i].replyTo != _rootpost)
               p.append(
                 $('<a>')
                   .attr('href', 'javascript:void(0)')
@@ -355,15 +357,24 @@ $(function() {
             }
           });
       });
-  });
+  }
 
+$(function() {
+  $('#last50a').click(function(){showLast(50);});
+  $('#last100a').click(function(){showLast(100);});
+  $('#last500a').click(function(){showLast(500);});
+  $('#maina').click(function(){loadThread(_categories);});
   loadThread(_categories);
 });
 </script>
 </head>
 <body>
+<a style='font-size:300%;' href='javascript:void(0)'>Nanoboard<sup>2.0</sup></a>
 <div>
-<a id='lasta' href='#'>[Last]</a>
+<a id='maina' href='#'>[Main]</a>
+<a id='last50a' href='#'>[Last 50]</a>
+<a id='last100a' href='#'>[100]</a>
+<a id='last500a' href='#'>[500]</a>
 <a href='img2base64.html' target='_blank'>[Image→Base64]</a>
 <a href='../shutdown'>[Shutdown]</a>
 </div>
