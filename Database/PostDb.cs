@@ -65,6 +65,12 @@ namespace NDB
             _cache = new Dictionary<string, Post>();
             _ordered = new List<string>();
             ReadRefs();
+            PutPost(new Post("f682830a470200d738d32c69e6c2b8a4", 
+            "W2Jd0JrQkNCi0JXQk9Ce0KDQmNCYWy9iXQrQp9GC0L7QsdGLINGB0L7Qt9C00LDRgtG"+
+            "MINC90L7QstGD0Y4g0LrQsNGC0LXQs9C+0YDQuNGOLCDQvtGC0LLQtdGC0YzRgtC1IN"+
+            "C90LAg0Y3RgtC+INGB0L7QvtCx0YnQtdC90LjQtS4K0J7RgtCy0LXRgtGM0YLQtSDQv"+
+            "dCwINC+0LTQvdGDINC40Lcg0LrQsNGC0LXQs9C+0YDQuNC5LCDRh9GC0L7QsdGLINGB"+
+            "0L7Qt9C00LDRgtGMINGC0LDQvCDRgtGA0LXQtC4="), true);
         }
 
         public Post GetNthPost(int n)
