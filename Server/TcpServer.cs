@@ -59,9 +59,15 @@ namespace NServer
                     continue;
                 }
 
-                TcpClient newClient = _server.AcceptTcpClient();
-                Thread t = new Thread(new ParameterizedThreadStart(HandleClient));
-                t.Start(newClient);
+                try
+                {
+                    TcpClient newClient = _server.AcceptTcpClient();
+                    Thread t = new Thread(new ParameterizedThreadStart(HandleClient));
+                    t.Start(newClient);
+                }
+                catch
+                {
+                }
             }
         }
 
