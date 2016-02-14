@@ -267,7 +267,18 @@ function loadReplies(hash, offset, highlight) {
 		});
 }
 
+function updateStatusLine() {
+  $.get('../api/count')
+    .done(function(cnt){
+      $('#statusd')
+        .html(
+          '<a href=javascript:void(0)>Posts (including deleted): '+cnt+'</a>'
+        );
+    });
+}
+
 function loadThread(hash, highlight) {
+  updateStatusLine();
 	$.get('../api/replies/' + hash)
 		.done(function(arr){
 			arr = JSON.parse(arr);
@@ -381,6 +392,7 @@ $(function() {
 <hr>
 <div id='thread'>
 
-</div>
+</div><hr/>
+<div id='statusd'></div>
 </body>
 </html>
