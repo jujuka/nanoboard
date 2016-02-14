@@ -25,6 +25,7 @@ namespace NServer
             _handlers["get"] = GetPostByHash;
             _handlers["delete"] = DeletePost;
             _handlers["add"] = AddPost;
+            _handlers["addmany"] = AddPosts;
             _handlers["readd"] = ReAddPost;
             _handlers["replies"] = GetReplies;
             _handlers["count"] = GetPostCount;
@@ -93,6 +94,21 @@ namespace NServer
             }
 
             return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(post));
+        }
+
+        private HttpResponse AddPosts(string none, string content)
+        {
+            try
+            {
+                var posts = JsonConvert.DeserializeObject<Post[]>(content);
+                foreach (var p in posts)
+                    _db.PutPost(p);
+            }
+            catch
+            {
+                return new HttpResponse(StatusCode.InternalServerError, "Error");
+            }
+            return new HttpResponse(StatusCode.Ok, "Ok");
         }
 
         private HttpResponse ReAddPost(string replyTo, string content)
