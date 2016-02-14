@@ -381,7 +381,7 @@ $(function() {
   $('#last50a').click(function(){showLast(50);});
   $('#last100a').click(function(){showLast(100);});
   $('#last500a').click(function(){showLast(500);});
-  $('#maina').click(function(){loadThread(_categories);});
+  $('#maina').click(function(){_depth = 0;loadThread(_categories);});
   $('#tojsona').click(function(){
     var po = new Object();
     po["posts"] = thisPosts;
