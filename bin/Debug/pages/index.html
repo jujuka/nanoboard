@@ -114,7 +114,7 @@ function escapeTags(text) {
 
 function detectImages(text) {
   var prefix = 'data:image/jpeg;base64,';
-  var matches = text.match(/\[img=[A-z0-9+\/=]{4,64512}\]/g);
+  var matches = text.match(/\[img=[A-Za-z0-9+\/=]{4,64512}\]/g);
   if (matches != null) {
     for (var i = 0; i < matches.length; i++) {
       var value = matches[i].toString();
@@ -251,20 +251,23 @@ function addPost(post, appendFunc, hasShowButton) {
   return d;
 }
 
-function loadReplies(hash, offset) {
+function loadReplies(hash, offset, highlight) {
 	$.get('../api/replies/' + hash)
 		.done(function(arr){
 			arr = JSON.parse(arr);
 			if (arr.length == 0) return;
 			for (var i = arr.length-1; i >= 0; i--) {
-				addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
+				var p = addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
 					.css('margin-left', offset * 10 + 'px');
-				loadReplies(arr[i].hash, offset + 1);
+				loadReplies(arr[i].hash, offset + 1, highlight);
+        if (highlight == arr[i].hash) {
+          p.addTemporaryClass('high', 2000)
+        }
 			}
 		});
 }
 
-function loadThread(hash) {
+function loadThread(hash, highlight) {
 	$.get('../api/replies/' + hash)
 		.done(function(arr){
 			arr = JSON.parse(arr);
@@ -294,21 +297,73 @@ function loadThread(hash) {
 							}));
 					addPost(post, function(d){ d.appendTo($('#thread')); }, false);
 					for (var i = 0; i < arr.length; i++) {
-						addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
+						var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
 							.css('margin-left',  10 + 'px');
+            if (highlight == arr[i].hash) {
+              p.addTemporaryClass('high', 2000)
+            }
 						if (_depth > 1) {
-							loadReplies(arr[i].hash, 2);
+							loadReplies(arr[i].hash, 2, highlight);
 						}
 					}
 				});
 		});
 }
 
-loadThread(_categories);
+function loadRootThread(hash) {
+  var first = hash;
+  var prev = hash;
+  var fn = function(){
+    $.get('../api/get/' + hash)
+      .done(function(p){
+        p = JSON.parse(p);
+        if (p.replyTo == _categories)
+        {
+          _depth = 2;
+          loadThread(prev, first);
+          return;
+        }
+        prev = p.hash;
+        hash = p.replyTo;
+        fn();
+      });
+  };
+  fn();
+}
+
+$(function() {
+  $('#lasta').click(function(){
+    $.get('../api/pcount')
+      .done(function(cnt){
+        cnt = parseInt(cnt);
+        $.get('../api/prange/'+Math.max(cnt-50,0)+'-'+50)
+          .done(function(arr){
+            arr = JSON.parse(arr);
+            if (arr.length > 0) {
+              $('#thread').empty();
+            } else { return; }
+            for (var i = arr.length - 1; i >= 0; i--) {
+              var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, false);
+              p.append(
+                $('<a>')
+                  .attr('href', 'javascript:void(0)')
+                  .text('[Thread]')
+                  .click(function(){
+                    loadRootThread($(this).parent().attr('id'));
+                  })
+                );
+            }
+          });
+      });
+  });
+
+  loadThread(_categories);
+});
 </script>
 </head>
 <body>
 <div>
+<a id='lasta' href='#'>[Last]</a>
 <a href='img2base64.html' target='_blank'>[Image→Base64]</a>
 <a href='../shutdown'>[Shutdown]</a>
 </div>
