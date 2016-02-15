@@ -1,0 +1,13 @@
+# put urls to threads here, each at new line:
+http://dobrochan.com/slow/res/26779.xhtml
+http://2ch.hk/crypt/res/11930.html
+http://2ch.hk/crypt/res/14463.html
+http://410chan.org/dev/res/10384.html
+http://2ch.hk/crypt/res/16072.html
+http://www.nowere.net/b/res/125993.html
+http://alphachan.org/eot/res/322351.html
+http://0chan.cc/_img_tyan/res/29.html
+http://sibirchan.ru/les/res/4851.html
+http://10ch.ru/o/res/276.html
+https://2ch.hk/crypt/res/16072.html
+https://2ch.hk/crypt/res/16828.html

@@ -23,7 +23,7 @@ namespace NServer
         public HttpServer Build()
         {
             string ip = Configurator.Instance.GetValue("ip", "127.0.0.1");
-            int port = int.Parse(Configurator.Instance.GetValue("port", "7345"));
+            int port = int.Parse(Configurator.Instance.GetValue("port", "7346"));
             var server = new HttpServer(ip, port);
             var pagesHandler = new FileHandler("pages", MimeType.Html);
             server.SetRootHandler(pagesHandler);
