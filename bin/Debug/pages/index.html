@@ -203,7 +203,7 @@ function addReplyForm(id) {
     $('html, body').animate({
     	scrollTop: offset.top,
     	scrollLeft: offset.left
-	});
+	   });
 }
 
 /**
@@ -391,7 +391,7 @@ function loadReplies(hash, offset, highlight) {
 					.css('margin-left', offset * 10 + 'px');
 				loadReplies(arr[i].hash, offset + 1, highlight);
         if (highlight == arr[i].hash) {
-          p.addTemporaryClass('high', 2000)
+          p.addTemporaryClass('high', 8000);
         }
 			}
 		});
@@ -442,7 +442,7 @@ function loadThread(hash, highlight) {
 						var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
 							.css('margin-left',  10 + 'px');
             if (highlight == arr[i].hash) {
-              p.addTemporaryClass('high', 2000)
+              p.addTemporaryClass('high', 8000);
             }
 						if (_depth > 1) {
 							loadReplies(arr[i].hash, 2, highlight);
