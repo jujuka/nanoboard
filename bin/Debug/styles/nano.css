@@ -1,0 +1,82 @@
+* {
+  font-family: 'Verdana', sans-serif;
+  font-size: 13px;
+}
+
+.reply {
+  margin: 0.5em;
+}
+
+.reply-button {
+  float: right;
+  margin-bottom: 0.4em;
+}
+
+gr {
+  color: green;
+}
+
+g {
+  color: #888;
+  font-style: italic; 
+  font-size: 75%;
+}
+
+textarea {
+  width: 300px;
+  height: 130px;
+  outline: 0;
+}
+
+.post {
+  background-color: #ddd;
+  border: 1px solid #aaa;
+  border-radius: .4em;
+  margin: .4em 0;
+  max-width: 600px;
+  margin-right: auto;
+}
+
+.reply-div {
+  display: inline-block;
+}
+
+img {
+	border: 1px dotted white;
+	max-width: 100px;
+}
+
+.full {
+	max-width: 100%;
+	border-width: 0;
+}
+
+a {
+  text-decoration: none;
+  color: darkorange;
+}
+
+a:hover {
+  color: salmon;
+}
+
+.high {
+  background-color: moccasin;
+  border-style: dotted;
+}
+
+sp {
+  background-color: #000;
+}
+
+sp:hover {
+  background-color: #ddd;
+}
+
+.post-inner {
+  word-break: normal;
+  overflow: auto;
+  max-height: 40em;
+  padding: 0em 0.25em;
+  margin: .5em;
+}
