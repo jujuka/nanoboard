@@ -37,4 +37,4 @@ Typical workflow would be:
 Helper scripts already there:
 run - runs nanodb server
 search - calls Aggregator and nbpack in -a mode
-create - calls nbpack in -g mode
+prepare - calls nbpack in -g mode
