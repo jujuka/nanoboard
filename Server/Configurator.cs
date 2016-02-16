@@ -15,8 +15,6 @@ namespace NServer
     {
         private const string ConfigFileName = "config.json";
         public static readonly Configurator Instance = new Configurator();
-
-        [JsonProperty("params")]
         private Dictionary<string, string> _keyValues = new Dictionary<string, string>();
 
         private Configurator()
@@ -31,14 +29,14 @@ namespace NServer
         {
             if (_keyValues.ContainsKey(key)) 
                 return _keyValues[key];
-            _keyValues[key] = defaultValue;
+            SetValue(key, defaultValue);
             return defaultValue;
         }
 
         public void SetValue(string key, string value)
         {
             _keyValues[key] = value;
-            var config = JsonConvert.SerializeObject(_keyValues);
+            var config = JsonConvert.SerializeObject(_keyValues, Formatting.Indented);
             File.WriteAllText(ConfigFileName, config);
         }
     }

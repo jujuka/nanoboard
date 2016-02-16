@@ -10,7 +10,6 @@ using System.Net;
 
 namespace NServer
 {
-
     class HttpConnection
     {
         public readonly string Request;

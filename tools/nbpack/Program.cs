@@ -95,7 +95,15 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
         private static string GetString(string url)
         {
             var wc = new WebClient();
-            return Encoding.UTF8.GetString(wc.DownloadData(url));
+            try
+            {
+                return Encoding.UTF8.GetString(wc.DownloadData(url));
+            }
+            catch (WebException)
+            {
+                Console.WriteLine("nanodb.exe is not running");
+                return null;
+            }
         }
 
         private static bool ByteCountUnder(List<Post> posts, int limit)
@@ -123,12 +131,19 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
         */
         private static void Create(string address, string key)
         {
-            var count = int.Parse(GetString(address.Trim('/') + "/api/pcount"));
+            var countStr = GetString(address.Trim('/') + "/api/pcount");
+
+            if (countStr == null)
+            {
+                return;
+            }
+
+            var count = int.Parse(countStr);
             var take = 50;
             var last50s = GetString(address.Trim('/') + "/api/prange/" + Math.Max(count - take, 0) + "-" + take);
             var list = JsonConvert.DeserializeObject<Post[]>(last50s).ToList();
 
-            while (!ByteCountUnder(list, 80000))
+            while (!ByteCountUnder(list, 150000))
             {
                 list.RemoveAt(0);
             }
@@ -141,14 +156,14 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
                 int index = (int)Math.Max(Math.Pow(r.NextDouble(), 0.3) * count, count - 1);
                 var p = JsonConvert.DeserializeObject<Post[]>(GetString(address.Trim('/') + "/api/prange/" + index + "-" + 1))[0];
                 var bc = ByteCount(p);
-                if (rbytes + bc > 80000) break;
+                if (rbytes + bc > 150000) break;
                 rbytes += bc;
                 list.Add(p);
             }
 
             var files = Directory.GetFiles("containers");
             var file = files[r.Next(files.Length)];
-            Pack(list.ToArray(), file, key, "upload/container.png");
+            Pack(list.ToArray(), file, key, "upload/" + Guid.NewGuid().ToString() + ".png");
         }
 
         private static void AutoParse(string address, string key)
