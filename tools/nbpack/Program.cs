@@ -128,7 +128,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             var last50s = GetString(address.Trim('/') + "/api/prange/" + Math.Max(count - take, 0) + "-" + take);
             var list = JsonConvert.DeserializeObject<Post[]>(last50s).ToList();
 
-            while (ByteCountUnder(list, 80000))
+            while (!ByteCountUnder(list, 80000))
             {
                 list.RemoveAt(0);
             }
@@ -141,7 +141,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
                 int index = (int)Math.Max(Math.Pow(r.NextDouble(), 0.3) * count, count - 1);
                 var p = JsonConvert.DeserializeObject<Post[]>(GetString(address.Trim('/') + "/api/prange/" + index + "-" + 1))[0];
                 var bc = ByteCount(p);
-                if (rbytes + bc > 80000) continue;
+                if (rbytes + bc > 80000) break;
                 rbytes += bc;
                 list.Add(p);
             }
