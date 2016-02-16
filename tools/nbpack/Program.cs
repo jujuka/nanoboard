@@ -148,7 +148,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
 
             var files = Directory.GetFiles("containers");
             var file = files[r.Next(files.Length)];
-            Pack(list.ToArray(), file, key, "upload");
+            Pack(list.ToArray(), file, key, "upload/container.png");
         }
 
         private static void AutoParse(string address, string key)
