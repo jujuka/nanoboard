@@ -16,11 +16,13 @@ mv ../bin/Debug/nanodb.exe .
 cp ../bin/Debug/Newtonsoft.Json.dll .
 xbuild ../tools/nbpack/nbpack.csproj
 mv ../tools/nbpack/bin/Debug/nbpack.exe .
-cp -r ../bin/Debug/pages .
-cp -r ../bin/Debug/images .
-cp -r ../bin/Debug/scripts .
+cp -R ../bin/Debug/pages .
+cp -R ../bin/Debug/images .
+cp -R ../bin/Debug/scripts .
+cp -R ../bin/Debug/styles .
 cd ..
-zip release2.zip release/*
+rm release2.zip
+zip -r -9 release2.zip release/*
 git add release2.zip
 #git commit -m 'Upload 2.x release'
 #git push -u origin feature/2.0
