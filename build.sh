@@ -11,7 +11,7 @@ cp ../bin/Debug/*.bat .
 dmcs ../tools/aggregator/Aggregator.cs
 mv ../tools/aggregator/Aggregator.exe .
 cp ../tools/aggregator/places.txt .
-xbuild ../nboard2.csproj
+xbuild ../nanodb.csproj
 mv ../bin/Debug/nanodb.exe .
 cp ../bin/Debug/Newtonsoft.Json.dll .
 xbuild ../tools/nbpack/nbpack.csproj
