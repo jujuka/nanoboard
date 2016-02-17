@@ -125,8 +125,8 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
         }
 
         /*
-            Takes 50 or less last posts (up to 80000 bytes max total),
-            adds  50 or less random posts (up to 80000 bytes max total),
+            Takes 50 or less last posts (up to 150000 bytes max total),
+            adds  50 or less random posts (up to 150000 bytes max total),
             random is shifted towards latest posts.
         */
         private static void Create(string address, string key)
