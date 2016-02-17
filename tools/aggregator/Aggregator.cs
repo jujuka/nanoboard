@@ -226,6 +226,7 @@ namespace nboard
                     var name = Guid.NewGuid().ToString().Trim('{', '}');
                     File.WriteAllBytes("temp" + Path.DirectorySeparatorChar + name, e.Result);
                     File.Move("temp" + Path.DirectorySeparatorChar + name, "download" + Path.DirectorySeparatorChar + name);
+                    GC.Collect();
                     Console.WriteLine("Downloaded: " + address);
                 }
 
