@@ -51,7 +51,10 @@ namespace migrate
                     string rawpost = posts.Substring(
                                      int.Parse(offset, System.Globalization.NumberStyles.HexNumber), 
                                      int.Parse(length, System.Globalization.NumberStyles.HexNumber));
-                    var post = new Post { replyto = rawpost.Substring(0,32), message = rawpost.Substring(32) };
+                    var post = new Post { 
+                        replyto = rawpost.Substring(0,32), 
+                        message = Convert.ToBase64String(Encoding.UTF8.GetBytes(rawpost.Substring(32))) 
+                    };
                     list.Add(post);
                 }
 
