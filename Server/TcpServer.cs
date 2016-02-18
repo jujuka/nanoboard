@@ -86,11 +86,13 @@ namespace NServer
             {
                 try
                 {
+                    Thread.Sleep(50);
                     len = stream.Read(buffer, 0, buffer.Length);
                     var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
                     readData += block;
                     for (int i = 0; i < len; i++) raw.Add(buffer[i]);
                 } catch {
+                    Thread.Sleep(50);
                     if (contentLength == 0 && readData.Contains("Content-Length")) 
                     {
                         var match = System.Text.RegularExpressions.Regex.Match(readData, "Content-Length: [0-9]+");
