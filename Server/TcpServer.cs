@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
@@ -76,7 +76,7 @@ namespace NServer
             var stream = client.GetStream();
             String readData = "";
             stream.ReadTimeout = 100;
-            var buffer = new byte[1024];
+            var buffer = new byte[16384];
             int len = 0;
             List<byte> raw = new List<byte>();
 
@@ -84,13 +84,14 @@ namespace NServer
             {
                 do
                 {
+                    Thread.Sleep(100);
                     len = stream.Read(buffer, 0, buffer.Length);
                     var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
                     readData += block;
 
                     for (int i = 0; i < len; i++) raw.Add(buffer[i]);
                 }
-                while (len > 0);
+                while (true);
             }
 
             catch (IOException)
