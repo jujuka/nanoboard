@@ -78,6 +78,7 @@ namespace NServer
             stream.ReadTimeout = 100;
             var buffer = new byte[16384];
             int len = -1;
+            int contentLength = 0;
             List<byte> raw = new List<byte>();
 
             // real shit
@@ -90,10 +91,18 @@ namespace NServer
                     readData += block;
                     for (int i = 0; i < len; i++) raw.Add(buffer[i]);
                 } catch {
+                    if (contentLength == 0 && readData.Contains("Content-Length")) 
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(readData, "Content-Length: [0-9]+");
+                        if (match.Success) {
+                            contentLength = int.Parse(match.Value.Split(' ')[1]);
+                            contentLength += readData.Split(new[]{"\r\n\r\n"}, StringSplitOptions.None)[0].Length;
+                        }
+                    }
                     len = -1;
                 }
             }
-            while (len > 0);
+            while (len > 0 || raw.Count < contentLength);
 
 
             if (ConnectionAdded != null)
