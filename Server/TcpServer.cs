@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
@@ -76,27 +76,34 @@ namespace NServer
             var stream = client.GetStream();
             String readData = "";
             stream.ReadTimeout = 100;
-            var buffer = new byte[1024];
-            int len = 0;
+            var buffer = new byte[16384];
+            int len = -1;
+            int contentLength = 0;
             List<byte> raw = new List<byte>();
 
-            try
+            // real shit
+            do
             {
-                do
+                try
                 {
                     len = stream.Read(buffer, 0, buffer.Length);
                     var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
                     readData += block;
-
                     for (int i = 0; i < len; i++) raw.Add(buffer[i]);
+                } catch {
+                    if (contentLength == 0 && readData.Contains("Content-Length")) 
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(readData, "Content-Length: [0-9]+");
+                        if (match.Success) {
+                            contentLength = int.Parse(match.Value.Split(' ')[1]);
+                            contentLength += readData.Split(new[]{"\r\n\r\n"}, StringSplitOptions.None)[0].Length;
+                        }
+                    }
+                    len = -1;
                 }
-                while (len > 0);
             }
+            while (len > 0 || raw.Count < contentLength);
 
-            catch (IOException)
-            {
-                // that's ok, we've reached end of the stream (read timeout)
-            }
 
             if (ConnectionAdded != null)
             {
