@@ -77,27 +77,24 @@ namespace NServer
             String readData = "";
             stream.ReadTimeout = 100;
             var buffer = new byte[16384];
-            int len = 0;
+            int len = -1;
             List<byte> raw = new List<byte>();
 
-            try
+            // real shit
+            do
             {
-                do
+                try
                 {
-                    Thread.Sleep(100);
                     len = stream.Read(buffer, 0, buffer.Length);
                     var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
                     readData += block;
-
                     for (int i = 0; i < len; i++) raw.Add(buffer[i]);
+                } catch {
+                    len = -1;
                 }
-                while (true);
             }
+            while (len > 0);
 
-            catch (IOException)
-            {
-                // that's ok, we've reached end of the stream (read timeout)
-            }
 
             if (ConnectionAdded != null)
             {
