@@ -253,6 +253,7 @@ function loadThread(hash, highlight) {
 								loadThread(hash);
 							}));
 					addPost(post, function(d){ d.appendTo($('#thread')); }, false, false);
+          if (_depth == 1) arr.reverse();
 					for (var i = 0; i < arr.length; i++) {
 						var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
 							.css('margin-left',  10 + 'px');
