@@ -10,6 +10,7 @@ using System.Net;
 using System.Linq;
 using NDB;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace NServer
 {
@@ -32,6 +33,7 @@ namespace NServer
             _handlers["nget"] = GetNthPost;
             _handlers["prange"] = GetPresentRange;
             _handlers["pcount"] = GetPresentCount;
+            _handlers["search"] = Search;
         }
 
         private HttpResponse GetPresentRange(string fromto, string notUsed = null)
@@ -75,6 +77,37 @@ namespace NServer
         private HttpResponse GetPresentCount(string notUsed1, string notUsed = null)
         {
             return new HttpResponse(StatusCode.Ok, _db.GetPresentCount().ToString());
+        }
+
+        private HttpResponse Search(string searchString, string notUsed = null)
+        {
+            searchString = notUsed.FromB64();
+            var found = new List<Post>();
+            const int limit = 500;
+
+            for (int i = _db.GetPostCount() - 1; i >= 0; i--)
+            {
+                var post = _db.GetNthPost(i);
+
+                if (post == null)
+                    continue;
+
+                var msg = post.message.FromB64();
+
+                if (msg.Contains("[img="))
+                {
+                    msg = Regex.Replace(msg, "\\[img=[A-Za-z0-9+=/]{4,64512}\\]", "");
+                }
+
+                if (msg.Contains(searchString))
+                {
+                    found.Add(post);
+
+                    if (found.Count >= 500) break;
+                }
+            }
+
+            return new HttpResponse(StatusCode.Ok, found.Count == 0 ? "[]" : JsonConvert.SerializeObject(found.ToArray()));
         }
 
         private HttpResponse GetReplies(string hash, string notUsed = null)
@@ -155,9 +188,9 @@ namespace NServer
                 }
             }
 
-            catch
+            catch (Exception e)
             {
-                return new ErrorHandler(StatusCode.InternalServerError, "").Handle(request);
+                return new ErrorHandler(StatusCode.InternalServerError, e.Message).Handle(request);
             }
         }
     }

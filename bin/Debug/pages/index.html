@@ -57,6 +57,19 @@ function detectImages(text) {
   return text;
 }
 
+function detectThreadLinks(text) {
+var matches = text.match(/&gt;&gt;[a-f0-9]{32}/g);
+  if (matches != null) {
+    for (var i = 0; i < matches.length; i++) {
+      var value = matches[i].toString();
+      value = value.substring(8, value.length);
+      value = '<a href="javascript:void(0);" onclick=_depth=1;loadThread("'+value+'")>&gt;&gt;' + value + '</a>';
+      text = replaceAll(text, matches[i], value);
+    }
+  }
+  return text;
+}
+
 function applyFormatting(text) {
   text = text.replace(/\[sp(oiler|)\]/gim, '[x]');
   text = text.replace(/\[\/sp(oiler|)\]/gim, '[/x]');
@@ -68,6 +81,7 @@ function applyFormatting(text) {
       .replace(new RegExp("\\[/" + ch + "\\]", 'gim'), '</' + ch + '>');
   }
   text = detectImages(text);
+  text = detectThreadLinks(text);
   text = replaceAll(text, '\n', '<br/>');
   text = replaceAll(text, '  ', '&nbsp; ')
   return text
@@ -121,15 +135,16 @@ function addReplyForm(id) {
 	   });
 }
 
-function addPost(post, appendFunc, hasShowButton) {
+function addPost(post, appendFunc, hasShowButton, short) {
   thisPosts.push(post);
   if (_depth > 1) hasShowButton = false;
+  if (short == undefined) short = true;
   var d = $(document.createElement('div'));
   d
     .addClass('post')
     .attr('id', post.hash);
   d
-    .append('<gr>#' + shortenHash(post.hash) + '&nbsp;</gr>');
+    .append('<gr>#' + (short?shortenHash(post.hash):post.hash) + '&nbsp;</gr>');
   $('<a>')
     .attr('href', '#' + post.replyTo)
     .click(function() {
@@ -237,7 +252,7 @@ function loadThread(hash, highlight) {
 							.click(function(){
 								loadThread(hash);
 							}));
-					addPost(post, function(d){ d.appendTo($('#thread')); }, false);
+					addPost(post, function(d){ d.appendTo($('#thread')); }, false, false);
 					for (var i = 0; i < arr.length; i++) {
 						var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
 							.css('margin-left',  10 + 'px');
@@ -301,7 +316,61 @@ function showLast(N){
       });
   }
 
+  function showSearch() {
+    $('#thread').empty();
+    $('#thread').append(
+      $('<input>')
+        .addClass('searchfield'));
+    $('.searchfield').focus();
+    $('#thread').append(
+      $('<button>').text('Search')
+        .click(function() {
+          $('#searchresult').empty();
+          $('#searchresult').append('<img src="../images/spinner.gif">');
+          var search = Base64.encode($('.searchfield').val());
+          $.post('../api/search', search)
+            .done(function(arr){
+              $('#searchresult').empty();
+              arr = JSON.parse(arr);
+              if (arr.length == 0) {
+                $('#searchresult').append('No results<br/>');
+                return;
+              } else { 
+                $('#searchresult')
+                  .append('Results: ' + arr.length + 
+                          (arr.length >= 500 ? '(limit reached)' : '') + '<br/>');
+              }
+              for (var i = arr.length - 1; i >= 0; i--) {
+                var p = addPost(arr[i], function(d) {
+                  d.appendTo($('#searchresult')); 
+                    d.find('img').click(function(){
+                      $(this).toggleClass('full');
+                    });
+                }, false);
+                if (arr[i].hash != _categories && 
+                    arr[i].replyTo != _categories && 
+                    arr[i].replyTo != _rootpost)
+                p.append(
+                  $('<a>')
+                    .attr('href', 'javascript:void(0)')
+                    .text('[Thread]')
+                    .click(function(){
+                      loadRootThread($(this).parent().attr('id'));
+                    })
+                  );
+              }
+              search = Base64.decode(search);
+              $('.post-inner').each(function() { $(this).html(
+                  replaceAll($(this).html().toString(), search, '<span class="word-search">' + search + '</span>')
+                )});
+            });
+        }));
+      $('#thread').append('<hr>');
+      $('#thread').append('<div id="searchresult"></div>');
+  }
+
 $(function() {
+  $('#searcha').click(function(){showSearch();});
   $('#last10a').click(function(){showLast(10);});
   $('#last50a').click(function(){showLast(50);});
   $('#last100a').click(function(){showLast(100);});
@@ -326,14 +395,15 @@ $(function() {
 <a id='last100a' href='#'>[100]</a>
 <a id='last500a' href='#'>[500]</a>
 <a id='last10a' href='#'>[10]</a>
+<a id='searcha' href='#'>[Search]</a>
 <a href='img2base64.html' target='_blank'>[Image→Base64]</a>
 <a href='../shutdown'>[Shutdown]</a>
 </div>
 <hr>
 <div id='thread'>
 </div>
-<br/>
-<a id='tojsona' href='#'>[This page→JSON]</a>
+<!--<br/>
+<a id='tojsona' href='#'>[This page→JSON]</a>-->
 <hr/>
 <div id='statusd'></div>
 </body>

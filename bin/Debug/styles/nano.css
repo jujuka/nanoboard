@@ -3,13 +3,26 @@
   font-size: 13px;
 }
 
+body {
+  background-color: #eee;
+}
+
 .reply {
   margin: 0.5em;
+}
+
+.searchfield {
+  width: 500px;
+  outline: 0;
 }
 
 .reply-button {
   float: right;
   margin-bottom: 0.4em;
+}
+
+.word-search {
+  background-color: yellow;
 }
 
 gr {

@@ -12,7 +12,7 @@ namespace NDB
     {
         private readonly string _index = "index.json";
 		private const string DiffFile = "diff.list";
-        private const string DeletedStub = "post was deleted";
+        private readonly string DeletedStub = "post was deleted".ToB64();
         private const string DataPrefix = "";
         private const string DataSuffix = ".db";
         private string _data = "0.db";
