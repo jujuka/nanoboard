@@ -63,7 +63,7 @@ var matches = text.match(/&gt;&gt;[a-f0-9]{32}/g);
     for (var i = 0; i < matches.length; i++) {
       var value = matches[i].toString();
       value = value.substring(8, value.length);
-      value = '<a href="javascript:void(0);" onclick=_depth=1;loadThread("'+value+'")>&gt;&gt;' + value + '</a>';
+      value = '<a href="javascript:void(0);" onclick=_depth=2;loadThread("'+value+'")>&gt;&gt;' + value + '</a>';
       text = replaceAll(text, matches[i], value);
     }
   }
