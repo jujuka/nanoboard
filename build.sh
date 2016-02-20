@@ -24,8 +24,8 @@ cd ..
 rm release2.zip
 zip -r -9 release2.zip release/*
 git add release2.zip
-#git commit -m 'Upload 2.x release'
-#git push -u origin feature/2.0
+git commit -m 'Upload 2.x release'
+git push -u origin feature/2.0
 mv *.db release
 mv index.json release
 mv diff.list release
