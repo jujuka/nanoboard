@@ -14,7 +14,7 @@ var _depth = 0;
 var thisPosts = [];
 
 function shortenHash(hash) {
-	return hash.substring(0,4) + '..' + hash.substring(28,32);
+  return hash.substring(0,4) + '..' + hash.substring(28,32);
 }
 
 function replaceAll(text, search, replace) {
@@ -91,11 +91,11 @@ function applyFormatting(text) {
 
 function sendPostToDb(post) {
   $.post('../api/add/' + post.replyTo, post.message)
-  	.done(function(response){
-  		addPost(JSON.parse(response), function(d){ d.insertAfter($('#'+post.replyTo)); }, false)
-  			.addTemporaryClass('high', 1000)
-  			.css('margin-left', parseInt($('#'+post.replyTo).css('margin-left'))+10+'px');
-  	});
+    .done(function(response){
+      addPost(JSON.parse(response), function(d){ d.insertAfter($('#'+post.replyTo)); }, false)
+        .addTemporaryClass('high', 1000)
+        .css('margin-left', parseInt($('#'+post.replyTo).css('margin-left'))+10+'px');
+    });
 }
 
 function deletePostFromDb(hash) {
@@ -130,9 +130,9 @@ function addReplyForm(id) {
     var offset = form.offset();
     offset.top -= 100;
     $('html, body').animate({
-    	scrollTop: offset.top,
-    	scrollLeft: offset.left
-	   });
+      scrollTop: offset.top,
+      scrollLeft: offset.left
+     });
 }
 
 function addPost(post, appendFunc, hasShowButton, short) {
@@ -143,16 +143,18 @@ function addPost(post, appendFunc, hasShowButton, short) {
   d
     .addClass('post')
     .attr('id', post.hash);
-  d
-    .append('<gr>#' + (short?shortenHash(post.hash):post.hash) + '&nbsp;</gr>');
-  $('<a>')
-    .attr('href', '#' + post.replyTo)
-    .click(function() {
-      $('#' + post.replyTo)
-        .addTemporaryClass('high', 1000)
-    })
-    .appendTo(d)
-    .html('^' + shortenHash(post.replyTo));
+  if (_depth != 0)
+    d.append('<gr>#' + (short&&_depth!=1?shortenHash(post.hash):post.hash) + '&nbsp;</gr>');
+  if (_depth != 0) {
+    $('<a>')
+      .attr('href', '#' + post.replyTo)
+      .click(function() {
+        $('#' + post.replyTo)
+          .addTemporaryClass('high', 1000)
+      })
+      .appendTo(d)
+      .html('^' + shortenHash(post.replyTo));
+  }
   d.append('&nbsp;');
   d
     .append($('<a>')
@@ -163,15 +165,15 @@ function addPost(post, appendFunc, hasShowButton, short) {
         d.next().find('textarea').focus();
       }));
   if (hasShowButton) {
-	  d.append('&nbsp;');
-	  d
-	    .append($('<a>')
-	      .attr('href', 'javascript:void(0)')
-	      .text('[Show]')
-	      .click(function() {
-	      	_depth += 1;
-	      	loadThread(post.hash);
-	      }));
+    d.append('&nbsp;');
+    d
+      .append($('<a>')
+        .attr('href', 'javascript:void(0)')
+        .text('[Show]')
+        .click(function() {
+          _depth += 1;
+          loadThread(post.hash);
+        }));
   }
   d.append('&nbsp;');
   d
@@ -191,25 +193,25 @@ function addPost(post, appendFunc, hasShowButton, short) {
   d.slideUp(0);
   d.slideDown(250);
   d.find('img').click(function(){
-  	$(this).toggleClass('full');
+    $(this).toggleClass('full');
   });
   return d;
 }
 
 function loadReplies(hash, offset, highlight) {
-	$.get('../api/replies/' + hash)
-		.done(function(arr){
-			arr = JSON.parse(arr);
-			if (arr.length == 0) return;
-			for (var i = arr.length-1; i >= 0; i--) {
-				var p = addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
-					.css('margin-left', offset * 10 + 'px');
-				loadReplies(arr[i].hash, offset + 1, highlight);
+  $.get('../api/replies/' + hash)
+    .done(function(arr){
+      arr = JSON.parse(arr);
+      if (arr.length == 0) return;
+      for (var i = arr.length-1; i >= 0; i--) {
+        var p = addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
+          .css('margin-left', offset * 10 + 'px');
+        loadReplies(arr[i].hash, offset + 1, highlight);
         if (highlight == arr[i].hash) {
           p.addTemporaryClass('high', 8000);
         }
-			}
-		});
+      }
+    });
 }
 
 function updateStatusLine() {
@@ -225,47 +227,47 @@ function updateStatusLine() {
 function loadThread(hash, highlight) {
   thisPosts = [];
   updateStatusLine();
-	$.get('../api/replies/' + hash)
-		.done(function(arr){
-			arr = JSON.parse(arr);
-			if (arr.length > 0) {
-				$('#thread').empty();
-			} else { _depth -= 1; return; }
-			$.get('../api/get/' + hash)
-				.done(function(post){
-					post = JSON.parse(post);
-					if (_depth > 0) {
-						$('#thread').append(
-							$('<a>')
-								.attr('href','#')
-								.text('[Up]')
-								.click(function(){
-									_depth -= 1;
-									loadThread(post.replyTo);
-								}));
-					}
-					$('#thread').append('&nbsp;');
-					$('#thread').append(
-						$('<a>')
-							.attr('href','#')
-							.text('[Refresh]')
-							.click(function(){
-								loadThread(hash);
-							}));
-					addPost(post, function(d){ d.appendTo($('#thread')); }, false, false);
+  $.get('../api/replies/' + hash)
+    .done(function(arr){
+      arr = JSON.parse(arr);
+      if (arr.length > 0) {
+        $('#thread').empty();
+      } else { _depth -= 1; return; }
+      $.get('../api/get/' + hash)
+        .done(function(post){
+          post = JSON.parse(post);
+          if (_depth > 0) {
+            $('#thread').append(
+              $('<a>')
+                .attr('href','#')
+                .text('[Up]')
+                .click(function(){
+                  _depth -= 1;
+                  loadThread(post.replyTo);
+                }));
+          }
+          $('#thread').append('&nbsp;');
+          $('#thread').append(
+            $('<a>')
+              .attr('href','#')
+              .text('[Refresh]')
+              .click(function(){
+                loadThread(hash);
+              }));
+          addPost(post, function(d){ d.appendTo($('#thread')); }, false, false);
           if (_depth == 1) arr.reverse();
-					for (var i = 0; i < arr.length; i++) {
-						var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
-							.css('margin-left',  10 + 'px');
+          for (var i = 0; i < arr.length; i++) {
+            var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
+              .css('margin-left',  10 + 'px');
             if (highlight == arr[i].hash) {
               p.addTemporaryClass('high', 8000);
             }
-						if (_depth > 1) {
-							loadReplies(arr[i].hash, 2, highlight);
-						}
-					}
-				});
-		});
+            if (_depth > 1) {
+              loadReplies(arr[i].hash, 2, highlight);
+            }
+          }
+        });
+    });
 }
 
 function loadRootThread(hash) {
