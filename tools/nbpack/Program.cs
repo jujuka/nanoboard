@@ -174,8 +174,15 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             {
                 var posts = Unpack(f, key);
                 GC.Collect();
-                var wc = new WebClient();
-                wc.UploadData(new Uri(address.Trim('/') + "/api/addmany"), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(posts)));
+                try
+                {
+                    var wc = new WebClient();
+                    wc.UploadData(new Uri(address.Trim('/') + "/api/addmany"), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(posts)));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
 
                 try
                 {
@@ -184,7 +191,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
 
                 catch(Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    Console.WriteLine(e.Message);
                 }
             }
         }
