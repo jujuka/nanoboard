@@ -190,14 +190,15 @@ function addPost(post, appendFunc, hasShowButton, short) {
       .dblclick(function() {
         deletePostFromDb(post.hash);
         d.remove();
+        pushNotification('You have deleted post forever.');
       }));
   appendFunc(d);
   $('<div>')
     .addClass('post-inner')
     .html(applyFormatting(escapeTags(Base64.decode(post.message))))
     .appendTo(d);
-  d.slideUp(0);
-  d.slideDown(250);
+  //d.slideUp(0);
+  //d.slideDown(250);
   d.find('img').click(function(){
     $(this).toggleClass('full');
   });
@@ -238,7 +239,11 @@ function loadThread(hash, highlight) {
       arr = JSON.parse(arr);
       if (arr.length > 0) {
         $('#thread').empty();
-      } else { _depth -= 1; return; }
+      } else { 
+        _depth -= 1; 
+        pushNotification('This thread/category is empty.');
+        return; 
+      }
       $.get('../api/get/' + hash)
         .done(function(post){
           post = JSON.parse(post);
@@ -246,7 +251,7 @@ function loadThread(hash, highlight) {
             $('#thread').append(
               $('<a>')
                 .attr('href','#')
-                .text('[Up]')
+                .html('<b>[Up]</b>')
                 .click(function(){
                   _depth -= 1;
                   loadThread(post.replyTo);
