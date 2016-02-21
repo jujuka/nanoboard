@@ -8,6 +8,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace NServer
 {
@@ -23,6 +24,16 @@ namespace NServer
             {
                 _keyValues = JsonConvert.DeserializeObject<Dictionary<string,string>>(File.ReadAllText(ConfigFileName));  
             }
+        }
+
+        public string[] GetParams()
+        {
+            return _keyValues.Keys.ToArray();
+        }
+
+        public bool HasValue(string key)
+        {
+            return _keyValues.ContainsKey(key);
         }
 
         public string GetValue(string key, string defaultValue)

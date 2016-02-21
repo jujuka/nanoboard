@@ -46,6 +46,7 @@ namespace NServer
         {
             Console.WriteLine("Server was shut down");
             _isRunning = false;
+            _server.Stop();
         }
 
         private void LoopClients()

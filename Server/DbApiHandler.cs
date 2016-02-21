@@ -34,6 +34,9 @@ namespace NServer
             _handlers["prange"] = GetPresentRange;
             _handlers["pcount"] = GetPresentCount;
             _handlers["search"] = Search;
+            _handlers["paramset"] = ParamSet;
+            _handlers["paramget"] = ParamGet;
+            _handlers["params"] = Params;
         }
 
         private HttpResponse GetPresentRange(string fromto, string notUsed = null)
@@ -43,6 +46,28 @@ namespace NServer
             int count = int.Parse(spl[1]);
             var posts = _db.RangePresent(skip, count);
             return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(posts));
+        }
+
+        private HttpResponse ParamGet(string addr, string content)
+        {
+            if (!Configurator.Instance.HasValue(addr))
+            {
+                return new ErrorHandler(StatusCode.NotFound, "No such param.").Handle(null);
+            }
+
+            return new HttpResponse(StatusCode.Ok, Configurator.Instance.GetValue(addr, ""));
+        }
+
+        private HttpResponse Params(string addr, string content)
+        {
+            var @params = Configurator.Instance.GetParams();
+            return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(@params));
+        }
+
+        private HttpResponse ParamSet(string addr, string content)
+        {
+            Configurator.Instance.SetValue(addr, content);
+            return new HttpResponse(StatusCode.Ok, "Ok");
         }
 
         private HttpResponse GetPostByHash(string hash, string notUsed = null)

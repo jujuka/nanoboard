@@ -33,6 +33,11 @@ namespace NServer
             server.AddHandler("styles", new FileHandler("styles", MimeType.Css));
             server.AddHandler("images", new FileHandler("images", MimeType.Image, true));
             server.AddHandler("shutdown", new ActionHandler("Server was shut down.", ()=>server.Stop()));
+            server.AddHandler("restart", new ActionHandler("Server was restarted.", ()=>{
+                server.Stop();
+                server = Build();
+                server.Run();
+            }));
             return server;
         }
     }

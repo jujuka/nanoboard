@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8"> 
 <script src='../scripts/jquery.min.js'> </script>
-<script src='../scripts/filesaver.min.js'> </script>
 <script src='../scripts/base64.js'> </script>
 <script src='../scripts/notif.js'> </script>
 <link rel='stylesheet' type='text/css' href='../styles/nano.css'>
@@ -12,8 +11,27 @@
 var _categories = 'bdd4b5fc1b3a933367bc6830fef72a35';
 var _mainpost = 'f682830a470200d738d32c69e6c2b8a4';
 var _rootpost = '00000000000000000000000000000000';
+var _postWasDeletedMarker = 'post was deleted';
 var _depth = 0;
-var thisPosts = [];
+
+var _showDeleted = 'true';
+var _showTimestamps = 'true';
+var _treeOffsetPx = 10;
+
+function tryGetParam(param, def, cb) {
+  $.get('../api/paramget/'+param)
+    .done(function(v){cb(v);})
+    .fail(function(){
+      $.post('../api/paramset/'+param, def)
+        .done(function(){cb(def);});
+    });
+}
+
+function reloadParams() {
+  tryGetParam('show_deleted', 'true', function(v){ _showDeleted = v; });
+  tryGetParam('show_timestamps', 'true', function(v){ _showTimestamps = v; });
+  tryGetParam('post_offset_in_tree_px', '10', function(v){ _treeOffsetPx = parseInt(v); });
+}
 
 function shortenHash(hash) {
   return hash.substring(0,4) + '..' + hash.substring(28,32);
@@ -85,7 +103,7 @@ function applyFormatting(text) {
   text = detectImages(text);
   text = detectThreadLinks(text);
   text = replaceAll(text, '\n', '<br/>');
-  text = replaceAll(text, '  ', '&nbsp; ')
+  text = replaceAll(text, '  ', '&nbsp; ');
   return text
     .replace(/<x>/gim, '<sp>')
     .replace(/<\/x>/gim, '</sp>');
@@ -112,7 +130,7 @@ function addReplyForm(id) {
   var form = $('<div>')
     .addClass('post').addClass('reply-div')
     .insertAfter($('#' + id))
-    .css('margin-left', parseInt($('#' + id).css('margin-left')) + 10 + 'px')
+    .css('margin-left', parseInt($('#' + id).css('margin-left')) + _treeOffsetPx + 'px')
     .append($('<div>').addClass('reply')
       .append($('<textarea>').val('[g]' + new Date().toUTCString() + ', client: 2.0[/g]\n'))
       .append($('<br>'))
@@ -142,7 +160,6 @@ function addReplyForm(id) {
 }
 
 function addPost(post, appendFunc, hasShowButton, short) {
-  thisPosts.push(post);
   if (_depth > 1) hasShowButton = false;
   if (short == undefined) short = true;
   var d = $(document.createElement('div'));
@@ -202,6 +219,10 @@ function addPost(post, appendFunc, hasShowButton, short) {
   d.find('img').click(function(){
     $(this).toggleClass('full');
   });
+  if (_showTimestamps == 'false') {
+    d.find('br').first().remove();
+    d.find('g').css('display','none');
+  }
   return d;
 }
 
@@ -212,7 +233,7 @@ function loadReplies(hash, offset, highlight) {
       if (arr.length == 0) return;
       for (var i = arr.length-1; i >= 0; i--) {
         var p = addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
-          .css('margin-left', offset * 10 + 'px');
+          .css('margin-left', offset * _treeOffsetPx + 'px');
         loadReplies(arr[i].hash, offset + 1, highlight);
         if (highlight == arr[i].hash) {
           p.addTemporaryClass('high', 8000);
@@ -263,13 +284,17 @@ function loadThread(hash, highlight) {
               .attr('href','#')
               .text('[Refresh]')
               .click(function(){
-                loadThread(hash);
+                reloadParams();
+                setTimeout(function(){
+                  loadThread(hash);                  
+                }, 500);
               }));
           addPost(post, function(d){ d.appendTo($('#thread')); }, false, false);
           if (_depth == 1) arr.reverse();
           for (var i = 0; i < arr.length; i++) {
+            if (_showDeleted == 'false' && Base64.decode(arr[i].message) == _postWasDeletedMarker) continue;
             var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
-              .css('margin-left',  10 + 'px');
+              .css('margin-left',  _treeOffsetPx + 'px');
             if (highlight == arr[i].hash) {
               p.addTemporaryClass('high', 8000);
             }
@@ -357,9 +382,6 @@ function showLast(N){
               for (var i = arr.length - 1; i >= 0; i--) {
                 var p = addPost(arr[i], function(d) {
                   d.appendTo($('#searchresult')); 
-                    d.find('img').click(function(){
-                      $(this).toggleClass('full');
-                    });
                 }, false);
                 if (arr[i].hash != _categories && 
                     arr[i].replyTo != _categories && 
@@ -377,6 +399,9 @@ function showLast(N){
               $('.post-inner').each(function() { $(this).html(
                   replaceAll($(this).html().toString(), search, '<span class="word-search">' + search + '</span>')
                 )});
+              $('img').click(function(){
+                $(this).toggleClass('full');
+              });
             });
         }));
       $('#thread').append('<hr>');
@@ -390,14 +415,10 @@ $(function() {
   $('#last100a').click(function(){showLast(100);});
   $('#last500a').click(function(){showLast(500);});
   $('#maina').click(function(){_depth = 0;loadThread(_categories);});
-  $('#tojsona').click(function(){
-    var po = new Object();
-    po["posts"] = thisPosts;
-    var str = JSON.stringify(po);
-    var blob = new Blob([str], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, "posts.txt");
-  });
-  loadThread(_categories);
+  reloadParams();
+  setTimeout(function(){
+    loadThread(_categories);    
+  }, 500);
 });
 </script>
 </head>
@@ -411,13 +432,12 @@ $(function() {
 <a id='last10a' href='#'>[10]</a>
 <a id='searcha' href='#'>[Search]</a>
 <a href='img2base64.html' target='_blank'>[Image→Base64]</a>
+<a target='_blank' href='params.html'>[Settings]</a>
 <a href='../shutdown'>[Shutdown]</a>
 </div>
 <hr>
 <div id='thread'>
 </div>
-<!--<br/>
-<a id='tojsona' href='#'>[This page→JSON]</a>-->
 <hr/>
 <div id='statusd'></div>
 </body>

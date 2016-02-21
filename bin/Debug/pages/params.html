@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"> 
+<script src='../scripts/jquery.min.js'> </script>
+<script src='../scripts/base64.js'> </script>
+<script src='../scripts/notif.js'> </script>
+<link rel='stylesheet' type='text/css' href='../styles/nano.css'>
+<link rel='stylesheet' type='text/css' href='../styles/notif.css'>
+<style>
+h1 {
+  font-size: 200%;
+}
+textarea,input {
+  width: 500px;
+  height: 20px;
+  margin: 5px;
+  outline: 0;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+body {
+  padding-left: 50px;
+}
+.parname {
+  font-size: 120%;
+  font-style: italic;
+}
+</style>
+<script>
+function closure(func) {
+  var x = function(args1) {
+    func(args1);
+  }
+  x(args.slice(1,args.length-1));
+}
+
+function toCamelCase(str) {
+  if (str.length <= 3) return str.toUpperCase();
+  return str
+      .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+      //.replace(/\s/g, '')
+      .replace(/^(.)/, function($1) { return $1.toUpperCase(); });
+}
+
+function beautifyParamName(txt) {
+  return toCamelCase(txt.split('_').join(' '));
+}
+
+$(function(){
+  function showParams() {
+    $.get('../api/params')
+      .done(function(arr){
+        arr = JSON.parse(arr);
+        for (var i = 0; i < arr.length; i++) {
+          var param = arr[i];
+          if (param == '') continue;
+          var parcont = $('<div>').addClass('parname');
+          parcont.appendTo($('body'));
+          var x = function(cont,par) {
+            $.get('../api/paramget/' + par)
+              .done(function(val) {
+                cont.text(beautifyParamName(par) + ':');
+                cont.append('<br/>');
+                if (val == 'true' || val == 'false') {
+                  $('<input>')
+                    .attr('type', 'checkbox')
+                    .attr('checked', val == 'true')
+                    .appendTo(cont)
+                    .change(function(){
+                      var elem = $(this);
+                      var new_val = elem.is(":checked").toString();
+                      $.post('../api/paramset/'+par, new_val)
+                        .done(function(){
+                          elem.attr('checked', new_val == 'true');
+                          pushNotification('Autosaved.');
+                        });
+                    });
+                } else 
+                $('<textarea>')
+                  .attr('id', par)
+                  .val(val)
+                  .appendTo(cont)
+                  .change(function(){
+                    var elem = $(this);
+                    var new_val = elem.val();
+                    $.post('../api/paramset/'+par, new_val)
+                      .done(function(){
+                        elem.val(new_val);
+                        pushNotification('Autosaved.');
+                      });
+                  });
+              });
+          };
+          x(parcont,param);
+        };
+      });
+  }
+
+  showParams();
+
+  $('#restartb').click(function(){
+    $('textarea').blur();
+    $('body').empty();
+    $.get('../restart');
+    setTimeout(function(){
+      location.href = 'http://' + $('#ip').val() + ':' + $('#port').val();
+    }, 1000);
+  });
+});
+</script>
+</head>
+<body>
+<h1>Settings</h1>
+<p>Some parameters may require thread page refresh, some (like IP/port) – server <button id='restartb'>restart</button>.</p>
+<p>If you did something wrong with port/ip and server is not accessible, change port/ip in config.json manually.</p>
+<p>Default values for IP/port are 127.0.0.1 and 7346</p>
+</body>
+</html>
