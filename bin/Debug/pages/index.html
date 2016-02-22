@@ -17,6 +17,7 @@ var _depth = 0;
 var _showDeleted = 'true';
 var _showTimestamps = 'true';
 var _treeOffsetPx = 10;
+var _detectURLs = 'false';
 
 function tryGetParam(param, def, cb) {
   $.get('../api/paramget/'+param)
@@ -30,6 +31,7 @@ function tryGetParam(param, def, cb) {
 function reloadParams() {
   tryGetParam('show_deleted', 'true', function(v){ _showDeleted = v; });
   tryGetParam('show_timestamps', 'true', function(v){ _showTimestamps = v; });
+  tryGetParam('detect_URLs', 'false', function(v){ _detectURLs = v; });
   tryGetParam('post_offset_in_tree_px', '10', function(v){ _treeOffsetPx = parseInt(v); });
 }
 
@@ -77,6 +79,18 @@ function detectImages(text) {
   return text;
 }
 
+function detectURLs(text) {
+  var matches = text.match(/https?:\/\/[A-Za-z%&\?\-=_\.0-9\/:]+/g);
+  if (matches != null) {
+    for (var i = 0; i < matches.length; i++) {
+      var value = matches[i].toString();
+      value = '<a target=_blank href="'+value+'">'+value+'</a>';
+      text = replaceAll(text, matches[i], value);
+    }
+  }
+  return text;
+}
+
 function detectThreadLinks(text) {
 var matches = text.match(/&gt;&gt;[a-f0-9]{32}/g);
   if (matches != null) {
@@ -104,6 +118,7 @@ function applyFormatting(text) {
   text = detectThreadLinks(text);
   text = replaceAll(text, '\n', '<br/>');
   text = replaceAll(text, '  ', '&nbsp; ');
+  if (_detectURLs == 'true') text = detectURLs(text);
   return text
     .replace(/<x>/gim, '<sp>')
     .replace(/<\/x>/gim, '</sp>');
@@ -220,7 +235,8 @@ function addPost(post, appendFunc, hasShowButton, short) {
     $(this).toggleClass('full');
   });
   if (_showTimestamps == 'false') {
-    d.find('br').first().remove();
+	if (d.find('g').length != 0)
+		d.find('br').first().remove();
     d.find('g').css('display','none');
   }
   return d;
