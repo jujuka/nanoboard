@@ -10,6 +10,8 @@ Description:
     Takes urls from places.txt (example: http://board.com/threads/2123.html)
     For each url downloads page, searches for png files and downloads them 
   to 'download' folder.
+    If you create proxy.txt with proxy url in it: http://127.0.0.1:port
+    it will use proxy.
 
 Tool:
   nbpack.exe

@@ -129,9 +129,22 @@ namespace nboard
             }
         }
 
+        private static void AddProxy(WebClient client)
+        {
+            if (File.Exists("proxy.txt"))
+            {
+                var proxyUrl = File.ReadAllText("proxy.txt");
+                WebProxy proxy = new WebProxy();
+                proxy.Address = new Uri(proxyUrl);
+                proxy.BypassProxyOnLocal = true;
+                client.Proxy = proxy;
+            }
+        }
+
         private void ParseText(string address)
         {
             var client = new WebClient();
+            AddProxy(client);
             client.Headers = _headers;
 
             client.DownloadDataCompleted += (object sender, DownloadDataCompletedEventArgs e) => 
@@ -205,6 +218,7 @@ namespace nboard
             }
 
             var client = new WebClient();
+            AddProxy(client);
             client.Headers = _headers;
 
             client.DownloadDataCompleted += (object sender, DownloadDataCompletedEventArgs e) => 
