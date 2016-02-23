@@ -6,6 +6,9 @@ namespace NDB
     static class GZipUtil
     {
         // Only useful before .NET 4
+        /*
+            Copies all bytes from one stream to another.
+        */
         public static void CopyTo(this Stream input, Stream output)
         {
             byte[] buffer = new byte[16 * 1024]; // Fairly arbitrary size
@@ -17,6 +20,9 @@ namespace NDB
             }
         }
 
+        /*
+            Returns gzip compressed bytes.
+        */
         public static byte[] Compress(byte[] input)
         {
             try
@@ -35,6 +41,9 @@ namespace NDB
             }
         }
 
+        /*
+            Takes gzip compressed bytes, returns unpacked bytes or null in case of error.
+        */
         public static byte[] Decompress(byte[] input)
         {
             try
