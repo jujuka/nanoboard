@@ -10,6 +10,9 @@ using System.Net;
 
 namespace NServer
 {
+    /*
+        Parses HTTP request from HTTP connection, extracts method, address, headers and content
+    */
     class HttpRequest
     {
         public readonly string Method;
@@ -39,27 +42,24 @@ namespace NServer
             Method = fls[0];
             Address = fls[1];
 
-            //if (Method == "POST")
+            var heco = request.Split(new string[]{ "\r\n\r\n" }, 2, StringSplitOptions.None);
+
+            if (heco.Length < 2)
             {
-                var heco = request.Split(new string[]{ "\r\n\r\n" }, 2, StringSplitOptions.None);
+                Invalid = true;
+                return;
+            }
 
-                if (heco.Length < 2)
-                {
-                    Invalid = true;
-                    return;
-                }
+            var he = heco[0];
+            var co = heco[1];
+            Content = co;
+            var lines = he.Split(new string[]{ "\r\n", "\n" }, StringSplitOptions.None);
 
-                var he = heco[0];
-                var co = heco[1];
-                Content = co;
-                var lines = he.Split(new string[]{ "\r\n", "\n" }, StringSplitOptions.None);
-
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    var hl = lines[i].Split(new String[]{": "}, 2, StringSplitOptions.None);
-                    if (hl.Length < 2) continue;
-                    Headers[hl[0]] = hl[1];
-                }
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var hl = lines[i].Split(new String[]{": "}, 2, StringSplitOptions.None);
+                if (hl.Length < 2) continue;
+                Headers[hl[0]] = hl[1];
             }
         }
     }
