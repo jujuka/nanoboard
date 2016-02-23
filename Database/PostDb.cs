@@ -112,22 +112,28 @@ namespace NDB
         }
 
         /*
-            ... commenting: WIP
+            Add new index entry to the instance collections.
         */
         private void AddDbRef(DbPostRef r)
         {
             _refs[r.hash] = r;
+            // ensure there is a list for replies:
             if (!_rrefs.ContainsKey(r.replyTo))
                 _rrefs[r.replyTo] = new List<DbPostRef>();
-            _rrefs[r.replyTo].Add(r);
+            _rrefs[r.replyTo].Add(r); // add as reply to it's parent
             if (r.deleted)
                 _deleted.Add(r.hash);
+            // if this offset-length (file area) is not used yet, mark it as free
             if (r.deleted && r.length > 0)
                 _free.Add(r.hash);
             _ordered.Add(r.hash);
         }
 
         // reading diff
+        /*
+            This method is called while reading diff file
+            to update index entries collection to the most recent state.
+        */
 		private void UpdateDbRef(DbPostRef r)
 		{
 			bool isNew = !_refs.ContainsKey(r.hash);
@@ -149,6 +155,9 @@ namespace NDB
 				_ordered.Add(r.hash);
 		}
 
+        /*
+            Reads index file and diff file, updates index file.
+        */
         private void ReadRefs()
         {
 			if (File.Exists (_index)) 
@@ -186,16 +195,25 @@ namespace NDB
             return _ordered.Where(k => !_deleted.Contains(k)).ToArray();
         }
 
+        /*
+            Returns count of not deleted posts
+        */
         public int GetPresentCount()
         {
             return _ordered.Where(k => !_deleted.Contains(k)).ToArray().Length;
         }
 
+        /*
+            Returns slice of not deleted posts
+        */
         public Post[] RangePresent(int skip, int count)
         {
             return _ordered.Where(k => !_deleted.Contains(k)).Skip(skip).Take(count).Select(h => GetPost(h)).ToArray();
         }
-
+        
+        /*
+            Adds post back to DB after deletion.
+        */
         private bool ReputPost(Post p)
         {
             var r = _refs[p.hash];
@@ -204,6 +222,7 @@ namespace NDB
             r.deleted = false;
             _deleted.Remove(r.hash);
 
+            // if original file space not occupied yet - use it
             if (_free.Contains(r.hash))
             {
                 _free.Remove(r.hash);
@@ -212,6 +231,7 @@ namespace NDB
                 return true;
             }
 
+            // else try to find best empty area in some file
             else if (_free.Any())
             {
                 DbPostRef best = null;
@@ -247,7 +267,8 @@ namespace NDB
                     return true;
                 }
             }
-
+            
+            // no apropriate space was found - extend current data chunk
             r.offset = FileUtil.Append(_data, bytes);
             r.file = _data;
             IncreaseCheckDataSize(r.length);
@@ -257,22 +278,25 @@ namespace NDB
 
         public bool PutPost(Post p, bool allowReput = false)
         {
-            if (!PostsValidator.Validate(p))
+            if (!PostsValidator.Validate(p)) // do not add posts that fail validation
                 return false;
-            if (_refs.ContainsKey(p.hash) && !_deleted.Contains(p.hash))
+            if (_refs.ContainsKey(p.hash) && !_deleted.Contains(p.hash)) // do not add existing not deleted posts
                 return false;
 
+            // if posts was deleted, add it back if allowed in allowReput param
             if (allowReput && _deleted.Contains(p.hash))
             {
                 return ReputPost(p);
             }
 
+            // start creating new index entry
             var r = new DbPostRef();
             r.hash = p.hash;
             r.replyTo = p.replyto;
             var bytes = Encoding.UTF8.GetBytes(p.message.FromB64());
             r.length = bytes.Length;
 
+            // try to find some empty space in db file chunks
             if (_free.Any())
             {
                 DbPostRef best = null;
@@ -295,6 +319,8 @@ namespace NDB
                     }
                 }
 
+                // found some useful place - write post's message into it,
+                // also update diff file immediately
                 if (best != null)
                 {
                     best.length = 0;
@@ -310,6 +336,7 @@ namespace NDB
                 }
             }
 
+            // no appropriate space was found - extend current data chunk file
             r.offset = FileUtil.Append(_data, bytes);
             r.file = _data;
             IncreaseCheckDataSize(r.length);
@@ -318,6 +345,10 @@ namespace NDB
             return true;
         }
 
+        /*
+            Mark post as deleted, erase it's message bytes (write zeros to the file),
+            update diff file
+        */
         public bool DeletePost(string hash)
         {
             if (!_refs.ContainsKey(hash) || _deleted.Contains(hash))
@@ -332,7 +363,11 @@ namespace NDB
             return true;
         }
 
-        // cached
+        /*
+            Get post from DB by hash.
+            Returns null if not found.
+            This method does caching of recently requested posts for faster response.
+        */
         public Post GetPost(string hash)
         {
             if (_cache.ContainsKey(hash))
@@ -354,6 +389,7 @@ namespace NDB
             p.replyto = r.replyTo;
             p.message = Encoding.UTF8.GetString(chunk).ToB64();
 
+            // clear half of cache if cache limit was met
             if (_cache.Keys.Count > CacheLimit)
             {
                 while (_cache.Keys.Count > CacheLimit - CacheLimit/10)
@@ -382,6 +418,10 @@ namespace NDB
             return res;
         }
 
+        /*
+            Rewrite index.json. Called once at start, during runtime all changes go
+            to the diff file - new line for each change.
+        */
         private void Flush()
         {
             var index = new Index();
