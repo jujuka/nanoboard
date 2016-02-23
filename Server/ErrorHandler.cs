@@ -11,6 +11,9 @@ using System.Linq;
 
 namespace NServer
 {
+    /*
+        Template for page response that shows some server status code and message.
+    */
     class ErrorHandler : IRequestHandler
     {
         private readonly string _statusLine;
