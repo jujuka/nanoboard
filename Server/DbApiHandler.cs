@@ -14,6 +14,9 @@ using System.Text.RegularExpressions;
 
 namespace NServer
 {
+    /*
+        Gives access to various DB and server functions, mainly related to reading/writing posts.
+    */
     class DbApiHandler : IRequestHandler
     {
         private PostDb _db;
@@ -23,6 +26,7 @@ namespace NServer
         {
             _db = db;
             _handlers = new Dictionary<string, Func<string, string, HttpResponse>>();
+            // filling handlers dictionary with actions that will be called with (request address, request content) args:
             _handlers["get"] = GetPostByHash;
             _handlers["delete"] = DeletePost;
             _handlers["add"] = AddPost;
@@ -39,6 +43,7 @@ namespace NServer
             _handlers["params"] = Params;
         }
 
+        // example: prange/90-10 - gets not deleted posts from 91 to 100 (skip 90, take 10)
         private HttpResponse GetPresentRange(string fromto, string notUsed = null)
         {
             var spl = fromto.Split('-');
@@ -58,6 +63,7 @@ namespace NServer
             return new HttpResponse(StatusCode.Ok, Configurator.Instance.GetValue(addr, ""));
         }
 
+        // returns available params in a JSON array
         private HttpResponse Params(string addr, string content)
         {
             var @params = Configurator.Instance.GetParams();
@@ -82,6 +88,7 @@ namespace NServer
             return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(post));
         }
 
+        // includes deleted
         private HttpResponse GetNthPost(string n, string notUsed = null)
         {
             var post = _db.GetNthPost(int.Parse(n));
@@ -94,16 +101,19 @@ namespace NServer
             return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(post));
         }
 
+        // returns count of all posts including deleted
         private HttpResponse GetPostCount(string notUsed1, string notUsed = null)
         {
             return new HttpResponse(StatusCode.Ok, _db.GetPostCount().ToString());
         }
 
+        // returns count of not deleted posts
         private HttpResponse GetPresentCount(string notUsed1, string notUsed = null)
         {
             return new HttpResponse(StatusCode.Ok, _db.GetPresentCount().ToString());
         }
 
+        // returns array of posts with messages including searchString, search avoids [img=..] tag contents.
         private HttpResponse Search(string searchString, string notUsed = null)
         {
             searchString = notUsed.FromB64();
@@ -169,6 +179,7 @@ namespace NServer
             return new HttpResponse(StatusCode.Ok, "Ok");
         }
 
+        // same as add but allows for putting deleted post back
         private HttpResponse ReAddPost(string replyTo, string content)
         {
             var post = new Post(replyTo, content);
