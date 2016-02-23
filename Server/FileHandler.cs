@@ -12,6 +12,10 @@ using NDB;
 
 namespace NServer
 {
+    /*
+        Serves files from specified folder.
+        At the root (/) always serves small page with a link to pages/index.html
+    */
     class FileHandler : IRequestHandler
     {
         private readonly string _mime;
