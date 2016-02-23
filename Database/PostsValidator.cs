@@ -10,16 +10,29 @@ namespace NDB
 {
     static class PostsValidator
     {
+        /*
+            This extension methods are used everywhere to convert Post.message from Base64 string to real text
+        */
         public static string FromB64(this string s)
         {
             return Encoding.UTF8.GetString(Convert.FromBase64String(s));
         }
 
+        /*
+            See above. Inverse operation.
+        */
         public static string ToB64(this string s)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(s));
         }
 
+        /*
+            Rewrites post hash.
+            Checks if post meets rules:
+                max message size in utf-8 bytes is 65536,
+                replyTo should be valid hash
+            returns false if rules violated
+        */
         public static bool Validate(Post p)
         {
             var bytes = Encoding.UTF8.GetBytes(p.message.FromB64());
@@ -45,6 +58,9 @@ namespace NDB
             return true;
         }
 
+        /*
+            Validates range of posts in a batch.
+        */
         public static Post[] Validate(Post[] posts)
         {
             var res = new List<Post>();
