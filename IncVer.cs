@@ -19,7 +19,7 @@ class Program
 {
   class App
   {
-    public static string Version = """ + xy + "." + z + @"-dev"";
+    public static string Version = """ + xy + "." + z;
   }
 }");
   }
