@@ -19,7 +19,7 @@ namespace nboard
         private static List<string> _allowed;
 
         private static string JQueryUiMinCss = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery-ui.min.css");
-        private static string JQueryMinJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery.min.js");
+        public static string JQueryMinJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery.min.js");
         private static string JQueryUiMinJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery-ui.min.js");
 
         public static List<string> UpdatePlaces()
