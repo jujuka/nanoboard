@@ -10,6 +10,11 @@ using System.Net;
 
 namespace NServer
 {
+    /*
+        Encapsulates live HTTP connection:
+            raw request,
+            response callbacks
+    */
     class HttpConnection
     {
         public readonly string Request;
