@@ -20,9 +20,13 @@ namespace NServer
             _db = db;
         }
 
+        /*
+            Reads params needed for server to run, assigns handlers to endpoints, 
+            returns server instance (without running it).
+        */
         public HttpServer Build()
         {
-            string ip = Configurator.Instance.GetValue("ip", "127.0.0.1");
+            string ip = Configurator.Instance.GetValue("ip", "127.0.0.1");  // pass default params in case if they are missing
             int port = int.Parse(Configurator.Instance.GetValue("port", "7346"));
             var server = new HttpServer(ip, port);
             var pagesHandler = new FileHandler("pages", MimeType.Html);
