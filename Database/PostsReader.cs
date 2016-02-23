@@ -8,6 +8,10 @@ using System.Text;
 
 namespace NDB
 {
+    /*
+        Reads array of posts from json file.
+        Not used, probably will delete this.
+    */
     class PostsReader
     {
         public Post[] Read(string pathToJson)
