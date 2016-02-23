@@ -12,6 +12,9 @@ using NDB;
 
 namespace NServer
 {
+    /*
+        Does no more than invoking prefedined action and returning predefined reply to the client.
+    */
     class ActionHandler : IRequestHandler
     {
         private readonly string _okMessage;
