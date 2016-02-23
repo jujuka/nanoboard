@@ -8,29 +8,37 @@ using System.Text;
 
 namespace NDB
 {
+    /*
+        Class that operates on posts database.
+    */
     class PostDb
     {
-        private readonly string _index = "index.json";
-		private const string DiffFile = "diff.list";
-        private readonly string DeletedStub = "post was deleted".ToB64();
-        private const string DataPrefix = "";
-        private const string DataSuffix = ".db";
-        private string _data = "0.db";
-        private int _dataIndex = 0;
-        private int _dataSize = 0;
-        private const int DataLimit = 1024 * 1024 * 1024; // 1GB per chunk
-        private const int CacheLimit = 1000;
+        private readonly string _index = "index.json";  // name of index file
+        private const string DiffFile = "diff.list";    // name of file that keeps changes to the index
+        private readonly string DeletedStub = "post was deleted".ToB64();   // this message returned when someone asks for deleted post
+        private const string DataPrefix = "";   // will be prepended to a data chunk name
+        private const string DataSuffix = ".db"; // data chunk extension
+        private string _data = "0.db";  // initial data chunk filename
+        private int _dataIndex = 0; // initial data chunk name index
+        private int _dataSize = 0; // size of current data chunk will be here
+        private const int DataLimit = 1024 * 1024 * 1024; // 1GB allowed to be stored inside one chunk before creating new one
+        private const int CacheLimit = 1000; // how many posts to keep in memory (reduce disk read operations)
 
-        Dictionary<string, DbPostRef> _refs;
-        Dictionary<string, List<DbPostRef>> _rrefs;
-        HashSet<string> _deleted;
-        HashSet<string> _free;
-        List<string> _ordered;
+        Dictionary<string, DbPostRef> _refs; // index entries by hash
+        Dictionary<string, List<DbPostRef>> _rrefs; // replies by hash
+        HashSet<string> _deleted; // hashes entries marked as deleted
+        HashSet<string> _free; // hashes of entries marked as deleted space of which is not used now (empty space)
+        List<string> _ordered; // just all hashed from index.json in the same order as in file
 
-        Dictionary<string,Post> _cache;
+        Dictionary<string,Post> _cache; // cached posts by hash
 
         public PostDb()
         {
+            /* 
+                Determining which data chunk file to use for new posts:
+                for example check 0.db, 1.db, 2.db etc while file with size less than Limit
+                will be found or stop at not existing yet file name like 3.db to use it for new posts.
+            */
             for (int i = 0; i < int.MaxValue; i++)
             {
                 _data = DataPrefix + i + DataSuffix;
@@ -63,7 +71,10 @@ namespace NDB
             _cache = new Dictionary<string, Post>();
             _ordered = new List<string>();
             ReadRefs();
-
+            
+            /*
+                Hardcoded root post, categories post and example category post - adding them to DB below
+            */
             var initialPostsStr = @"[{'hash':'bdd4b5fc1b3a933367bc6830fef72a35','message':'W2Jd0JrQkNCi0JXQk9Ce0KDQmNCYWy9iXQrQp9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINC90L7QstGD0Y4g0LrQsNGC0LXQs9C+0YDQuNGOLCDQvtGC0LLQtdGC0YzRgtC1INC90LAg0Y3RgtC+INGB0L7QvtCx0YnQtdC90LjQtS4K0J7RgtCy0LXRgtGM0YLQtSDQvdCwINC+0LTQvdGDINC40Lcg0LrQsNGC0LXQs9C+0YDQuNC5LCDRh9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINGC0LDQvCDRgtGA0LXQtC4=','replyTo':'f682830a470200d738d32c69e6c2b8a4'},{'hash':'cd94a3d60f2f521806abebcd3dc3f549','message':'W2Jd0JHRgNC10LQv0KDQsNC30L3QvtC1Wy9iXQ==','replyTo':'bdd4b5fc1b3a933367bc6830fef72a35'},{'hash':'cd94a3d60f2f521806abebcd3dc3f549','message':'W2Jd0JHRgNC10LQv0KDQsNC30L3QvtC1Wy9iXQ==','replyTo':'bdd4b5fc1b3a933367bc6830fef72a35'},{'hash':'bdd4b5fc1b3a933367bc6830fef72a35','message':'W2Jd0JrQkNCi0JXQk9Ce0KDQmNCYWy9iXQrQp9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINC90L7QstGD0Y4g0LrQsNGC0LXQs9C+0YDQuNGOLCDQvtGC0LLQtdGC0YzRgtC1INC90LAg0Y3RgtC+INGB0L7QvtCx0YnQtdC90LjQtS4K0J7RgtCy0LXRgtGM0YLQtSDQvdCwINC+0LTQvdGDINC40Lcg0LrQsNGC0LXQs9C+0YDQuNC5LCDRh9GC0L7QsdGLINGB0L7Qt9C00LDRgtGMINGC0LDQvCDRgtGA0LXQtC4=','replyTo':'f682830a470200d738d32c69e6c2b8a4'},{'hash':'f682830a470200d738d32c69e6c2b8a4','message':'e1dlbGNvbWUgdG8gTmFub2JvYXJkfQ==','replyTo':'00000000000000000000000000000000'}]";
             var initialPosts = JsonConvert.DeserializeObject<Post[]>(initialPostsStr);
 
@@ -84,6 +95,10 @@ namespace NDB
             return _ordered.Count;
         }
 
+        /*
+            Increases dataSize counter and checks if it still meets the Limit,
+            if not - change filename of current data chunk.
+        */
         private void IncreaseCheckDataSize(int length)
         {
             _dataSize += length;
@@ -96,6 +111,9 @@ namespace NDB
             }
         }
 
+        /*
+            ... commenting: WIP
+        */
         private void AddDbRef(DbPostRef r)
         {
             _refs[r.hash] = r;
