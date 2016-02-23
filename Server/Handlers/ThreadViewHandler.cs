@@ -84,7 +84,7 @@ namespace nboard
     }
 ";
 
-        public const string NotifierScript = @"
+        public const string NotifierScript = NotifJs + @"
         window.onload = function() {
              setInterval(function() { 
                 var elem = document.getElementById('notif1');
@@ -92,16 +92,55 @@ namespace nboard
                 x.open('POST', '/status', true);
                 x.onreadystatechange = function() {
                     if (x.readyState != 4 || x.status != 200) return;
-                    elem.innerHTML = x.responseText;
+                    pushNotification(x.responseText);
+                    //elem.innerHTML = x.responseText;
                 }
                 x.send('');
-            }, 1000);
+            }, 500);
         }
 ";
 
+        private const string NotifJs = @"
+         var _notifInited = false;
+
+        function notifInit() {
+            if (_notifInited) return;
+          _notifInited = true;
+          $('<div>').addClass('notif_area').appendTo($('body'))
+            .css({
+                  position: 'fixed',
+                  top: '5px',
+                  right: '5px' 
+                 });
+        }
+
+        function showNotification(text, x, y, t) {
+            if (t == undefined) t = 2000;
+            $('<div>')
+            .addClass('post')
+            .appendTo($('body'))
+            .html(text)
+            .css('position', 'absolute')
+            .css('left', x)
+            .css('top', y)
+            .delay(t)
+            .slideUp(100, function(){ $(this).remove() });
+        }
+
+        function pushNotification(text, t) {
+            if (t == undefined) t = 2000;
+          notifInit();
+            $('<div>')
+            .addClass('post')
+            .appendTo($('.notif_area'))
+            .html(text)
+            .delay(t)
+            .slideUp(100, function(){ $(this).remove(); });
+        }";
+
         public static string PostScript (string other)
         {
-            return @"
+            return NotifJs + @"
         window.onload = function() {" + other + @"
              setInterval(function() { 
                 var elem = document.getElementById('notif1');
@@ -109,10 +148,11 @@ namespace nboard
                 x.open('POST', '/status', true);
                 x.onreadystatechange = function() {
                     if (x.readyState != 4 || x.status != 200) return;
-                    elem.innerHTML = x.responseText;
+                    pushNotification(x.responseText);
+                    //elem.innerHTML = x.responseText;
                 }
                 x.send('');
-            }, 1000);
+            }, 500);
         }
 ";
         }
