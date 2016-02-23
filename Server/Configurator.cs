@@ -12,6 +12,11 @@ using System.Linq;
 
 namespace NServer
 {
+    /*
+        Manages configuration storage.
+        Configuration is key-value pairs kept in configuration json file within app's directory.
+        Writing to file happens immediately after setting a value.
+    */
     class Configurator
     {
         private const string ConfigFileName = "config.json";
