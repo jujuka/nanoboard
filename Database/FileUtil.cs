@@ -5,6 +5,7 @@ namespace NDB
 {
     static class FileUtil
     {
+        /* Appends bytes to the end of file */
         public static int Append(string path, byte[] bytes)
         {
             long pos = 0;
@@ -17,7 +18,8 @@ namespace NDB
 
             return (int)pos;
         }
-
+        
+        /* Writes bytes at specific file offset, overwrites existing bytes */
         public static void Write(string path, byte[] bytes, int offset)
         {
             using (Stream stream = new FileStream(path, FileMode.OpenOrCreate))
@@ -27,6 +29,7 @@ namespace NDB
             }
         }
 
+        /* Reads bytes from file using specific offset and length */
         public static byte[] Read(string path, int offset, int length)
         {
             var bytes = new byte[length];
