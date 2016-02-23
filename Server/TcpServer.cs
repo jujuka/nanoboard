@@ -10,6 +10,9 @@ using System.Net;
 
 namespace NServer
 {
+    /*
+        Low-level limited implementation of HTTP server based on TCP socket.
+    */
     class TcpServer
     {
         private TcpListener _server;
@@ -82,7 +85,7 @@ namespace NServer
             int contentLength = 0;
             List<byte> raw = new List<byte>();
 
-            // real shit
+            // try read all the data to the end
             do
             {
                 try
@@ -107,7 +110,7 @@ namespace NServer
             }
             while (len > 0 || raw.Count < contentLength);
 
-
+            // notify about pending connection
             if (ConnectionAdded != null)
             {
                 ConnectionAdded(new HttpConnection(raw.ToArray(), readData, (ascii,utf8) =>
