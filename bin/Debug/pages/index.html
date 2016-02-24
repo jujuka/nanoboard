@@ -18,6 +18,8 @@ var _showDeleted = 'true';
 var _showTimestamps = 'true';
 var _treeOffsetPx = 10;
 var _detectURLs = 'false';
+var _post_delete_timeout = 5000;
+var _deletedOpacity = 0.33;
 
 function tryGetParam(param, def, cb) {
   $.get('../api/paramget/'+param)
@@ -33,6 +35,7 @@ function reloadParams() {
   tryGetParam('show_timestamps', 'true', function(v){ _showTimestamps = v; });
   tryGetParam('detect_URLs', 'false', function(v){ _detectURLs = v; });
   tryGetParam('post_offset_in_tree_px', '10', function(v){ _treeOffsetPx = parseInt(v); });
+  tryGetParam('post_delete_timeout', '5000', function(v){ _post_delete_timeout = parseInt(v); });
 }
 
 function shortenHash(hash) {
@@ -80,7 +83,7 @@ function detectImages(text) {
 }
 
 function detectURLs(text) {
-  var matches = text.match(/https?:\/\/[A-Za-z%&\?\-=_\.0-9\/:]+/g);
+  var matches = text.match(/https?:\/\/[A-Za-z%&\?\-=_\.0-9\/:#]+/g);
   if (matches != null) {
     for (var i = 0; i < matches.length; i++) {
       var value = matches[i].toString();
@@ -218,11 +221,30 @@ function addPost(post, appendFunc, hasShowButton, short) {
     .append($('<a>')
       .attr('href', 'javascript:void(0)')
       .text('[X]')
-      .attr('title', 'Double click to delete post.')
-      .dblclick(function() {
-        deletePostFromDb(post.hash);
-        d.remove();
-        pushNotification('You have deleted post forever.');
+      .attr('title', 'Click to delete post forever.')
+      .click(function() {
+        if (post.hash == _categories) {
+          pushNotification("Cannot delete root post.");
+          return;
+        }
+        var undo = false;
+        d.append(
+          $('<button>')
+            .text('Undo')
+            .click(function(){
+              undo = true;
+              $(this).remove();
+            })
+            .append($('<span>').html('&nbsp;')
+              .css({ background: 'red', height: '5px', marginLeft: '5px'})
+              .animate({width: '100px'},50)
+              .animate({width: '0px'},_post_delete_timeout)));
+        setTimeout(function(){
+          if (undo) return;
+          deletePostFromDb(post.hash);
+          d.remove();
+          pushNotification('A post was deleted forever.');
+        }, _post_delete_timeout);
       }));
   appendFunc(d);
   $('<div>')
@@ -248,8 +270,11 @@ function loadReplies(hash, offset, highlight) {
       arr = JSON.parse(arr);
       if (arr.length == 0) return;
       for (var i = arr.length-1; i >= 0; i--) {
+        var deleted = Base64.decode(arr[i].message) == _postWasDeletedMarker;
+        if (_showDeleted == 'false' && deleted) continue;
         var p = addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
           .css('margin-left', offset * _treeOffsetPx + 'px');
+        if (deleted) p.css({ opacity: _deletedOpacity });
         loadReplies(arr[i].hash, offset + 1, highlight);
         if (highlight == arr[i].hash) {
           p.addTemporaryClass('high', 8000);
@@ -308,9 +333,11 @@ function loadThread(hash, highlight) {
           addPost(post, function(d){ d.appendTo($('#thread')); }, false, false);
           if (_depth == 1) arr.reverse();
           for (var i = 0; i < arr.length; i++) {
-            if (_showDeleted == 'false' && Base64.decode(arr[i].message) == _postWasDeletedMarker) continue;
+            var deleted = Base64.decode(arr[i].message) == _postWasDeletedMarker;
+            if (_showDeleted == 'false' && deleted) continue;
             var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
               .css('margin-left',  _treeOffsetPx + 'px');
+            if (deleted) p.css({ opacity: _deletedOpacity});
             if (highlight == arr[i].hash) {
               p.addTemporaryClass('high', 8000);
             }
