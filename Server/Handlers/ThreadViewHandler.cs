@@ -14,6 +14,18 @@ using System.Linq;
 
 namespace nboard
 {
+    class WebP
+    {
+        public static string Weppy;
+
+        public static string Enabler = "WebP.processImages();";
+
+        static WebP()
+        {
+            Weppy = File.ReadAllText("js" + Path.DirectorySeparatorChar + "weppy.js");
+        } 
+    }
+
     class ThreadViewHandler : IRequestHandler
     {
         public const int MinAnswers = -1;
@@ -41,7 +53,7 @@ namespace nboard
             }
         }
 
-        public const string FractalMusicScript = @"
+        public string FractalMusicScript = WebP.Weppy + @"
    var sampleRate = 8000;
 
     function encodeAudio8bit(data) {
@@ -141,7 +153,7 @@ namespace nboard
         public static string PostScript (string other)
         {
             return NotifJs + @"
-        window.onload = function() {" + other + @"
+        window.onload = function() {" + other + WebP.Enabler + @"
              setInterval(function() { 
                 var elem = document.getElementById('notif1');
                 var x = new XMLHttpRequest();
@@ -246,14 +258,14 @@ namespace nboard
             }
             else
             {
-                thread = _db.RootHash;
+                thread = new Hash(NanoDB.CategoriesHashValue);
             }
 
             var sb = new StringBuilder();
             AddHeader(sb);
             string s1 = "";
 
-            if (thread.Value != _db.RootHash.Value)
+            if (thread.Value != NanoDB.CategoriesHashValue)
             {
                 s1 = "<a href='#' onclick='history.go(-1)'>[Назад]</a>";
                 s1 += "<a href='#' onclick='location.reload()'>[Обновить]</a>";
