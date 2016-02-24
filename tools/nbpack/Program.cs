@@ -153,7 +153,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
 
             for (int i = 0; i < 50; i++)
             {
-                int index = (int)Math.Max(Math.Pow(r.NextDouble(), 0.3) * count, count - 1);
+                int index = (int)Math.Min(Math.Pow(r.NextDouble(), 0.3) * count, count - 1);
                 var p = JsonConvert.DeserializeObject<Post[]>(GetString(address.Trim('/') + "/api/prange/" + index + "-" + 1))[0];
                 var bc = ByteCount(p);
                 if (rbytes + bc > 150000) break;
