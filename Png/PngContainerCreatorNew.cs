@@ -50,7 +50,7 @@ namespace nboard
 
             while (!ByteCountUnder(list, 150000))
             {
-                list.RemoveAt(0);
+                list.RemoveAt(list.Count - 1);
             }
 
             var r = new Random();
