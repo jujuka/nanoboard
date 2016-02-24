@@ -144,6 +144,7 @@ namespace nboard
           notifInit();
             $('<div>')
             .addClass('post')
+            .css('max-width', '300px')
             .appendTo($('.notif_area'))
             .html(text)
             .delay(t)
