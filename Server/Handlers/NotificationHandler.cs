@@ -25,15 +25,19 @@ namespace nboard
 
         public NanoHttpResponse Handle(NanoHttpRequest request)
         {
-            try
+            if (_messages.Count > 0)
             {
-                return new NanoHttpResponse(StatusCode.Ok, _messages.Dequeue() + (_messages.Count > 0 ? "<br>"+_messages.Peek() : ""));
+                try
+                {
+
+                    return new NanoHttpResponse(StatusCode.Ok, _messages.Dequeue());
+                }
+                catch
+                {
+                }
             }
 
-            catch
-            {
-                return new NanoHttpResponse(StatusCode.NotModified, "\n");
-            }
+            return new NanoHttpResponse(StatusCode.NotModified, "\n");
         }
 
         #endregion

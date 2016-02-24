@@ -9,36 +9,74 @@ using System.Drawing;
 
 namespace nboard
 {
-    class PngContainerCreatorNew
+    class PngContainerCreator
     {
-        private int FreshPosts = 32;
-        private int FreshPostsNotLimitedTo16384Allowed = 8;
-        private int RandomPostsLimitedTo16384Allowed = 16;
-        private int RandomPostsLimitedTo8192ALlowed = 64;
+        private readonly NanoDB _db;
 
-        private bool _smaller = false;
-
-        static Random random = new Random();
-
-        public PngContainerCreatorNew()
+        public PngContainerCreator(NanoDB db)
         {
+            _db = db;
         }
 
-        private PngContainerCreatorNew(int scale)
+        private static bool ByteCountUnder(List<NanoPost> posts, int limit)
         {
-            FreshPosts /= scale;
-            RandomPostsLimitedTo16384Allowed /= scale;
-            _smaller = true;
+            int byteCount = 0;
+
+            foreach (var p in posts)
+            {
+                byteCount += p.Message.Length + 32;
+                if (byteCount > limit) return false;
+            }
+
+            return true;
         }
 
-        public void SaveToPngContainer(NanoDB db)
+        private static int ByteCount(NanoPost p)
         {
-            db.RewriteDbExceptHidden();
-            db.ClearDb();
-            db.ReadPosts();
+            return p.Message.Length + 32;
+        }
+
+        /*
+            Takes 50 or less last posts (up to 150000 bytes max total),
+            adds  50 or less random posts (up to 150000 bytes max total),
+            random is shifted towards latest posts.
+        */
+        public void Create()
+        {
+            var count = _db.GetPostCount();
+            var take = 50;
+            var last50s = _db.GetNLastPosts(take * 4).ExceptHidden(_db).Reverse().Take(take).ToArray();
+            var list = new List<NanoPost>(last50s);
+
+            while (!ByteCountUnder(list, 150000))
+            {
+                list.RemoveAt(list.Count - 1);
+            }
+
+            var r = new Random();
+            int rbytes = 0;
+            int max = 50;
+
+            for (int i = 0; i < max; i++)
+            {
+                int index = (int)Math.Min(Math.Pow(r.NextDouble(), 0.3) * count, count - 1);
+                var p = _db.GetPost(index);
+                if (_db.IsHidden(p.GetHash()))
+                {
+                    if (max < 10000)
+                        max += 1;
+                    continue;
+                }
+                var bc = ByteCount(p);
+                if (rbytes + bc > 150000)
+                    break;
+                rbytes += bc;
+                list.Add(p);
+            }
 
             string[] ext = new[] { ".png", ".jpg", ".jpeg" };
             var files = new DirectoryInfo(Strings.Containers).GetFiles().Where(f => ext.Contains(f.Extension.ToLower())).ToArray();
+
 
             if (files.Length == 0)
             {
@@ -47,98 +85,61 @@ namespace nboard
             }
             else if (files.Length <= 5)
             {
-                if (!_smaller)
-                {
-                    NotificationHandler.Instance.AddNotification("Предупреждение: у вас мало контейнеров.");
-                }
+                NotificationHandler.Instance.AddNotification("Предупреждение: у вас мало контейнеров.");
             }
 
-            FileInfo file = files[random.Next(files.Length - 1)];
-            var bmp = new Bitmap(file.FullName);
-            int capacity = (int)(bmp.Width * bmp.Height * 3 / 8) - 32;
-            string sessionPrefix = random.Next().ToString("x8");
-            sessionPrefix += random.Next().ToString("x8");
+            string sessionPrefix = r.Next().ToString("x8");
+            sessionPrefix += r.Next().ToString("x8");
 
-            var packed = new byte[0];
-
-            var posts = new List<NanoPost>();
-
-            int i = db.GetPostCount() - 1;
-
-            while (i >= 0 && posts.Count < FreshPosts)
+            foreach (var p in list)
             {
-                var p = db.GetPost(i--);
-
-                if (!db.IsHidden(p.GetHash()))
-                {
-                    posts.Add(p);
-                }
+                NotificationHandler.Instance.AddNotification(p.Message.Strip());
             }
 
-            var parr = posts.ToArray();
+            var file = files[r.Next(files.Length)];
+            Pack(list.ToArray(), file.FullName, "upload/" + sessionPrefix + ".png");
+        }
 
-            var parents = new List<NanoPost>();
-
-            foreach (var post in parr)
-            {
-                var p = db.Get(post.ReplyTo);
-
-                if (p != null && !db.IsHidden(p.GetHash()))
-                {
-                    parents.Add(p);
-                }
-            }
-
-            foreach (var post in parents)
-            {
-                posts.Add(post);
-                var p = db.Get(post.ReplyTo);
-
-                if (p != null && !db.IsHidden(p.GetHash()))
-                {
-                    posts.Add(p);
-                }
-            }
-
-            var slice0 = posts.GetRange(0, Math.Max(posts.Count, FreshPostsNotLimitedTo16384Allowed));
-            var slice1 = posts.GetRange(slice0.Count, posts.Count - slice0.Count);
-            posts.Clear();
-            posts.AddRange(slice0);
-            posts.AddRange(slice1.ToArray().FilterBySize(16384));
-            posts.AddRange(db.GetNRandomPosts(RandomPostsLimitedTo8192ALlowed).ExceptHidden(db).FilterBySize(8192));
-            posts.AddRange(db.GetNRandomPosts(RandomPostsLimitedTo16384Allowed).ExceptHidden(db).FilterBySize(16384));
-            posts = posts.Distinct().ToList();
-            packed = NanoPostPackUtil.Pack(posts.ToArray());
+        private static void Pack(NanoPost[] arr, string templatePath, string outputPath)
+        {
+            var packed = NanoPostPackUtil.Pack(arr);
+            var bmp = Bitmap.FromFile(templatePath);
+            var capacity = (bmp.Width * bmp.Height * 3) / 8 - 32; // 32 is for header with hidden bytes count
 
             float scale = 1;
-
             if (packed.Length > capacity)
             {
                 scale = (packed.Length / (float)capacity);
                 scale = (float)Math.Sqrt(scale);
-
-                if (scale > 2 && !_smaller)
-                {   
-                    new PngContainerCreatorNew(4).SaveToPngContainer(db);
-                    return;
-                }
-
+                Console.WriteLine("Warning: scaling image to increase capacity: " + scale.ToString("n2") + "x");
                 bmp = new Bitmap(bmp, (int) (bmp.Width * scale + 1), (int) (bmp.Height * scale + 1));
             }
 
-            new PngStegoUtil().HideBytesInPng(
-                        bmp, 
-                        Strings.Upload + Path.DirectorySeparatorChar + sessionPrefix + Strings.PngExt, 
-                        packed);
-
+            new PngStegoUtil().HideBytesInPng(bmp, outputPath, packed);
+            NotificationHandler.Instance.AddNotification("Контейнер сохранён: " + outputPath);
             Console.WriteLine(
                 string.Format(
                     "PNG capacity:{0}, posts amount:{1}, packed size:{2}, image scaling: {3:n2}x", 
-                        capacity, posts.Count, packed.Length, scale));
+                        capacity, arr.Length, packed.Length, scale));
 
-            Console.WriteLine("Total posts in db: {0}, post length limit (bytes): {1}", db.GetPostCount(), NanoPost.MaxPostByteLength);
+        }
+    }
 
-            NotificationHandler.Instance.AddNotification("Контейнер сохранён: " + Strings.Upload + Path.DirectorySeparatorChar + sessionPrefix + Strings.PngExt);
+
+    class PngContainerCreatorNew
+    {
+        public PngContainerCreatorNew()
+        {
+        }
+
+        public void SaveToPngContainer(NanoDB db)
+        {
+            NotificationHandler.Instance.AddNotification("Перезапись базы, подождите...");
+            db.RewriteDbExceptHidden();
+            db.ClearDb();
+            db.ReadPosts();
+            new PngContainerCreator(db).Create();
+            return;
         }
     }
     

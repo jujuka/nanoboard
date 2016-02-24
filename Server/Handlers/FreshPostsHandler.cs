@@ -44,15 +44,20 @@ namespace nboard
 
             sb.Append(string.Format("<div>Количество правил игнорирования постов: {0}. Настройте spamfilter.txt под себя.</div>", SpamDetector.RuleCount));
 
-            sb.Append("[Очистить список]".ToButton("","", @"
+            sb.Append("[Очистить список]".ToButton("", "", @"
                 var x = new XMLHttpRequest(); 
                 x.open('POST', '../save/', true);
                 x.send('');
                 location.reload();
-            ").ToDiv("",""));
+            ").ToDiv("", ""));
 
             var posts = _db.GetNewPosts();//.ExceptHidden(_db);
             posts = posts.Reverse().ToArray();
+
+            if (posts.Length == 0)
+            {
+                posts = _db.GetNLastPosts(200).Reverse().ToArray();
+            }
 
             foreach (var p in posts)
             {

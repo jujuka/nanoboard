@@ -14,6 +14,18 @@ using System.Linq;
 
 namespace nboard
 {
+    class WebP
+    {
+        public static string Weppy;
+
+        public static string Enabler = "WebP.processImages();";
+
+        static WebP()
+        {
+            Weppy = File.ReadAllText("js" + Path.DirectorySeparatorChar + "weppy.js");
+        } 
+    }
+
     class ThreadViewHandler : IRequestHandler
     {
         public const int MinAnswers = -1;
@@ -41,7 +53,7 @@ namespace nboard
             }
         }
 
-        public const string FractalMusicScript = @"
+        public string FractalMusicScript = WebP.Weppy + @"
    var sampleRate = 8000;
 
     function encodeAudio8bit(data) {
@@ -84,7 +96,7 @@ namespace nboard
     }
 ";
 
-        public const string NotifierScript = @"
+        public const string NotifierScript = NotifJs + @"
         window.onload = function() {
              setInterval(function() { 
                 var elem = document.getElementById('notif1');
@@ -92,27 +104,69 @@ namespace nboard
                 x.open('POST', '/status', true);
                 x.onreadystatechange = function() {
                     if (x.readyState != 4 || x.status != 200) return;
-                    elem.innerHTML = x.responseText;
+                    pushNotification(x.responseText);
+                    //elem.innerHTML = x.responseText;
                 }
                 x.send('');
-            }, 1000);
+            }, 500);
         }
 ";
 
+        private const string NotifJs = @"
+         var _notifInited = false;
+
+        function notifInit() {
+            if (_notifInited) return;
+          _notifInited = true;
+          $('<div>').addClass('notif_area').appendTo($('body'))
+            .css({
+                  position: 'fixed',
+                  top: '5px',
+                  right: '5px' 
+                 });
+        }
+
+        function showNotification(text, x, y, t) {
+            if (t == undefined) t = 2000;
+            $('<div>')
+            .addClass('post')
+            .appendTo($('body'))
+            .html(text)
+            .css('position', 'absolute')
+            .css('left', x)
+            .css('top', y)
+            .delay(t)
+            .slideUp(100, function(){ $(this).remove() });
+        }
+
+        function pushNotification(text, t) {
+            if (t == undefined) t = 2000;
+          notifInit();
+            $('<div>')
+            .addClass('post')
+            .css('max-width', '300px')
+            .css('max-height', '300px')
+            .appendTo($('.notif_area'))
+            .html(text)
+            .delay(t)
+            .slideUp(100, function(){ $(this).remove(); });
+        }";
+
         public static string PostScript (string other)
         {
-            return @"
-        window.onload = function() {" + other + @"
+            return NotifJs + @"
+        window.onload = function() {" + other + WebP.Enabler + @"
              setInterval(function() { 
                 var elem = document.getElementById('notif1');
                 var x = new XMLHttpRequest();
                 x.open('POST', '/status', true);
                 x.onreadystatechange = function() {
                     if (x.readyState != 4 || x.status != 200) return;
-                    elem.innerHTML = x.responseText;
+                    pushNotification(x.responseText);
+                    //elem.innerHTML = x.responseText;
                 }
                 x.send('');
-            }, 1000);
+            }, 500);
         }
 ";
         }
@@ -206,14 +260,14 @@ namespace nboard
             }
             else
             {
-                thread = _db.RootHash;
+                thread = new Hash(NanoDB.CategoriesHashValue);
             }
 
             var sb = new StringBuilder();
             AddHeader(sb);
             string s1 = "";
 
-            if (thread.Value != _db.RootHash.Value)
+            if (thread.Value != NanoDB.CategoriesHashValue)
             {
                 s1 = "<a href='#' onclick='history.go(-1)'>[Назад]</a>";
                 s1 += "<a href='#' onclick='location.reload()'>[Обновить]</a>";

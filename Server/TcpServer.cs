@@ -82,7 +82,9 @@ namespace nboard
             var buffer = new byte[1024];
             int len = 0;
             List<byte> raw = new List<byte>();
+            int contentLength = 0;
 
+            /*
             try
             {
                 do
@@ -100,6 +102,32 @@ namespace nboard
             {
                 // that's ok, we've reached end of the stream (read timeout)
             }
+            */
+            // try read all the data to the end
+            do
+            {
+                try
+                {
+                    if (raw.Count == 0 || raw[0] == (byte)'P') Thread.Sleep(50);
+                    len = stream.Read(buffer, 0, buffer.Length);
+                    var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
+                    readData += block;
+                    for (int i = 0; i < len; i++) raw.Add(buffer[i]);
+                } catch {
+                    if (raw.Count == 0 || raw[0] == (byte)'P') Thread.Sleep(50);
+                    if (contentLength == 0 && readData.Contains("Content-Length")) 
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(readData, "Content-Length: [0-9]+");
+                        if (match.Success) {
+                            contentLength = int.Parse(match.Value.Split(' ')[1]);
+                            contentLength += readData.Split(new[]{"\r\n\r\n"}, StringSplitOptions.None)[0].Length;
+                        }
+                    }
+                    len = -1;
+                }
+            }
+            while (len > 0 || raw.Count < contentLength);
+
 
             if (ConnectionAdded != null)
             {
