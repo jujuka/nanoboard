@@ -11,6 +11,12 @@ function recursivelySendParentsArray(post, arr) {
   $.get('../api/get/' + post.replyTo)
     .done(function(data){
       data = JSON.parse(data);
+      var str = JSON.stringify(arr);
+      if (str.length >= 180000) {
+        console.log('sending to transport: ' + str);
+        httpPost(transportUri, str);
+        arr = [];
+      }
       arr.push(data);
       recursivelySendParentsArray(data, arr);
     })
