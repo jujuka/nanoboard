@@ -461,6 +461,18 @@ $(function() {
   setTimeout(function(){
     loadThread(_categories);    
   }, 500);
+  var postCount = 0;
+  setInterval(function(){
+    $.get('../api/count')
+      .done(function(data){
+        data = parseInt(data);
+        if (data != postCount) {
+          pushNotification((data - postCount) + ' post(s) added.', 4000);
+          postCount = data;
+          updateStatusLine();
+        }
+      });
+  }, 1000);
 });
 </script>
 </head>
