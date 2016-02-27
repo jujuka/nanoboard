@@ -40,7 +40,8 @@ namespace NServer
             {
                 if (request.Address == "" || request.Address == "/") 
                 {
-                    return new HttpResponse(StatusCode.Ok, "<a href='/pages/index.html'>[Enter]</a>", _mime);
+                    string redirect = "<meta http-equiv='refresh' content='0; url=/pages/index.html' />";
+                    return new HttpResponse(StatusCode.Ok, redirect + "<a href='/pages/index.html'>[Enter]</a>", _mime);
                 }
 
                 var name = request.Address.Split('/').Last();
