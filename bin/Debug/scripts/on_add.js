@@ -2,7 +2,7 @@ var transportUri = 'http://127.0.0.1:7543';
 
 function recursivelySendParents(post) {
 	post = JSON.parse(post);
-	$.get('../api/get/' + post.hash)
+	$.get('../api/get/' + post.replyTo)
 		.done(function(data){
 			$.post(transportUri, data);
 			recursivelySendParents(data);
