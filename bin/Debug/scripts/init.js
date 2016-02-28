@@ -28,5 +28,12 @@ $(function() {
   setTimeout(function(){
     loadThread(_categories);    
   }, 500);
+  setInterval(function(){
+    retranslate(_categories);    
+  }, 60000);
+  setInterval(function(){
+    checkVersion();    
+  }, 60000);
+  checkVersion();
   setInterval(function(){ notifyAboutPostCount(); }, 1000);
 });

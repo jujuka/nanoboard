@@ -8,6 +8,8 @@ var _showDeleted = 'true';
 var _showTimestamps = 'true';
 var _treeOffsetPx = 10;
 var _detectURLs = 'false';
+var _checkVersion = 'true';
+var _instantRetranslation = 'true';
 var _post_delete_timeout = 5000;
 var _post_count_notification_time = 4000;
 var _deletedOpacity = 0.33;
@@ -24,6 +26,8 @@ function tryGetParam(param, def, cb) {
 function reloadParams() {
   tryGetParam('show_deleted', 'true', function(v){ _showDeleted = v; });
   tryGetParam('show_timestamps', 'true', function(v){ _showTimestamps = v; });
+  tryGetParam('check_version_update', 'true', function(v){ _checkVersion = v; });
+  tryGetParam('instant_retranslation', 'true', function(v){ _instantRetranslation = v; });
   tryGetParam('detect_URLs', 'false', function(v){ _detectURLs = v; });
   tryGetParam('post_offset_in_tree_px', '10', function(v){ _treeOffsetPx = parseInt(v); });
   tryGetParam('post_delete_timeout', '5000', function(v){ _post_delete_timeout = parseInt(v); });
