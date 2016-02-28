@@ -1,3 +1,9 @@
+function numSuffix(numStr) {
+  if (numStr.endsWith('11')) return 's';
+  if (numStr.endsWith('1')) return '';
+  return 's';
+}
+
 function addPost(post, appendFunc, hasShowButton, short) {
   if (_depth > 1) hasShowButton = false;
   if (short == undefined) short = true;
@@ -28,14 +34,22 @@ function addPost(post, appendFunc, hasShowButton, short) {
       }));
   if (hasShowButton) {
     d.append('&nbsp;');
-    d
-      .append($('<a>')
+    var showLink = 
+      $('<a>')
         .attr('href', 'javascript:void(0)')
         .text('[Show]')
         .click(function() {
           _depth += 1;
           loadThread(post.hash);
-        }));
+        });
+    d.append(showLink);
+    $.get('../api/threadsize/' + post.hash)
+      .done(function(size){
+        if (size == '0')
+          showLink.text('[No answers yet]');
+        else
+          showLink.text('[Show ' + size + ' post' + numSuffix(size) + ']');
+      });
   }
   d.append('&nbsp;');
   d

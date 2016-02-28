@@ -6,7 +6,8 @@ function notifyAboutPostCount() {
       data = parseInt(data);
       if (data != postCount) {
         if (postCount != 0) {
-          pushNotification((data - postCount) + ' post(s) added.', _post_count_notification_time);
+          var countStr = (data - postCount).toString();
+          pushNotification(countStr + ' post' + numSuffix(countStr) + ' added.', _post_count_notification_time);
         }
         postCount = data;
         $('#statusd').html('<a href=javascript:void(0)>Posts (including deleted): '+postCount+'</a>');

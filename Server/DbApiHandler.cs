@@ -41,6 +41,7 @@ namespace NServer
             _handlers["paramset"] = ParamSet;
             _handlers["paramget"] = ParamGet;
             _handlers["params"] = Params;
+            _handlers["threadsize"] = ThreadSize;
         }
 
         // example: prange/90-10 - gets not deleted posts from 91 to 100 (skip 90, take 10)
@@ -105,6 +106,12 @@ namespace NServer
         private HttpResponse GetPostCount(string notUsed1, string notUsed = null)
         {
             return new HttpResponse(StatusCode.Ok, _db.GetPostCount().ToString());
+        }
+
+        // returns recursive replies count for specified post
+        private HttpResponse ThreadSize(string hash, string notUsed = null)
+        {
+            return new HttpResponse(StatusCode.Ok, _db.GetThreadSize(hash).ToString());
         }
 
         // returns count of not deleted posts

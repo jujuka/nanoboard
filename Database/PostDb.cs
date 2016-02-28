@@ -90,6 +90,26 @@ namespace NDB
             return GetPost(_ordered[n]);
         }
 
+        /*
+            Returns recursive replies count for specified post (except deleted)
+        */
+        public int GetThreadSize(string hash)
+        {
+            int count = 0;
+
+            if (_rrefs.ContainsKey(hash))
+            {
+                count += _rrefs[hash].ToArray().Where(r => !r.deleted).Count();
+
+                foreach (var reply in _rrefs[hash].ToArray())
+                {
+                    count += GetThreadSize(reply.hash);
+                }
+            }
+
+            return count;
+        }
+
         public int GetPostCount()
         {
             return _ordered.Count;
