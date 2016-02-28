@@ -95,15 +95,20 @@ namespace NDB
         */
         public int GetThreadSize(string hash)
         {
+            if (!_rrefs.ContainsKey(hash)) return 0;
             int count = 0;
+            var stack = new Stack<List<DbPostRef>>();
+            stack.Push(_rrefs[hash]);
 
-            if (_rrefs.ContainsKey(hash))
+            while (stack.Count > 0)
             {
-                count += _rrefs[hash].ToArray().Where(r => !r.deleted).Count();
+                var elem = stack.Pop();
+                count += elem.ToArray().Where(r => !r.deleted).Count();
 
-                foreach (var reply in _rrefs[hash].ToArray())
+                foreach (var reply in elem.ToArray())
                 {
-                    count += GetThreadSize(reply.hash);
+                    if (_rrefs.ContainsKey(reply.hash))
+                        stack.Push(_rrefs[reply.hash]);
                 }
             }
 
