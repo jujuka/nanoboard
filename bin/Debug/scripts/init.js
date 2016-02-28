@@ -30,7 +30,7 @@ $(function() {
   }, 500);
   setInterval(function(){
     retranslate(_categories);    
-  }, 60000);
+  }, 300000);
   setInterval(function(){
     checkVersion();    
   }, 60000);
