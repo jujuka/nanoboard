@@ -12,7 +12,7 @@ function checkVersion() {
       $.get(_buildVersion)
         .done(function(bv) {
           if (bv != rv) {
-            pushNotification('Nanoboard client update is available: <a href=https://raw.githubusercontent.com/nanoboard/nanoboard/feature/2.0/release2.zip>[Download]</a>');
+            pushNotification('Nanoboard client update is available: <a href=https://raw.githubusercontent.com/nanoboard/nanoboard/feature/2.0/release2.zip>[Download]</a>', 30000);
           }
         });
     });
