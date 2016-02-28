@@ -1,4 +1,7 @@
 var transportUri = 'http://127.0.0.1:7543';
+var _transportMsgLimit = 250000;
+var _base64scale = 1 + 1/3.0;
+var _maxPostSize = 65536*_base64scale + 32 + 32 + 'hashreplyTomessage{},,,"""""":::   \n\n\n'.length + 100;
 
 function httpPost(uri, data) {
   var x = new XMLHttpRequest();
@@ -12,7 +15,7 @@ function recursivelySendParentsArray(post, arr) {
     .done(function(data){
       data = JSON.parse(data);
       var str = JSON.stringify(arr);
-      if (str.length >= 180000) {
+      if (str.length >= _transportMsgLimit - _maxPostSize) {
         console.log('sending to transport: ' + str);
         httpPost(transportUri, str);
         arr = [];
