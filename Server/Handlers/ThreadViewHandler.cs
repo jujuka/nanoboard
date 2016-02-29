@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace nboard
 {
-    class WebP
+    /*class WebP
     {
         public static string Weppy;
 
@@ -24,7 +24,7 @@ namespace nboard
         {
             Weppy = File.ReadAllText("js" + Path.DirectorySeparatorChar + "weppy.js");
         } 
-    }
+    }*/
 
     class ThreadViewHandler : IRequestHandler
     {
@@ -53,7 +53,7 @@ namespace nboard
             }
         }
 
-        public string FractalMusicScript = WebP.Weppy + @"
+        public string FractalMusicScript = /*WebP.Weppy +*/@"
    var sampleRate = 8000;
 
     function encodeAudio8bit(data) {
@@ -155,7 +155,7 @@ namespace nboard
         public static string PostScript (string other)
         {
             return NotifJs + @"
-        window.onload = function() {" + other + WebP.Enabler + @"
+        window.onload = function() {" + other + /*WebP.Enabler +*/ @"
              setInterval(function() { 
                 var elem = document.getElementById('notif1');
                 var x = new XMLHttpRequest();
