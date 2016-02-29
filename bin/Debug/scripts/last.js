@@ -20,6 +20,26 @@ function loadRootThread(hash) {
   fn();
 }
 
+function loadRootThreadHash(hash,pp,cb) {
+  var first = hash;
+  var prev = hash;
+  var fn = function(){
+    $.get('../api/get/' + hash)
+      .done(function(p){
+        p = JSON.parse(p);
+        if (p.replyTo == _categories)
+        {
+          cb(prev,pp);
+          return;
+        }
+        prev = p.hash;
+        hash = p.replyTo;
+        fn();
+      });
+  };
+  fn();
+}
+
 function showLast(N){
     $.get('../api/pcount')
       .done(function(cnt){
@@ -34,15 +54,19 @@ function showLast(N){
               var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, false);
               if (arr[i].hash != _categories && 
                   arr[i].replyTo != _categories && 
-                  arr[i].replyTo != _rootpost)
-              p.append(
-                $('<a>')
-                  .attr('href', 'javascript:void(0)')
-                  .text('[Thread]')
-                  .click(function(){
-                    loadRootThread($(this).parent().attr('id'));
-                  })
-                );
+                  arr[i].replyTo != _rootpost) {
+                loadRootThreadHash(p.attr('id'), p,
+                  function(h,pp) {
+                  pp.append(
+                    $('<a>')
+                      .attr('href', '#thread' + h)
+                      .text('[Thread]')
+                      .click(function(){
+                        //loadRootThread($(this).parent().attr('id'));
+                      })
+                    );
+                  });
+              }
             }
           });
       });

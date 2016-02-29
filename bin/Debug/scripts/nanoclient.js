@@ -5,6 +5,7 @@ function numSuffix(numStr) {
 }
 
 function addPost(post, appendFunc, hasShowButton, short) {
+  var locationBackup = window.location.href.toString();
   if (_depth > 1) hasShowButton = false;
   if (short == undefined) short = true;
   var d = $(document.createElement('div'));
@@ -18,7 +19,12 @@ function addPost(post, appendFunc, hasShowButton, short) {
       .attr('href', '#' + post.replyTo)
       .click(function() {
         $('#' + post.replyTo)
-          .addTemporaryClass('high', 1000)
+          .addTemporaryClass('high', 1000);
+        setTimeout(function(){
+          console.log('assigning location');
+          _location = locationBackup;
+          location.assign(locationBackup);
+        }, 200);
       })
       .appendTo(d)
       .html('^' + shortenHash(post.replyTo));
@@ -36,11 +42,11 @@ function addPost(post, appendFunc, hasShowButton, short) {
     d.append('&nbsp;');
     var showLink = 
       $('<a>')
-        .attr('href', 'javascript:void(0)')
+        .attr('href', (_depth==0?'#category':'#thread') + post.hash)
         .text('[Show]')
         .click(function() {
-          _depth += 1;
-          loadThread(post.hash);
+          //_depth += 1;
+          //loadThread(post.hash);
         });
     d.append(showLink);
     $.get('../api/threadsize/' + post.hash)
@@ -134,17 +140,17 @@ function loadThread(hash, highlight) {
           if (_depth > 0) {
             $('#thread').append(
               $('<a>')
-                .attr('href','#')
+                .attr('href', (post.replyTo != _categories) ? ('#category' + post.replyTo) : ('#'))
                 .html('<b>[Up]</b>')
                 .click(function(){
-                  _depth -= 1;
-                  loadThread(post.replyTo);
+                  //_depth -= 1;
+                  //loadThread(post.replyTo);
                 }));
           }
           $('#thread').append('&nbsp;');
           $('#thread').append(
             $('<a>')
-              .attr('href','#')
+              .attr('href','javascript:void(0)')
               .text('[Refresh]')
               .click(function(){
                 reloadParams();

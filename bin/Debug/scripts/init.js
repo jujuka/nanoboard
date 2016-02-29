@@ -18,19 +18,43 @@ function notifyAboutPostCount() {
     });
 }
 
+var _location = '';
+
 $(function() {
-  $('#searcha').click(function(){showSearch();});
-  $('#last10a').click(function(){showLast(10);});
-  $('#last50a').click(function(){showLast(50);});
-  $('#last100a').click(function(){showLast(100);});
-  $('#last500a').click(function(){showLast(500);});
-  $('#maina').click(function(){_depth = 0;loadThread(_categories);});
+  //$('#searcha').click(function(){showSearch();});
+  /*$('#last10').click(function(){showLast(10);});
+  $('#last50').click(function(){showLast(50);});
+  $('#last100').click(function(){showLast(100);});
+  $('#last500').click(function(){showLast(500);});*/
+  //$('#maina').click(function(){_depth = 0;loadThread(_categories);});
   reloadParams();
-  setTimeout(function(){
+  setInterval(function() {
+    var newLocation = window.location.href.toString();
+    if (newLocation != _location) {
+      _location = newLocation;
+      if (_location.endsWith('#') || _location.endsWith('html')) {
+        _depth = 0;
+        loadThread(_categories);
+      } else if (_location.includes('#thread')) {
+        _depth = 2;
+        loadThread(_location.split('#thread')[1]);
+      } else if (_location.includes('#category')) {
+        _depth = 1;
+        loadThread(_location.split('#category')[1]);
+      } else if (_location.includes('#last')) {
+        showLast(parseInt(_location.split('#last')[1]));
+      } else if (_location.endsWith("#search")) {
+        showSearch();
+      } else {
+        // do nothing intentionally
+      }
+    }
+  }, 100);
+  /*setTimeout(function(){
     loadThread(_categories);    
-  }, 500);
+  }, 500);*/
   setInterval(function(){
-    retranslate(_categories);    
+    retranslate();    
   }, 300000);
   setInterval(function(){
     checkVersion();    
