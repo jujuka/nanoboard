@@ -475,6 +475,7 @@ namespace nboard
                         }
                         ")) : "") +
                         //("[В закладки]").ToRef("/bookmark/" + p.GetHash().Value) +
+                        ("[Дамп]".ToPostRef("/dump/" + p.GetHash().Value)) +
                      ("<a onclick='show_reply(\""+p.GetHash().Value+"\")'>[Быстрый ответ]</a>")+("[Ответить]").ToRef("/reply/" + p.GetHash().Value)).ToDiv("", "")
                         ).ToStyledDiv("post", "", "position:relative;left:" + p.DepthTag * 20 + "px;"));
                 }
