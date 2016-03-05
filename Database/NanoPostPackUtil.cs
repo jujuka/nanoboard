@@ -11,7 +11,6 @@ namespace nboard
 {
     static class NanoPostPackUtil
     {
-        public const int IncomingPostsLimit = 256;
 
         public static byte[] Pack(NanoPost[] posts)
         {
@@ -51,7 +50,7 @@ namespace nboard
 
             int offset = count * 6 + 6;
 
-            for (int i = 0; i < Math.Min(sizes.Count, IncomingPostsLimit); i++)
+            for (int i = 0; i < sizes.Count; i++)
             {
                 int size = sizes[i];
                 raws.Add(str.Substring(offset, size));
@@ -62,7 +61,7 @@ namespace nboard
             var containerHashString = "";
             containerHash.ToList().ForEach(b => containerHashString += b.ToString("x2"));
 
-            for (int i = 0; i < Math.Min(raws.Count, IncomingPostsLimit); i++)
+            for (int i = 0; i < raws.Count; i++)
             {
                 var p = new NanoPost(raws[i]);
                 p.ContainerTag = containerHashString;

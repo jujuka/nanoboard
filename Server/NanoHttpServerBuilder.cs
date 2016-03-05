@@ -48,6 +48,7 @@ namespace nboard
             server.AddHandler("compress", new CompressImageHandler());
             server.AddHandler("add", new AddPlaceHandler());
             server.AddHandler("del", new DelPlaceHandler());
+            server.AddHandler("dump", new DumpHandler(_db));
             return server;
         }
     }

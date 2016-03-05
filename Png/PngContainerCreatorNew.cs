@@ -73,7 +73,13 @@ namespace nboard
                 rbytes += bc;
                 list.Add(p);
             }
+            CreateWithList(list);
+        }
 
+
+        public void CreateWithList(List<NanoPost> list)
+        {
+            var r = new Random();
             string[] ext = new[] { ".png", ".jpg", ".jpeg" };
             var files = new DirectoryInfo(Strings.Containers).GetFiles().Where(f => ext.Contains(f.Extension.ToLower())).ToArray();
 
