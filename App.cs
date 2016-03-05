@@ -2,6 +2,6 @@ namespace nboard
 {
   class App
   {
-    public static string Version = "1.7.13";
+    public static string Version = "1.7.14";
   }
 }
