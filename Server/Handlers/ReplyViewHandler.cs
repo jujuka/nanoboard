@@ -62,14 +62,18 @@ namespace nboard
                     ).ToDiv("post", ""));
                 sb.Append(((/*">" + p.Message.StripInput().Replace("\n", "\n>") + "\n"*/"").ToTextArea("", "reply").AddBreak() +
                 ("Отправить".ToButton("", "sendbtn", @"
+                    document.getElementById('sendbtn').disabled = true;
                     var x = new XMLHttpRequest();
                     x.open('POST', '../write/"+p.GetHash().Value+@"', true);
                     x.send(document.getElementById('reply').value);
                     x.onreadystatechange = function(){
-                    location.replace('/"+(corePost?"thread":"expand")+"/" + p.GetHash().Value + @"');}
+                             onAdd(x.responseText, function(){
+                            location.replace('/"+(corePost?"thread":"expand")+"/" + p.GetHash().Value + @"');
+                        });
+                    }
                 "))).ToDiv("post", ""));
 
-            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody());
+            return new NanoHttpResponse(StatusCode.Ok, sb.ToString().ToHtmlBody(ThreadViewHandler.JQueryMinJs+ThreadViewHandler.Base64Js+ThreadViewHandler.BitSendJs));
         }
     }
 }

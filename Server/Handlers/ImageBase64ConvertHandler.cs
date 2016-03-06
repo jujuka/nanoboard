@@ -65,7 +65,7 @@ body {
   width: 300px;
 }
 </style>
-<script>"+ HtmlStringExtensions.JQueryMinJs +@"</script>
+<script>"+ ThreadViewHandler.JQueryMinJs +@"</script>
 <script>
 $(function(){
 /// sharpen image:

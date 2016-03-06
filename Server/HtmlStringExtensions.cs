@@ -19,9 +19,7 @@ namespace nboard
         private static List<string> _allowed;
 
         private static string JQueryUiMinCss = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery-ui.min.css");
-        public static string JQueryMinJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery.min.js");
-        private static string JQueryUiMinJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery-ui.min.js");
-
+        
         public static List<string> UpdatePlaces()
         {
             if (File.Exists(Strings.Places))
@@ -144,7 +142,7 @@ function send(path) {
         while (h.endsWith('#')) h = h.substring(0,h.length-1);
         h += '#' + x.responseText;
         window.location.href = h;
-        location.reload();
+        onAdd(x.responseText, location.reload);
     }
     x.send($('.reply-body').val());
     $('.reply').css('visibility','hidden');
@@ -187,8 +185,7 @@ $(function(){
 
         public static string AddVideo(this string s)
         {
-            return s+@"<style>"+JQueryUiMinCss+"</style>"+"<script>"+JQueryMinJs+"</script>"+
-            @"<script>"+JQueryUiMinJs+"</script>"+@"
+            return s+@"<style>"+JQueryUiMinCss+"</style>"+@"
 <style>html,body,#container{height:100%}.vc{visibility: hidden;padding:5px;background-color:#f81;position:fixed;}</style>
 <div class =""vc""><video title=""Не злоупотребляйте постингом картинок со сторонних ресурсов, давайте сохраним наноборду независимой!"" controls class =""vd""></div>
 <script>
