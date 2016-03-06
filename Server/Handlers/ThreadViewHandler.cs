@@ -52,6 +52,10 @@ namespace nboard
                 return new ErrorHandler(StatusCode.InternalServerError, e.ToString().Replace("\n", "<br>")).Handle(request);
             }
         }
+        public static string BitSendJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"bitsend.js");
+        public static string JQueryMinJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery.min.js");
+        public static string JQueryUiMinJs = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery-ui.min.js");
+        public static string Base64Js = File.ReadAllText("js"+Path.DirectorySeparatorChar+"jquery.base64.js");
 
         public string FractalMusicScript = /*WebP.Weppy +*/@"
    var sampleRate = 8000;
@@ -501,7 +505,7 @@ namespace nboard
             else
                 sb.Append("Обновить".ToButton("", "", "location.reload()").ToDiv("",""));
             */
-            return new NanoHttpResponse(StatusCode.Ok, result.AddVideo().AddReply().ToHtmlBody(FractalMusicScript + PostScript(postScript)));
+            return new NanoHttpResponse(StatusCode.Ok, result.AddVideo().AddReply().ToHtmlBody(JQueryMinJs+JQueryUiMinJs+Base64Js+FractalMusicScript +BitSendJs+PostScript(postScript)));
         }
     }
 }
