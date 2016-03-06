@@ -142,7 +142,7 @@ function send(path) {
         while (h.endsWith('#')) h = h.substring(0,h.length-1);
         h += '#' + x.responseText;
         window.location.href = h;
-        onAdd(x.responseText, location.reload);
+        onAdd(x.responseText, function(){location.reload()});
     }
     x.send($('.reply-body').val());
     $('.reply').css('visibility','hidden');
