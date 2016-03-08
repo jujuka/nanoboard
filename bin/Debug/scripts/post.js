@@ -29,11 +29,21 @@ function detectImages(text) {
 
 function detectURLs(text) {
   var matches = text.match(/https?:\/\/[A-Za-z%&\?\-=_\.0-9\/:#]+/g);
+  var you_re=new RegExp(".*youtube\.com.*")
   if (matches != null) {
     for (var i = 0; i < matches.length; i++) {
       var value = matches[i].toString();
-      value = '<a target=_blank href="'+value+'">'+value+'</a>';
-      text = replaceAll(text, matches[i], value);
+      if (you_re.test(value))
+      {
+        value ='<a class="vd-vid" href="'+value+'"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>'+value+'</a>'
+        text = replaceAll(text, matches[i], value);
+      
+      }
+      else
+      {
+        value = '<a target=_blank href="'+value+'">'+value+'</a>';
+        text = replaceAll(text, matches[i], value);
+      }
     }
   }
   return text;

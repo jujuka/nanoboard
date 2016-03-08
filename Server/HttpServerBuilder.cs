@@ -36,6 +36,7 @@ namespace NServer
             server.AddHandler("scripts", new FileHandler("scripts", MimeType.Js));
             server.AddHandler("styles", new FileHandler("styles", MimeType.Css));
             server.AddHandler("images", new FileHandler("images", MimeType.Image, true));
+            server.AddHandler("fonts", new FileHandler("fonts", "application/font",true));
             server.AddHandler("shutdown", new ActionHandler("Server was shut down.", ()=>server.Stop()));
             server.AddHandler("restart", new ActionHandler("Server was restarted.", ()=>{
                 server.Stop();

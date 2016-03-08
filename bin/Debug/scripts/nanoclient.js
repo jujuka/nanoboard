@@ -33,7 +33,7 @@ function addPost(post, appendFunc, hasShowButton, short) {
   d
     .append($('<a>')
       .attr('href', 'javascript:void(0)')
-      .text('[Reply]')
+      .html('<span class="glyphicon glyphicon-pencil" aria-hidden="true">Reply</span>')
       .click(function() {
         addReplyForm(post.hash);
         d.next().find('textarea').focus();
@@ -52,16 +52,16 @@ function addPost(post, appendFunc, hasShowButton, short) {
     $.get('../api/threadsize/' + post.hash)
       .done(function(size){
         if (size == '0')
-          showLink.text('[No answers yet]');
+          showLink.html('<span class="glyphicon glyphicon-envelope" aria-hidden="true">0</span>');
         else
-          showLink.text('[Show ' + size + ' post' + numSuffix(size) + ']');
+          showLink.html('<span class="glyphicon glyphicon-envelope" aria-hidden="true">'+size+'-Show</span>');
       });
   }
   d.append('&nbsp;');
   d
     .append($('<a>')
       .attr('href', 'javascript:void(0)')
-      .text('[X]')
+      .html('<span class="glyphicon glyphicon-trash" aria-hidden="true">Delete</span>')
       .attr('title', 'Click to delete post forever.')
       .click(function() {
         if (post.hash == _categories) {
@@ -119,6 +119,7 @@ function loadReplies(hash, offset, highlight) {
           p.addTemporaryClass('high', 8000);
         }
       }
+      vid_show()
     });
 }
 
@@ -141,7 +142,7 @@ function loadThread(hash, highlight) {
             $('#thread').append(
               $('<a>')
                 .attr('href', (post.replyTo != _categories) ? ('#category' + post.replyTo) : ('#'))
-                .html('<b>[Up]</b>')
+                .html('<b><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>Up</b>')
                 .click(function(){
                   //_depth -= 1;
                   //loadThread(post.replyTo);
@@ -151,7 +152,7 @@ function loadThread(hash, highlight) {
           $('#thread').append(
             $('<a>')
               .attr('href','javascript:void(0)')
-              .text('[Refresh]')
+              .html('<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>Refresh')
               .click(function(){
                 reloadParams();
                 setTimeout(function(){
@@ -173,6 +174,7 @@ function loadThread(hash, highlight) {
               loadReplies(arr[i].hash, 2, highlight);
             }
           }
+          vid_show()
         });
     });
 }

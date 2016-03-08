@@ -7,14 +7,14 @@ function addReplyForm(id) {
       .append($('<textarea>').val('[g]' + new Date().toUTCString() + ', client: 2.0[/g]\n'))
       .append($('<br>'))
       .append($('<button>')
-        .addClass('reply-button')
+        .addClass('reply-button btn btn-danger ')
         .text('Cancel')
         .click(function() {
           $(this).parent().parent().remove();
         }))
       .append($('<button>')
         .text('Send')
-        .addClass('reply-button')
+        .addClass('reply-button btn btn-primary')
         .click(function() {
           sendPostToDb({
             'replyTo': id,
@@ -22,6 +22,13 @@ function addReplyForm(id) {
           });
           $(this).parent().parent().remove();
         }))
+      .append(($('<button>')
+        .text('Attach image')
+        .addClass('reply-button btn btn-default')
+        .click(function() {
+        __current_text_input=$(this).parent().children(":first")
+        $('#imgmodal').modal()
+        })))
     );
     var offset = form.offset();
     offset.top -= 100;

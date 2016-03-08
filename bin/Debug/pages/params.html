@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Nanoboard</title>
+<link rel="shortcut icon" href="/images/favicon.ico" />
 <meta charset="UTF-8"> 
 <script src='../scripts/jquery.min.js'> </script>
 <script src='../scripts/base64.js'> </script>
 <script src='../scripts/notif.js'> </script>
+<script src='../scripts/bootstrap.min.js'></script>
 <link rel='stylesheet' type='text/css' href='../styles/nano.css'>
 <link rel='stylesheet' type='text/css' href='../styles/notif.css'>
+<link rel='stylesheet' type='text/css' href='../styles/bootstrap.min.css'>
 <style>
 h1 {
   font-size: 200%;
@@ -22,7 +26,7 @@ h1 {
 }
 textarea {
   width: 500px;
-  height: 20px;
+  height: 30px;
   margin-left: 5px;
   outline: 0;
   border: 1px solid #aaa;
@@ -122,7 +126,33 @@ $(function(){
 });
 </script>
 </head>
+
 <body>
+<a style='font-size:300%;' href='javascript:void(0)'>Nanoboard<sup>2.0</sup></a>
+<nav class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+      <li role="presentation" id="mainli"><a id='maina' href='/pages/index.html'>Main</a></li>
+      <li role="presentation" id="lastli" class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+          Last <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li role="presentation"><a id='last10a' href='/pages/index.html#last10'>10</a></li>
+          <li role="presentation"><a id='last50a' href='/pages/index.html#last50'>50</a></li>
+          <li role="presentation"><a id='last500a' href='/pages/index.html#last500'>500</a></li>
+        </ul>
+      </li>
+      <li role="presentation" id="paramsli" class="active"><a href='params.html'>Settings</a></li>
+    </ul>
+    <form id="search" class="navbar-form navbar-left" role="search">
+        <button type="submit" id="searchbtn" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+        <div class="form-group">
+          <input type="text" class="form-control searchfield" placeholder="Search">
+        </div>
+    </form>
+</nav>
+
+<hr>
 <h1>Settings</h1>
 <p>Some parameters may require thread page refresh, some (like IP/port) – server <button id='restartb'>restart</button>.</p>
 <p>If you did something wrong with port/ip and server is not accessible, change port/ip in config.json manually.</p>
