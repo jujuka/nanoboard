@@ -55,6 +55,7 @@ function showLast(N){
         cnt = parseInt(cnt);
         $.get('../api/prange/'+Math.max(cnt-N,0)+'-'+N)
           .done(function(arr){
+            active_tab("lastli")
             arr = JSON.parse(arr);
             if (arr.length > 0) {
               $('#thread').empty();
@@ -69,7 +70,7 @@ function showLast(N){
                   pp.append(
                     $('<a>')
                       .attr('href', '#thread' + h)
-                      .text(h == null ? '[Thread Not Found]' : '[Thread]')
+                      .html('<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true">'+(h == null ? 'Thread Not Found' : 'Thread')+'</span>')
                       .click(function(){
                         //loadRootThread($(this).parent().attr('id'));
                       })
@@ -77,6 +78,7 @@ function showLast(N){
                   });
               }
             }
+            vid_show()
           });
       });
   }

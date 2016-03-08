@@ -78,8 +78,6 @@ $(function() {
         loadThread(_location.split('#category')[1]);
       } else if (_location.includes('#last')) {
         showLast(parseInt(_location.split('#last')[1]));
-      } else if (_location.endsWith("#search")) {
-        showSearch();
       } else {
         // do nothing intentionally
       }

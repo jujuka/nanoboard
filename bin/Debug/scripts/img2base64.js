@@ -1,54 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-#result {
-  word-break: break-all;
-  max-height: 50px;
-  max-width: 400px;
-  width: 400px;
-  height: 50px;
-  overflow: auto;
-}
-
-img {
-  width: auto;
-  height: auto;
-}
-
-.hide {
-  display: none;
-}
-
-button {
-  border: .5px solid #888;
-  border-radius: 4px;
-  background-color: #eee;
-  color: black;
-}
-
-button:hover {
-  background-color: #f4f4f4;
-}
-
-button:active {
-  color: black;
-  background-color: #ddd;
-}
-
-
-body {
-  font-family: Tahoma, sans-serif;
-  font-size: 70%;
-  padding: 20px;
-}
-
-.range1 {
-  width: 300px;
-}
-</style>
-<script src='../scripts/jquery.min.js'> </script>
-<script>
 $(function(){
 /// sharpen image:
 /// USAGE:
@@ -152,11 +101,9 @@ function updateImage(loader) {
         if (dataURL.length > 64512) {
           $('#info').css('color','red');
           $('#result').text('error');
-          $('.output').find('img').attr('src', 'error');
         } else {
           $('#info').css('color','black');
           $('#result').text('[img='+dataURL.substring(dataURL.indexOf(',')+1)+']');
-          $('.output').find('img').attr('src', dataURL);
         }
       };
       var shrd = canvas.toDataURL();
@@ -185,53 +132,16 @@ $('#quality').change(function() {
 $('#scale').change(function() {
   updateImage(_loader);
 });
-
-$('#show').click(function() {
-  $('#imgres').toggleClass('hide');
-  $('#result').toggleClass('hide');
-  $('#resulthelp').toggleClass('hide');
-});
+$('.apply-modal').click(function() {
+    var cursorPos = __current_text_input.prop('selectionStart');
+    v = __current_text_input.val();
+    var textBefore = v.substring(0,  cursorPos);
+    var textAfter  = v.substring(cursorPos);
+    __current_text_input.val( textBefore+$("#result").text()+textAfter );
+    $("#imgmodal").modal('hide')
+})
 
 $('#inputFileToLoad').change(function() {
   updateImage(this)
 });
 });
-</script>
-</head>
-<body>
-<h1>Image→Base64</h1>
-<form class="input-group" id="img2b64">
-  <input id="inputFileToLoad" type="file" />
-</form>
-<br/>
-<div class='range1'>
-  Scale:
-  <br>
-  <input id='scale' type='range' min=1 max=100 />
-  <br>Quality:
-  <br>
-  <input id='quality' type='range' min=1 max=100 />
-  <br> Sharpness:
-  <br>
-  <input id='sharpness' type='range' min=0 max=100 />
-  <br>Type:<br/>  
-  <select id='imgtype'>
-    <option>JPEG</option>
-    <option>WebP (Chrome only)</option>
-    <option>No compression (for zipJPEGs)</option>
-  </select><br>
-</div><br>
-<!-- <button id='update'>Apply settings</button> -->
-
-
-<div id='info'></div>
-<br/>
-<button id='show'>Switch Base64/Image</button>
-
-<div class="output">
-  <img id='imgres'>
-</div>
-<div class='hide' id='resulthelp'>Triple click, Ctrl/CMD+C:</div>
-<div class='hide' id='result'></div>
-</body>
-</html>
