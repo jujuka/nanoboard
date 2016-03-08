@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace nbpack
 {
-    class Program
+    public class NBPackMain
     {
         public static void Main(string[] args)
         {

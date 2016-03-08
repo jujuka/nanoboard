@@ -11,6 +11,8 @@ using System.Linq;
 using NDB;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using nboard;
+using nbpack;
 
 namespace NServer
 {
@@ -42,6 +44,44 @@ namespace NServer
             _handlers["paramget"] = ParamGet;
             _handlers["params"] = Params;
             _handlers["threadsize"] = ThreadSize;
+            _handlers["png-collect"] = PngCollect;
+            _handlers["png-create"] = PngCreate;
+        }
+
+        private HttpResponse PngCollect(string notUsed1, string notUsed2)
+        {
+            AggregatorMain.Run();
+            ThreadPool.QueueUserWorkItem(o => 
+            {
+                while(AggregatorMain.Running) 
+                {
+                    Thread.Sleep(1000);
+                }
+
+                ParseContainers();
+            });
+            return new HttpResponse(StatusCode.Ok, "");
+        }
+
+        private void ParseContainers()
+        {
+            NBPackMain.Main(new []{"-a", 
+                "http://" 
+                + Configurator.Instance.GetValue("ip", "127.0.0.1") 
+                + ":"
+                + Configurator.Instance.GetValue("port", "7346"),
+                Configurator.Instance.GetValue("password", "nano")});
+        }
+
+        private HttpResponse PngCreate(string notUsed1, string notUsed2)
+        {
+            NBPackMain.Main(new []{"-g", 
+                "http://" 
+                + Configurator.Instance.GetValue("ip", "127.0.0.1") 
+                + ":"
+                + Configurator.Instance.GetValue("port", "7346"),
+                Configurator.Instance.GetValue("password", "nano")});
+            return new HttpResponse(StatusCode.Ok, "");
         }
 
         // example: prange/90-10 - gets not deleted posts from 91 to 100 (skip 90, take 10)

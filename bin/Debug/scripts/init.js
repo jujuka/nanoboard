@@ -27,6 +27,8 @@ $(function() {
   $('#last100').click(function(){showLast(100);});
   $('#last500').click(function(){showLast(500);});*/
   //$('#maina').click(function(){_depth = 0;loadThread(_categories);});
+  $('#png-collect').click(function(){$.get('../api/png-collect')});
+  $('#png-create').click(function(){$.get('../api/png-create')});
   reloadParams();
   setInterval(function() {
     var newLocation = window.location.href.toString();

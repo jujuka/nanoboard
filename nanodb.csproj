@@ -38,6 +38,12 @@
       <HintPath>bin\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="Aggregator">
+      <HintPath>release\Aggregator.exe</HintPath>
+    </Reference>
+    <Reference Include="nbpack">
+      <HintPath>release\nbpack.exe</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

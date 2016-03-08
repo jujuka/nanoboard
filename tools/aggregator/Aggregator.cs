@@ -10,21 +10,29 @@ using System.Threading;
 
 namespace nboard
 {
-    class MainClass 
+    public class AggregatorMain 
     {
-      static void Main() {
+      public static bool Running { get; private set; }
+      public static void Run()
+      {
+        if (Running) return;
+        Main();
+      }
+      public static void Main() {
         bool running = true;
+        Running = true;
         var agg = new Aggregator();
         agg.ProgressChanged += () => { if (agg.InProgress == 0) running = false; else running = true; };
         agg.Aggregate();
         while(running) {
           Thread.Sleep(1000);
         }
+        Running = false;
         Console.WriteLine("Finished.");
       }
     }
 
-    class Aggregator
+    public class Aggregator
     {
         private const string UserAgentConfig = "useragent.config";
         private const string Downloaded = "downloaded.txt";
