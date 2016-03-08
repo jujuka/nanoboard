@@ -1,4 +1,5 @@
 ## How to run:
+1) Run the server
   Windows:   
     double click on nanodb.exe
     
@@ -7,7 +8,7 @@
     
     mono nanodb.exe   
     
-## Open in browser:   
+2) Open in browser:   
   http://127.0.0.1:7346   
 
 ## How to use:
