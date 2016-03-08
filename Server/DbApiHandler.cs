@@ -43,11 +43,38 @@ namespace NServer
             _handlers["paramset"] = ParamSet;
             _handlers["paramget"] = ParamGet;
             _handlers["params"] = Params;
+            _handlers["find-thread"] = FindThread;
             _handlers["threadsize"] = ThreadSize;
             _handlers["png-collect"] = PngCollect;
             _handlers["png-create"] = PngCreate;
             _handlers["png-collect-avail"] = (a,b)=>new HttpResponse(_collectAvail ? StatusCode.Ok : StatusCode.NotFound, "");
             _handlers["png-create-avail"] = (a,b)=>new HttpResponse(_createAvail ? StatusCode.Ok : StatusCode.NotFound, "");
+        }
+
+        private string SearchUp(string hash, string categoriesHash, string previousHash)
+        {
+            var p = _db.GetPost(hash);
+
+            if (p == null)
+            {
+                return null;
+            }
+
+            if (p.replyto == categoriesHash)
+            {
+                return previousHash;
+            }
+
+            previousHash = p.hash;
+            hash = p.replyto;
+            return SearchUp(hash, categoriesHash, previousHash);
+        }
+
+        private HttpResponse FindThread(string postHash, string categoriesHash)
+        {
+            var prev = postHash;
+            var result = SearchUp(postHash, categoriesHash, prev);
+            return new HttpResponse(result == null ? StatusCode.NotFound : StatusCode.Ok, result ?? "");
         }
 
         private bool _collectAvail = true;

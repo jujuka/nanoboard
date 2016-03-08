@@ -21,6 +21,14 @@ function loadRootThread(hash) {
 }
 
 function loadRootThreadHash(hash,pp,cb) {
+  $.post('../api/find-thread/' + hash, _categories)
+    .done(function(res){
+      cb(res,pp);
+    })
+    .fail(function(){
+      cb(null,pp);
+    });
+/*
   var first = hash;
   var prev = hash;
   var fn = function(){
@@ -38,6 +46,7 @@ function loadRootThreadHash(hash,pp,cb) {
       });
   };
   fn();
+*/
 }
 
 function showLast(N){
@@ -60,7 +69,7 @@ function showLast(N){
                   pp.append(
                     $('<a>')
                       .attr('href', '#thread' + h)
-                      .text('[Thread]')
+                      .text(h == null ? '[Thread Not Found]' : '[Thread]')
                       .click(function(){
                         //loadRootThread($(this).parent().attr('id'));
                       })
