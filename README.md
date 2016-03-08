@@ -14,7 +14,10 @@
 ## How to use:
   1) run nanodb.exe to start viewing threads in browser   
   2) when you need to get fresh posts, click [PNG-collect]   
-  3) when you need to create container, click [PNG-create] then wait and check 'upload' folder    
-  4) Don't forget to keep your Places setting updated    
+  3) when you need to create container, click [PNG-create] then wait and check 'upload' folder  
+     !!! your containers folder should have at least one image before doing this
+  4) Don't forget to keep your Places setting updated (see special thread inside Nanoboard about coordination)
    (you can do it after clicking [Settings],    
     you must run [PNG-collect] at least once for places.txt to be transfered to the config).   
+  5) Don't forget to upload containers from 'upload' folder to some thread from Places
+     so other people can see your posts.
