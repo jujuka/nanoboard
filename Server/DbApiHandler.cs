@@ -64,8 +64,8 @@ namespace NServer
                     Thread.Sleep(1000);
                 }
 
-                _collectAvail = true;
                 ParseContainers();
+                _collectAvail = true;
             });
             return new HttpResponse(StatusCode.Ok, "");
         }
