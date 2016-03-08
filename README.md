@@ -1,13 +1,13 @@
 ## How to run:
 1) Run the server
 
-  **Windows**:
+**Windows**:
   
-    double click on nanodb.exe
+double click on nanodb.exe
     
-  **Linux/OS X**:
+**Linux/OS X**:
   
-    Install mono-runtime, in command line write: 
+Install mono-runtime, in command line write: 
     
     mono nanodb.exe   
     
