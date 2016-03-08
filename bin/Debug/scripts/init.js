@@ -21,15 +21,48 @@ function notifyAboutPostCount() {
 var _location = '';
 
 $(function() {
-  //$('#searcha').click(function(){showSearch();});
-  /*$('#last10').click(function(){showLast(10);});
-  $('#last50').click(function(){showLast(50);});
-  $('#last100').click(function(){showLast(100);});
-  $('#last500').click(function(){showLast(500);});*/
-  //$('#maina').click(function(){_depth = 0;loadThread(_categories);});
-  $('#png-collect').click(function(){$.get('../api/png-collect')});
-  $('#png-create').click(function(){$.get('../api/png-create')});
+  var collectionRun = false;
+  var creationRun = false;
+
+  $('#png-collect').click(function(){
+    $.get('../api/png-collect')
+      .done(function(){collectionRun = true;});
+    $('#png-collect').hide();
+    pushNotification('PNG collection started.');
+  });
+  $('#png-create').click(function(){
+    pushNotification('PNG creation started.');
+    $('#png-create').hide();
+    $.get('../api/png-create')
+      .done(function(){
+        creationRun = true;
+      });
+  });
+
+  setInterval(function() {
+    if (creationRun)
+    $.get('../api/png-create-avail')
+      .done(function(){
+        if (!creationRun) return;
+        $('#png-create').show();
+        pushNotification('PNG creation finished (check your "upload" folder).');
+        $('#png-create').show();
+        creationRun = false;
+      })
+      .fail(function(){$('#png-create').hide();});
+    if (collectionRun)
+    $.get('../api/png-collect-avail')
+      .done(function(){
+        if (!collectionRun) return;
+        $('#png-collect').show();
+        pushNotification('PNG collection finished.');
+        collectionRun = false;
+      })
+      .fail(function(){$('#png-collect').hide();});
+  }, 300);
+
   reloadParams();
+
   setInterval(function() {
     var newLocation = window.location.href.toString();
     if (newLocation != _location) {
@@ -52,9 +85,7 @@ $(function() {
       }
     }
   }, 100);
-  /*setTimeout(function(){
-    loadThread(_categories);    
-  }, 500);*/
+
   setInterval(function(){
     retranslate();    
   }, 300000);

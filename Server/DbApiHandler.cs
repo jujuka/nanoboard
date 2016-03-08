@@ -46,10 +46,16 @@ namespace NServer
             _handlers["threadsize"] = ThreadSize;
             _handlers["png-collect"] = PngCollect;
             _handlers["png-create"] = PngCreate;
+            _handlers["png-collect-avail"] = (a,b)=>new HttpResponse(_collectAvail ? StatusCode.Ok : StatusCode.NotFound, "");
+            _handlers["png-create-avail"] = (a,b)=>new HttpResponse(_createAvail ? StatusCode.Ok : StatusCode.NotFound, "");
         }
+
+        private bool _collectAvail = true;
+        private bool _createAvail = true;
 
         private HttpResponse PngCollect(string notUsed1, string notUsed2)
         {
+            _collectAvail = false;
             AggregatorMain.Run();
             ThreadPool.QueueUserWorkItem(o => 
             {
@@ -58,6 +64,7 @@ namespace NServer
                     Thread.Sleep(1000);
                 }
 
+                _collectAvail = true;
                 ParseContainers();
             });
             return new HttpResponse(StatusCode.Ok, "");
@@ -65,7 +72,7 @@ namespace NServer
 
         private void ParseContainers()
         {
-            NBPackMain.Main(new []{"-a", 
+            NBPackMain.Main_(new []{"-a", 
                 "http://" 
                 + Configurator.Instance.GetValue("ip", "127.0.0.1") 
                 + ":"
@@ -75,12 +82,19 @@ namespace NServer
 
         private HttpResponse PngCreate(string notUsed1, string notUsed2)
         {
-            NBPackMain.Main(new []{"-g", 
-                "http://" 
-                + Configurator.Instance.GetValue("ip", "127.0.0.1") 
-                + ":"
-                + Configurator.Instance.GetValue("port", "7346"),
-                Configurator.Instance.GetValue("password", "nano")});
+            _createAvail = false;
+            ThreadPool.QueueUserWorkItem(o => 
+            {
+                NBPackMain.Main_(new []
+                {"-g", 
+                    "http://"
+                    + Configurator.Instance.GetValue("ip", "127.0.0.1")
+                    + ":"
+                    + Configurator.Instance.GetValue("port", "7346"),
+                    Configurator.Instance.GetValue("password", "nano")
+                });
+                _createAvail = true;
+            });
             return new HttpResponse(StatusCode.Ok, "");
         }
 
@@ -164,7 +178,7 @@ namespace NServer
         private HttpResponse Search(string searchString, string notUsed = null)
         {
             searchString = notUsed.FromB64();
-            var found = new List<Post>();
+            var found = new List<NDB.Post>();
             const int limit = 500;
 
             for (int i = _db.GetPostCount() - 1; i >= 0; i--)
@@ -200,7 +214,7 @@ namespace NServer
 
         private HttpResponse AddPost(string replyTo, string content)
         {
-            var post = new Post(replyTo, content);
+            var post = new NDB.Post(replyTo, content);
             var added = _db.PutPost(post);
 
             if (!added)
@@ -215,7 +229,7 @@ namespace NServer
         {
             try
             {
-                var posts = JsonConvert.DeserializeObject<Post[]>(content);
+                var posts = JsonConvert.DeserializeObject<NDB.Post[]>(content);
                 foreach (var p in posts)
                     _db.PutPost(p);
             }
@@ -229,7 +243,7 @@ namespace NServer
         // same as add but allows for putting deleted post back
         private HttpResponse ReAddPost(string replyTo, string content)
         {
-            var post = new Post(replyTo, content);
+            var post = new NDB.Post(replyTo, content);
             var added = _db.PutPost(post, true);
 
             if (!added)
