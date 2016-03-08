@@ -1,5 +1,5 @@
 ## How to run:
-1) Run the server
+1) Run the server   
   Windows:   
     double click on nanodb.exe
     
