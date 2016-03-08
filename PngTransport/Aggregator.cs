@@ -104,6 +104,19 @@ namespace nboard
             }
         }
 
+        private bool IsUriValid(string uri)
+        {
+            try
+            {
+                var u = new Uri(uri);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void Aggregate()
         {
             try
@@ -116,7 +129,11 @@ namespace nboard
                     if (!place.StartsWith("#"))
                     {
                         empty = false;
-                        ParseText(place);
+
+                        if (IsUriValid(place))
+                        {
+                            ParseText(place);
+                        }
                     }
                 }
 
@@ -174,7 +191,10 @@ namespace nboard
                             imageAddress = host + imageAddress;
                         }
 
-                        ParseImage(imageAddress);
+                        if (IsUriValid(imageAddress))
+                        {
+                            ParseImage(imageAddress);
+                        }
                     }
                 }
 
