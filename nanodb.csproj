@@ -64,11 +64,24 @@
     <Compile Include="Server\MimeType.cs" />
     <Compile Include="Server\DbApiHandler.cs" />
     <Compile Include="Server\ActionHandler.cs" />
+    <Compile Include="PngTransport\NBPack.cs" />
+    <Compile Include="PngTransport\Aggregator.cs" />
+    <Compile Include="PngTransport\ByteEncryptionUtil.cs" />
+    <Compile Include="PngTransport\GZipUtil.cs" />
+    <Compile Include="PngTransport\HashCalculator.cs" />
+    <Compile Include="PngTransport\NanoPost.cs" />
+    <Compile Include="PngTransport\NanoPostPackUtil.cs" />
+    <Compile Include="PngTransport\PngStegoUtil.cs" />
+    <Compile Include="PngTransport\PngUtils.cs" />
+    <Compile Include="PngTransport\Post.cs" />
+    <Compile Include="PngTransport\Posts.cs" />
+    <Compile Include="PngTransport\Salsa20.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Database\" />
     <Folder Include="Server\" />
+    <Folder Include="PngTransport\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

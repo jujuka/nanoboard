@@ -1,42 +1,35 @@
-How to run tools:
-  Windows:
-    In command line just write tool name without *.exe extension
-  Linux/OS X:
-    Install mono, in command line write: mono toolname.exe
+## How to run:
+1) Run the server
 
-Tool: 
-  Aggregator.exe
-Description:
-    Takes urls from places.txt (example: http://board.com/threads/2123.html)
-    For each url downloads page, searches for png files and downloads them 
-  to 'download' folder.
-    If you create proxy.txt with proxy url in it: http://127.0.0.1:port
-    it will use proxy.
+**Windows**:
+  
+double click on nanodb.exe
+    
+**Linux/OS X**:
+  
+Install mono-runtime, in command line write: 
+    
+    mono nanodb.exe   
+    
+2) Open in browser:
 
-Tool:
-  nbpack.exe
-Description:
-    Run nbpack.exe without arguments to see what is does.
-    In short: it is for getting posts from 'download' folder (with
-  containers) and to create container. Both actions require running nanodb.
+  http://127.0.0.1:7346   
 
-Tool:
-  nanodb.exe
-Description:
-    Server that gives access to nanoposts database via /api endpoint, also
-  redirects to /pages/index.html with web interface to the categories/threads
-  (more info - later).
-
-Typical workflow would be:
-1) run nanodb.exe to start viewing threads in browser
-2) when you need to get fresh posts, run prepared script that invokes 
-   Aggregator and then 
-   nbpack -a http://127.0.0.1:7346 nano
-3) when you need to create container, call 
-   npback -g http://127.0.0.1:7346 nano and container will appear in 'upload'
-4) Don't forget to keep your places.txt updated.
-
-Helper scripts already there:
-run - runs nanodb server
-search - calls Aggregator and nbpack in -a mode
-prepare - calls nbpack in -g mode
+## How to use:
+  1) run nanodb.exe to start viewing threads in browser
+  
+  2) when you need to get fresh posts, click [PNG-collect]
+  
+  3) when you need to create container, click [PNG-create] then wait and check 'upload' folder
+  
+     !!! your containers folder should have at least one image before doing this
+     
+  4) Don't forget to keep your Places setting updated (see special thread inside Nanoboard about coordination)
+  
+   (you can do it after clicking [Settings],  
+   
+    you must run [PNG-collect] at least once for places.txt to be transfered to the config).   
+    
+  5) Don't forget to upload containers from 'upload' folder to some thread from Places
+  
+     so other people can see your posts.
