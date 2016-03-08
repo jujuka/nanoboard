@@ -22,7 +22,6 @@ h1 {
 }
 textarea {
   width: 500px;
-  height: 20px;
   margin-left: 5px;
   outline: 0;
   border: 1px solid #aaa;
@@ -30,6 +29,7 @@ textarea {
 }
 body {
   padding-left: 50px;
+  margin-bottom: 100px;
 }
 .parname {
   font-size: 120%;
@@ -91,6 +91,7 @@ $(function(){
                 $('<textarea>')
                   .attr('id', par)
                   .val(val)
+                  .css('height', val.split('\n').length * 16 + 'px')
                   .appendTo(cont)
                   .change(function(){
                     var elem = $(this);
