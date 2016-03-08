@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+using NServer;
 
 namespace nboard
 {
@@ -16,9 +17,9 @@ namespace nboard
       public static void Run()
       {
         if (Running) return;
-        Main();
+        _Main();
       }
-      public static void Main() {
+      public static void _Main() {
         bool running = true;
         Running = true;
         var agg = new Aggregator();
@@ -65,15 +66,9 @@ namespace nboard
 
         private void CheckUpdatePlacesConfig()
         {
-            if (File.Exists(Config))
-            {
-                _places = new List<string>(File.ReadAllLines(Config));
-            }
-            else
-            {
-                File.WriteAllText(Config, "# put urls to threads here, each at new line:\n");
-                _places = new List<string>();
-            }
+            var places = Configurator.Instance.GetValue("places", File.Exists(Config)?File.ReadAllText(Config):"# put urls to threads here, each at new line:\n");
+            File.Delete(Config);
+            _places = places.Split('\n').Where(p => !p.StartsWith("#")).ToList();
         }
 
         public Aggregator()

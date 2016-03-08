@@ -13,7 +13,7 @@ namespace nbpack
 {
     public class NBPackMain
     {
-        public static void Main(string[] args)
+        public static void Main_(string[] args)
         {
             if (!Directory.Exists("upload"))
                 Directory.CreateDirectory("upload");
@@ -161,8 +161,10 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
                 list.Add(p);
             }
 
-            var files = Directory.GetFiles("containers");
-            var file = files[r.Next(files.Length)];
+            var files = Directory.GetFiles("containers", "*.png").ToList();
+            files.AddRange(Directory.GetFiles("containers", "*.jpg"));
+            files.AddRange(Directory.GetFiles("containers", "*.jpeg"));
+            var file = files[r.Next(files.Count)];
             Pack(list.ToArray(), file, key, "upload/" + Guid.NewGuid().ToString() + ".png");
         }
 
