@@ -265,6 +265,11 @@ namespace nboard
                     File.Move("temp" + Path.DirectorySeparatorChar + name, "download" + Path.DirectorySeparatorChar + name);
                     GC.Collect();
                     Console.WriteLine("Downloaded: " + address);
+                    nbpack.NBPackMain.ParseFile("http://" 
+                        + Configurator.Instance.GetValue("ip", "127.0.0.1") 
+                        + ":"
+                        + Configurator.Instance.GetValue("port", "7346"),
+                        Configurator.Instance.GetValue("password", "nano"), "download" + Path.DirectorySeparatorChar + name);
                 }
 
                 catch (Exception ex)

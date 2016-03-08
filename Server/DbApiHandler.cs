@@ -43,11 +43,38 @@ namespace NServer
             _handlers["paramset"] = ParamSet;
             _handlers["paramget"] = ParamGet;
             _handlers["params"] = Params;
+            _handlers["find-thread"] = FindThread;
             _handlers["threadsize"] = ThreadSize;
             _handlers["png-collect"] = PngCollect;
             _handlers["png-create"] = PngCreate;
             _handlers["png-collect-avail"] = (a,b)=>new HttpResponse(_collectAvail ? StatusCode.Ok : StatusCode.NotFound, "");
             _handlers["png-create-avail"] = (a,b)=>new HttpResponse(_createAvail ? StatusCode.Ok : StatusCode.NotFound, "");
+        }
+
+        private string SearchUp(string hash, string categoriesHash, string previousHash)
+        {
+            var p = _db.GetPost(hash);
+
+            if (p == null)
+            {
+                return null;
+            }
+
+            if (p.replyto == categoriesHash)
+            {
+                return previousHash;
+            }
+
+            previousHash = p.hash;
+            hash = p.replyto;
+            return SearchUp(hash, categoriesHash, previousHash);
+        }
+
+        private HttpResponse FindThread(string postHash, string categoriesHash)
+        {
+            var prev = postHash;
+            var result = SearchUp(postHash, categoriesHash, prev);
+            return new HttpResponse(result == null ? StatusCode.NotFound : StatusCode.Ok, result ?? "");
         }
 
         private bool _collectAvail = true;
@@ -64,12 +91,12 @@ namespace NServer
                     Thread.Sleep(1000);
                 }
 
-                ParseContainers();
                 _collectAvail = true;
             });
             return new HttpResponse(StatusCode.Ok, "");
         }
 
+        /*
         private void ParseContainers()
         {
             NBPackMain.Main_(new []{"-a", 
@@ -79,6 +106,7 @@ namespace NServer
                 + Configurator.Instance.GetValue("port", "7346"),
                 Configurator.Instance.GetValue("password", "nano")});
         }
+        */
 
         private HttpResponse PngCreate(string notUsed1, string notUsed2)
         {
