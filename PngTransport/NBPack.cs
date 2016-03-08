@@ -168,6 +168,31 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             Pack(list.ToArray(), file, key, "upload/" + Guid.NewGuid().ToString() + ".png");
         }
 
+        public static void ParseFile(string address, string key, string filename)
+        {
+            var posts = Unpack(filename, key);
+            GC.Collect();
+            try
+            {
+                var wc = new WebClient();
+                wc.UploadData(new Uri(address.Trim('/') + "/api/addmany"), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(posts)));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            try
+            {
+                File.Delete(filename);
+            }
+
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
         private static void AutoParse(string address, string key)
         {
             var files = Directory.GetFiles("download");

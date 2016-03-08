@@ -91,12 +91,12 @@ namespace NServer
                     Thread.Sleep(1000);
                 }
 
-                ParseContainers();
                 _collectAvail = true;
             });
             return new HttpResponse(StatusCode.Ok, "");
         }
 
+        /*
         private void ParseContainers()
         {
             NBPackMain.Main_(new []{"-a", 
@@ -106,6 +106,7 @@ namespace NServer
                 + Configurator.Instance.GetValue("port", "7346"),
                 Configurator.Instance.GetValue("password", "nano")});
         }
+        */
 
         private HttpResponse PngCreate(string notUsed1, string notUsed2)
         {
