@@ -28,6 +28,7 @@ p {
   position: absolute;
   left: 300px;
   padding-left: 4px;
+  display:inline;
 }
 textarea {
   font-style: normal;
@@ -84,6 +85,7 @@ $(function(){
               .done(function(val) {
                 cont.text(beautifyParamName(par) + ':');
                 if (val == 'true' || val == 'false') {
+                  console.log(par+val)
                   $('<input>')
                     .addClass('checkbox')
                     .attr('type', 'checkbox')
