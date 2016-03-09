@@ -7,6 +7,7 @@ mv release/diff.list .
 rm -r -f release
 mkdir release
 cd release
+mkdir containers
 cp ../bin/Debug/run.sh .
 #cp ../bin/Debug/*.sh .
 #cp ../bin/Debug/*.bat .
