@@ -32,7 +32,8 @@ $(function() {
                     p.append(
                       $('<a>')
                         .attr('href', 'javascript:void(0)')
-                        .text('[Thread]')
+                        //.text('[Thread]')
+                        .html('<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><span class="btn-title">&thinsp;Thread</span>')
                         .click(function(){
                           loadRootThread($(this).parent().attr('id'));
                         })

@@ -11,6 +11,10 @@ body {
   font-size: 50%;
 }
 
+#actions {
+  margin-right: -7px;
+}
+
 .board-name {
   font-family: Tahoma;
   font-size: 350%;
@@ -102,7 +106,7 @@ img {
 }
 
 .full {
-	max-width: 100%;
+	max-width: 4000px;
 	border-width: 0;
 }
 
