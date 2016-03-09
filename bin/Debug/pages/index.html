@@ -28,33 +28,33 @@
 <body>
 <a style='font-size:300%;' href='javascript:void(0)'>Nanoboard<sup>2.0</sup></a>
 <div class="col-md-12">
-<nav class="navbar navbar-default">
-    <ul class="nav navbar-nav">
-      <li role="presentation" id="mainli" class="active"><a id='maina' href='#'>Main</a></li>
-      <li role="presentation" id="lastli" class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-          Last <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li role="presentation"><a id='last10a' href='#last10'>10</a></li>
-          <li role="presentation"><a id='last50a' href='#last50'>50</a></li>
-          <li role="presentation"><a id='last500a' href='#last500'>500</a></li>
+    <nav class="navbar navbar-default">
+        <ul class="nav navbar-nav">
+          <li role="presentation" id="mainli" class="active"><a id='maina' href='#'>Main</a></li>
+          <li role="presentation" id="lastli" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              Last <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li role="presentation"><a id='last10a' href='#last10'>10</a></li>
+              <li role="presentation"><a id='last50a' href='#last50'>50</a></li>
+              <li role="presentation"><a id='last500a' href='#last500'>500</a></li>
+            </ul>
+          </li>
+          <li role="presentation" id="paramsli"><a href='params.html'>Settings</a></li>
         </ul>
-      </li>
-      <li role="presentation" id="paramsli"><a href='params.html'>Settings</a></li>
-    </ul>
-    <form id="search" class="navbar-form navbar-left" role="search">
-        <div class="form-group">
-          <button type="submit" id="searchbtn" class="btn btn-default hidden-xs"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-          <input type="text" class="form-control searchfield" placeholder="Search">
-        </div>
-    </form>
-    <form id="actions" class="navbar-form navbar-right">
-        <a type="button" href='javascript:void(0)' id="png-collect" class="btn btn-default"><span class="glyphicon glyphicon-save" aria-hidden="true">Collect PNG</span></a>        
-        <a type="button" href='javascript:void(0)' id="png-create" class="btn btn-default"><span class="glyphicon glyphicon-open" aria-hidden="true">Create PNG</span></a>             
-        <a type="button" href="/shutdown" id="shutdownbtn" class="btn btn-danger"><span class="glyphicon glyphicon-off" aria-hidden="true">Shutdown</span></a>
-    </form>
-</nav>
+        <form id="search" class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <button type="submit" id="searchbtn" class="btn btn-default hidden-xs"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+              <input type="text" class="form-control searchfield" placeholder="Search">
+            </div>
+        </form>
+        <form id="actions" class="navbar-form navbar-right">
+            <a type="button" href='javascript:void(0)' id="png-collect" class="btn btn-default"><span class="glyphicon glyphicon-save" aria-hidden="true">Collect PNG</span></a>        
+            <a type="button" href='javascript:void(0)' id="png-create" class="btn btn-default"><span class="glyphicon glyphicon-open" aria-hidden="true">Create PNG</span></a>             
+            <a type="button" href="/shutdown" id="shutdownbtn" class="btn btn-danger"><span class="glyphicon glyphicon-off" aria-hidden="true">Shutdown</span></a>
+        </form>
+    </nav>
 </div>
 <hr>
 <div id='thread'>
