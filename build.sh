@@ -21,6 +21,7 @@ cp -R ../bin/Debug/pages .
 cp -R ../bin/Debug/images .
 cp -R ../bin/Debug/scripts .
 cp -R ../bin/Debug/styles .
+cp -R ../bin/Debug/fonts .
 cd ..
 rm release2.zip
 zip -r -9 release2.zip release/*
