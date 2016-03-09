@@ -70,7 +70,7 @@ function showLast(N){
                   pp.append(
                     $('<a>')
                       .attr('href', '#thread' + h)
-                      .html('<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true">'+(h == null ? 'Thread Not Found' : 'Thread')+'</span>')
+                      .html('<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><span class="btn-title">&thinsp;'+(h == null ? 'Thread Not Found' : 'Thread')+'</span>')
                       .click(function(){
                         //loadRootThread($(this).parent().attr('id'));
                       })

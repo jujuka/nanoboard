@@ -32,6 +32,8 @@ namespace NDB
 
         Dictionary<string,Post> _cache; // cached posts by hash
 
+        object _lock = new object();
+
         public PostDb()
         {
             /* 
@@ -305,68 +307,73 @@ namespace NDB
         {
             if (!PostsValidator.Validate(p)) // do not add posts that fail validation
                 return false;
-            if (_refs.ContainsKey(p.hash) && !_deleted.Contains(p.hash)) // do not add existing not deleted posts
+
+            lock (_lock)
+            {
+                if (_refs.ContainsKey(p.hash) && !_deleted.Contains(p.hash)) // do not add existing not deleted posts
                 return false;
 
-            // if posts was deleted, add it back if allowed in allowReput param
-            if (allowReput && _deleted.Contains(p.hash))
-            {
-                return ReputPost(p);
-            }
-
-            // start creating new index entry
-            var r = new DbPostRef();
-            r.hash = p.hash;
-            r.replyTo = p.replyto;
-            var bytes = Encoding.UTF8.GetBytes(p.message.FromB64());
-            r.length = bytes.Length;
-
-            // try to find some empty space in db file chunks
-            if (_free.Any())
-            {
-                DbPostRef best = null;
-                int min = int.MaxValue;
-                var freeArr = _free.ToArray();
-
-                for (int i = 0; i < _free.Count; i++)
+                // if posts was deleted, add it back if allowed in allowReput param
+                if (allowReput && _deleted.Contains(p.hash))
                 {
-                    var fr = _refs[freeArr[i]];
+                    return ReputPost(p);
+                }
 
-                    if (fr.length <= r.length)
+                // start creating new index entry
+                var r = new DbPostRef();
+                r.hash = p.hash;
+                r.replyTo = p.replyto;
+                var bytes = Encoding.UTF8.GetBytes(p.message.FromB64());
+                r.length = bytes.Length;
+
+                // try to find some empty space in db file chunks
+                if (_free.Any())
+                {
+                    DbPostRef best = null;
+                    int min = int.MaxValue;
+                    var freeArr = _free.ToArray();
+
+                    for (int i = 0; i < _free.Count; i++)
                     {
-                        int diff = r.length - fr.length;
+                        var fr = _refs[freeArr[i]];
 
-                        if (diff < min)
+                        if (fr.length <= r.length)
                         {
-                            min = diff;
-                            best = fr;
+                            int diff = r.length - fr.length;
+
+                            if (diff < min)
+                            {
+                                min = diff;
+                                best = fr;
+                            }
                         }
+                    }
+
+                    // found some useful place - write post's message into it,
+                    // also update diff file immediately
+                    if (best != null)
+                    {
+                        best.length = 0;
+                        _free.Remove(best.hash);
+                        r.offset = best.offset;
+                        FileUtil.Write(best.file, bytes, r.offset);
+                        r.file = best.file;
+                        best.file = null;
+                        AddDbRef(r);
+                        File.AppendAllText(DiffFile, JsonConvert.SerializeObject(best) + "\n");
+                        File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
+                        return true;
                     }
                 }
 
-                // found some useful place - write post's message into it,
-                // also update diff file immediately
-                if (best != null)
-                {
-                    best.length = 0;
-                    _free.Remove(best.hash);
-                    r.offset = best.offset;
-                    FileUtil.Write(best.file, bytes, r.offset);
-                    r.file = best.file;
-                    best.file = null;
-                    AddDbRef(r);
-                    File.AppendAllText(DiffFile, JsonConvert.SerializeObject(best) + "\n");
-					File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
-                    return true;
-                }
+                // no appropriate space was found - extend current data chunk file
+                r.offset = FileUtil.Append(_data, bytes);
+                r.file = _data;
+                IncreaseCheckDataSize(r.length);
+                AddDbRef(r);
+                File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
             }
 
-            // no appropriate space was found - extend current data chunk file
-            r.offset = FileUtil.Append(_data, bytes);
-            r.file = _data;
-            IncreaseCheckDataSize(r.length);
-            AddDbRef(r);
-			File.AppendAllText(DiffFile, JsonConvert.SerializeObject(r) + "\n");
             return true;
         }
 

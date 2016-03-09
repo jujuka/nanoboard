@@ -33,7 +33,7 @@ function addPost(post, appendFunc, hasShowButton, short) {
   d
     .append($('<a>')
       .attr('href', 'javascript:void(0)')
-      .html('<span class="glyphicon glyphicon-pencil" aria-hidden="true">Reply</span>')
+      .html('<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="btn-title">&thinsp;Reply</span>')
       .click(function() {
         addReplyForm(post.hash);
         d.next().find('textarea').focus();
@@ -52,16 +52,16 @@ function addPost(post, appendFunc, hasShowButton, short) {
     $.get('../api/threadsize/' + post.hash)
       .done(function(size){
         if (size == '0')
-          showLink.html('<span class="glyphicon glyphicon-envelope" aria-hidden="true">0</span>');
+          showLink.html('<span class="glyphicon glyphicon-envelope not-avail" aria-hidden="true"></span><span class="btn-title not-avail">&thinsp;0</span>');
         else
-          showLink.html('<span class="glyphicon glyphicon-envelope" aria-hidden="true">'+size+'-Show</span>');
+          showLink.html('<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span><span class="btn-title">&thinsp;'+size+' – Show</span>');
       });
   }
   d.append('&nbsp;');
   d
     .append($('<a>')
       .attr('href', 'javascript:void(0)')
-      .html('<span class="glyphicon glyphicon-trash" aria-hidden="true">Delete</span>')
+      .html('<span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span class="btn-title">Delete</span>')
       .attr('title', 'Click to delete post forever.')
       .click(function() {
         if (post.hash == _categories) {

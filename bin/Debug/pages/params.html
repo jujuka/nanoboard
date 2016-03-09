@@ -32,6 +32,9 @@ p {
 }
 textarea {
   font-style: normal;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 12px;
   margin-left: 50px;
   width: 500px;
   height:30px;
@@ -104,7 +107,7 @@ $(function(){
                 $('<textarea>')
                   .attr('id', par)
                   .val(val)
-                  .css('height', val.split('\n').length * 30 + 'px')
+                  .css('height', val.split('\n').length * 17 + 'px')
                   .appendTo(cont)
                   .change(function(){
                     var elem = $(this);
@@ -138,7 +141,7 @@ $(function(){
 </head>
 
 <body>
-<a style='font-size:300%;' href='javascript:void(0)'>Nanoboard<sup>2.0</sup></a>
+<span class='board-name noselect' href='javascript:void(0)'>Nanoboard<sup class='version'>2.0</sup></span>
 <div class="col-md-12">
     <nav class="navbar navbar-default">
         <ul class="nav navbar-nav">
@@ -166,7 +169,7 @@ $(function(){
             <!--
             <a type="button" href='/pages/index.html#png-collect' id="png-collect" class="btn btn-default"><span class="glyphicon glyphicon-save" aria-hidden="true">Collect PNG</span></a>        
             <a type="button" href='/pages/index.html#png-create' id="png-create" class="btn btn-default"><span class="glyphicon glyphicon-open" aria-hidden="true">Create PNG</span></a>-->
-            <a type="button" href="/shutdown" id="shutdownbtn" class="btn btn-danger"><span class="glyphicon glyphicon-off" aria-hidden="true">Shutdown</span></a>
+            <a type="button" href="/shutdown" id="shutdownbtn" class="btn btn-danger"><span class="glyphicon glyphicon-off" aria-hidden="true"></span><span class='btn-title'>&nbsp;Shutdown</span></a>
         </form>
     </nav>
 </div>

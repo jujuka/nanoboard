@@ -7,6 +7,39 @@ body {
   background-color: #eee;
 }
 
+.version {
+  font-size: 50%;
+}
+
+.board-name {
+  font-family: Tahoma;
+  font-size: 350%;
+  color: #58a;
+  padding-left: 10px;
+  text-decoration: none;
+  cursor: default;
+}
+
+.noselect {
+-webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */      
+}
+
+.not-avail {
+  color: red;
+}
+
+.not-avail:hover {
+  text-decoration: none;
+}
+
+.btn-title {
+  font-size: 100%;
+  font-family: Tahoma;
+}
+
 .reply {
   margin: 0.5em;
 }
@@ -27,6 +60,7 @@ body {
 .reply-button {
   float: right;
   margin-bottom: 0.4em;
+  margin-right: 0.2em;
 }
 
 .word-search {
