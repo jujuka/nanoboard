@@ -2,6 +2,7 @@
 using NDB;
 using System.Linq;
 using NServer;
+using nboard;
 
 namespace NDB
 {
@@ -13,6 +14,7 @@ namespace NDB
         */
         public static void Main(string[] args)
         {
+            Aggregator.CheckUpdatePlacesConfig();
             var serv = new HttpServerBuilder(new PostDb()).Build();
             serv.Run();
         }

@@ -58,13 +58,13 @@ namespace nboard
 
         public event Action ProgressChanged = delegate {};
 
-        private List<string> _places;
+        private static List<string> _places;
 
         private readonly HashSet<string> _downloaded;
 
         private readonly WebHeaderCollection _headers;
 
-        private void CheckUpdatePlacesConfig()
+        public static void CheckUpdatePlacesConfig()
         {
             var places = Configurator.Instance.GetValue("places", File.Exists(Config)?File.ReadAllText(Config):"# put urls to threads here, each at new line:\n");
             File.Delete(Config);

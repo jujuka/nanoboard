@@ -1,3 +1,17 @@
+function updatePlacesBar() {
+  $.get('../api/paramget/places')
+      .done(function(v){
+        v = v.split('\n');
+        $('#placesd').empty();
+        $('#placesd').append('<b>Places (to post PNG containers to):</b><br/>')
+        for (var i = 0; i < v.length; i++) {
+          if (v[i].length > 0 && v[i][0]=='#') continue;
+          $('#placesd').append('• <a target=_blank href="'+v[i]+'">'+v[i]+'</a><br/>')
+        }
+        $('#placesd').append('You can edit this list on <a href=params.html>[Settings]</a> page.');
+      });
+}
+
 var postCount = 0;
 
 function notifyAboutPostCount() {
@@ -83,6 +97,10 @@ $(function() {
       }
     }
   }, 100);
+
+  setInterval(function(){
+    updatePlacesBar();
+  }, 2000);
 
   setInterval(function(){
     retranslate();    
