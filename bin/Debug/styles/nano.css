@@ -11,6 +11,14 @@ body {
   margin: 0.5em;
 }
 
+#thread {
+  margin-left: 10px;
+}
+
+#statusd {
+  text-align: center;
+}
+
 .searchfield {
   width: 500px;
   outline: 0;
