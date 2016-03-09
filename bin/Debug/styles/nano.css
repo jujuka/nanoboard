@@ -101,13 +101,15 @@ textarea {
 }
 
 img {
-	border: 1px dotted white;
-	max-width: 100px;
+  border: 1px dotted white;
+  max-width: 200px;
+  max-height: 300px;
 }
 
 .full {
-	max-width: 4000px;
-	border-width: 0;
+  max-width: 4000px;
+  max-height: 4000px;
+  border-width: 0;
 }
 
 a {
