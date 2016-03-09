@@ -85,7 +85,6 @@ $(function(){
               .done(function(val) {
                 cont.text(beautifyParamName(par) + ':');
                 if (val == 'true' || val == 'false') {
-                  console.log(par+val)
                   $('<input>')
                     .addClass('checkbox')
                     .attr('type', 'checkbox')
