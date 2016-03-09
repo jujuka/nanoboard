@@ -56,7 +56,7 @@ function sharpen(ctx, w, h, mix) {
   ctx.putImageData(dstData, 0, 0);
 }
 
-var _loader;
+var _loader=$('#inputFileToLoad')[0];
 
 function updateImage(loader) {
   _loader = loader;

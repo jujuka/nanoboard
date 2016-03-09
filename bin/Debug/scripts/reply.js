@@ -28,6 +28,7 @@ function addReplyForm(id) {
         .click(function() {
         __current_text_input=$(this).parent().children(":first")
         $('#imgmodal').modal()
+        $('#scale').click()
         })))
     );
     var offset = form.offset();
