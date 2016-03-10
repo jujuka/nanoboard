@@ -35,11 +35,9 @@ function detectPlacesCommands(obj) {
   $.get('../api/paramget/places')
     .done(function(arr){
       arr = arr.split('\n');
-      console.log(arr);
       for (var i = 0; i < matches.length; i++) {
         var value = matches[i].toString();
         value = value.substring(1);
-        console.log(value);
         if (arr.indexOf(value) != -1) {
           html = replaceAll(html, matches[i], matches[i] + ' <i><sup>added</sup></i>');
         }
