@@ -15,7 +15,9 @@ namespace NDB
         public static void Main(string[] args)
         {
             Aggregator.CheckUpdatePlacesConfig();
-            var serv = new HttpServerBuilder(new PostDb()).Build();
+            var db = new PostDb();
+            nbpack.NBPackMain.PostDatabase = db;
+            var serv = new HttpServerBuilder(db).Build();
             serv.Run();
         }
     }

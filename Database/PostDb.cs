@@ -11,7 +11,7 @@ namespace NDB
     /*
         Class that operates on posts database.
     */
-    class PostDb
+    public class PostDb
     {
         private readonly string _index = "index.json";  // name of index file
         private const string DiffFile = "diff.list";    // name of file that keeps changes to the index

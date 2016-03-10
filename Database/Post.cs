@@ -6,7 +6,7 @@ namespace NDB
     /*
         Post entity used by DB class and API handlers for read/write.
     */
-    class Post
+    public class Post
     {
         [JsonProperty("hash")]
         public string hash;

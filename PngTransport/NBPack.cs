@@ -13,6 +13,8 @@ namespace nbpack
 {
     public class NBPackMain
     {
+        public static NDB.PostDb PostDatabase;
+
         public static void Main_(string[] args)
         {
             if (!Directory.Exists("upload"))
@@ -92,21 +94,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             }
         }
 
-        private static string GetString(string url)
-        {
-            var wc = new WebClient();
-            try
-            {
-                return Encoding.UTF8.GetString(wc.DownloadData(url));
-            }
-            catch (WebException)
-            {
-                Console.WriteLine("nanodb.exe is not running");
-                return null;
-            }
-        }
-
-        private static bool ByteCountUnder(List<Post> posts, int limit)
+        private static bool ByteCountUnder(List<NDB.Post> posts, int limit)
         {
             int byteCount = 0;
 
@@ -119,7 +107,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             return true;
         }
 
-        private static int ByteCount(Post p)
+        private static int ByteCount(NDB.Post p)
         {
             return Convert.FromBase64String(p.message).Length + 32;
         }
@@ -131,17 +119,10 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
         */
         private static void Create(string address, string key)
         {
-            var countStr = GetString(address.Trim('/') + "/api/pcount");
-
-            if (countStr == null)
-            {
-                return;
-            }
-
-            var count = int.Parse(countStr);
+            var count = PostDatabase.GetPresentCount();
             var take = 50;
-            var last50s = GetString(address.Trim('/') + "/api/prange/" + Math.Max(count - take, 0) + "-" + take);
-            var list = JsonConvert.DeserializeObject<Post[]>(last50s).ToList();
+            var last50s = PostDatabase.RangePresent(Math.Max(count - take, 0), take);
+            var list = last50s.ToList();
 
             while (!ByteCountUnder(list, 150000))
             {
@@ -154,7 +135,7 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             for (int i = 0; i < 50; i++)
             {
                 int index = (int)Math.Min(Math.Pow(r.NextDouble(), 0.3) * count, count - 1);
-                var p = JsonConvert.DeserializeObject<Post[]>(GetString(address.Trim('/') + "/api/prange/" + index + "-" + 1))[0];
+                var p = PostDatabase.RangePresent(index, 1)[0];
                 var bc = ByteCount(p);
                 if (rbytes + bc > 150000) break;
                 rbytes += bc;
@@ -174,8 +155,10 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             GC.Collect();
             try
             {
-                var wc = new WebClient();
-                wc.UploadData(new Uri(address.Trim('/') + "/api/addmany"), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(posts)));
+                foreach (var p in posts)
+                {
+                    PostDatabase.PutPost(p);
+                }
             }
             catch (Exception e)
             {
@@ -203,8 +186,10 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
                 GC.Collect();
                 try
                 {
-                    var wc = new WebClient();
-                    wc.UploadData(new Uri(address.Trim('/') + "/api/addmany"), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(posts)));
+                    foreach (var p in posts)
+                    {
+                        PostDatabase.PutPost(p);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -223,9 +208,9 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             }
         }
 
-        private static void Validate(Posts posts)
+        private static void Validate(NDB.Post[] posts)
         {
-            foreach (var p in posts.posts)
+            foreach (var p in posts)
             {
                 p.hash = HashCalculator.Calculate(p.replyto + Encoding.UTF8.GetString(Convert.FromBase64String(p.message)));
             }
@@ -234,18 +219,17 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
         private static void Validate(string postsPath, string outputPath)
         {
             var json = File.ReadAllText(postsPath);
-            var posts = JsonConvert.DeserializeObject<Posts>(json);
+            var posts = JsonConvert.DeserializeObject<NDB.Post[]>(json);
             Validate(posts);
             var result = JsonConvert.SerializeObject(posts, Formatting.Indented);
             File.WriteAllText(outputPath, result);
         }
 
-        private static void Pack(Post[] arr, string templatePath, string key, string outputPath)
+        private static void Pack(NDB.Post[] posts, string templatePath, string key, string outputPath)
         {
-            var posts = new Posts { posts = arr };
             Validate(posts);
             var nposts = new List<NanoPost>();
-            foreach (var p in posts.posts)
+            foreach (var p in posts)
             {
                 nposts.Add(new NanoPost(p.replyto + Encoding.UTF8.GetString(Convert.FromBase64String(p.message))));
             }
@@ -268,10 +252,10 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
         private static void Pack(string postsPath, string templatePath, string key, string outputPath)
         {
             var json = File.ReadAllText(postsPath);
-            var posts = JsonConvert.DeserializeObject<Posts>(json);
+            var posts = JsonConvert.DeserializeObject<NDB.Post[]>(json);
             Validate(posts);
             var nposts = new List<NanoPost>();
-            foreach (var p in posts.posts)
+            foreach (var p in posts)
             {
                 nposts.Add(new NanoPost(p.replyto + Encoding.UTF8.GetString(Convert.FromBase64String(p.message))));
             }
@@ -291,28 +275,25 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
             new PngStegoUtil().HideBytesInPng(bmp, outputPath, encrypted);
         }
 
-        private static Post[] Unpack(string containerPath, string key)
+        private static NDB.Post[] Unpack(string containerPath, string key)
         {
             try
             {
                 var encrypted = new PngStegoUtil().ReadHiddenBytesFromPng(containerPath);
                 var decrypted = ByteEncryptionUtil.DecryptSalsa20(encrypted, key);
                 var nposts = NanoPostPackUtil.Unpack(decrypted);
-                var posts = new Posts(); // TODO: remove this useless shit everywhere
-                posts.posts = nposts.Select(
-                    np => new Post
+                var posts = nposts.Select(
+                    np => new NDB.Post
                     {
                         replyto = np.SerializedString().Substring(0, 32),
                         message = Convert.ToBase64String(Encoding.UTF8.GetBytes(np.SerializedString().Substring(32)))
                     }).ToArray();
                 Validate(posts);
-                return posts.posts;
+                return posts;
             }
             catch
             {
-                var posts = new Posts();
-                posts.posts = new Post[0];
-                return posts.posts;
+                return new NDB.Post[0];
             }
         }
 
@@ -323,9 +304,8 @@ Sample JSON (note that message contains utf-8 BYTES converted to base64 string)
                 var encrypted = new PngStegoUtil().ReadHiddenBytesFromPng(containerPath);
                 var decrypted = ByteEncryptionUtil.DecryptSalsa20(encrypted, key);
                 var nposts = NanoPostPackUtil.Unpack(decrypted);
-                var posts = new Posts();
-                posts.posts = nposts.Select(
-                    np => new Post
+                var posts = nposts.Select(
+                    np => new NDB.Post
                     {
                         replyto = np.SerializedString().Substring(0, 32),
                         message = Convert.ToBase64String(Encoding.UTF8.GetBytes(np.SerializedString().Substring(32)))
