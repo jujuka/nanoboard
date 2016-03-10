@@ -1,9 +1,9 @@
 .notif {
-  border: 1px solid #eee;
+  border: 1px solid #111;
   border-radius: 4px;
-  background-color: #567;
+  background-color: #444852;
   padding: 4px;
-  color: #bef;
+  color: #aaa;
 }
 
 .notif_area {

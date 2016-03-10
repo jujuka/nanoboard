@@ -1,11 +1,6 @@
 * {
   font-family: 'Tahoma', sans-serif;
   font-size: 13px;
-  color: #bef;
-}
-
-body {
-  background-color: #345;
 }
 
 .version {
@@ -94,8 +89,8 @@ textarea {
 }
 
 .post {
-  background-color: #ddd;
-  border: 1px solid #aaa;
+  background-color: #444852;
+  border: 1px solid #111;
   border-radius: .4em;
   margin: .4em 0;
   max-width: 600px;
@@ -141,6 +136,7 @@ sp:hover {
 }
 
 .post-inner {
+  font-family: Tahoma;
   word-break: normal;
   overflow: auto;
   max-height: 40em;
