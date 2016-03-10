@@ -27,6 +27,27 @@ function detectImages(text) {
   return text;
 }
 
+function detectPlacesCommands(obj) {
+  var html = obj.html();
+  var incl = ''.includes == undefined ? function(x,y) { return x.contains(y); } : function(x,y) { return x.includes(y); };
+  var matches = html.match(/[^"]{1}https?:\/\/[A-Za-z%&\?\-=_\.0-9\/:#]+/g);
+  if (matches == null) return;
+  $.get('../api/paramget/places')
+    .done(function(arr){
+      arr = arr.split('\n');
+      console.log(arr);
+      for (var i = 0; i < matches.length; i++) {
+        var value = matches[i].toString();
+        value = value.substring(1);
+        console.log(value);
+        if (arr.indexOf(value) != -1) {
+          html = replaceAll(html, matches[i], matches[i] + ' <i><sup>added</sup></i>');
+        }
+      }
+      obj.html(html);
+    });
+}
+
 function detectURLs(text) {
   var matches = text.match(/https?:\/\/[A-Za-z%&\?\-=_\.0-9\/:#]+/g);
   var you_re=new RegExp(".*youtube\.com.*")

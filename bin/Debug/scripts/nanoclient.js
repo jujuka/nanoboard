@@ -88,10 +88,11 @@ function addPost(post, appendFunc, hasShowButton, short) {
         }, _post_delete_timeout);
       }));
   appendFunc(d);
-  $('<div>')
+  var inner = $('<div>')
     .addClass('post-inner')
     .html(applyFormatting(escapeTags(Base64.decode(post.message))))
     .appendTo(d);
+  detectPlacesCommands(inner);
   d.find('img').click(function(){
     $(this).toggleClass('full');
   });
