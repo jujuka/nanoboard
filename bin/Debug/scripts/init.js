@@ -100,19 +100,20 @@ $(function() {
   reloadParams();
 
   setInterval(function() {
+    var incl = ''.includes == undefined ? function(x,y) { return x.contains(y); } : function(x,y) { return x.includes(y); };
     var newLocation = window.location.href.toString();
     if (newLocation != _location) {
       _location = newLocation;
       if (_location.endsWith('#') || _location.endsWith('html')) {
         _depth = 0;
         loadThread(_categories);
-      } else if (_location.includes('#thread')) {
+      } else if (incl(_location, '#thread')) {
         _depth = 2;
         loadThread(_location.split('#thread')[1]);
-      } else if (_location.includes('#category')) {
+      } else if (incl(_location, '#category')) {
         _depth = 1;
         loadThread(_location.split('#category')[1]);
-      } else if (_location.includes('#last')) {
+      } else if (incl(_location, '#last')) {
         showLast(parseInt(_location.split('#last')[1]));
       } else {
         // do nothing intentionally
