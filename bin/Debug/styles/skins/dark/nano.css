@@ -73,7 +73,7 @@
 }
 
 gr {
-  color: green;
+  color: #4f4;
 }
 
 g {
@@ -129,10 +129,12 @@ a:hover {
 
 sp {
   background-color: #000;
+  color: #000;
 }
 
 sp:hover {
-  background-color: #ddd;
+  background-color: #000;
+  color: #aaa;
 }
 
 .post-inner {
