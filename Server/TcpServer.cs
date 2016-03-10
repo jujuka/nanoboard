@@ -79,7 +79,8 @@ namespace NServer
             TcpClient client = (TcpClient)obj;
             var stream = client.GetStream();
             String readData = "";
-            stream.ReadTimeout = 100;
+            bool noTcpDelay = Configurator.Instance.GetValue("no_tcp_delay", "true") == "true";
+            stream.ReadTimeout = noTcpDelay ? 15 : 100;
             var buffer = new byte[16384];
             int len = -1;
             int contentLength = 0;
@@ -90,13 +91,13 @@ namespace NServer
             {
                 try
                 {
-                    if (raw.Count == 0 || raw[0] == (byte)'P') Thread.Sleep(50);
+                    if (!noTcpDelay) if (raw.Count == 0 || raw[0] == (byte)'P') Thread.Sleep(50);
                     len = stream.Read(buffer, 0, buffer.Length);
                     var block = System.Text.Encoding.UTF8.GetString(buffer, 0, len);
                     readData += block;
                     for (int i = 0; i < len; i++) raw.Add(buffer[i]);
                 } catch {
-                    if (raw.Count == 0 || raw[0] == (byte)'P') Thread.Sleep(50);
+                    if (!noTcpDelay) if (raw.Count == 0 || raw[0] == (byte)'P') Thread.Sleep(50);
                     if (contentLength == 0 && readData.Contains("Content-Length")) 
                     {
                         var match = System.Text.RegularExpressions.Regex.Match(readData, "Content-Length: [0-9]+");
