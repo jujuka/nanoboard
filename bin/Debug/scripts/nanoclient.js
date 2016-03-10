@@ -52,9 +52,9 @@ function addPost(post, appendFunc, hasShowButton, short) {
     $.get('../api/threadsize/' + post.hash)
       .done(function(size){
         if (size == '0')
-          showLink.html('<span class="glyphicon glyphicon-envelope not-avail" aria-hidden="true"></span><span class="btn-title not-avail">&thinsp;0</span>');
+          showLink.html('<span class="glyphicon glyphicon-comment not-avail" aria-hidden="true"></span><span class="btn-title not-avail">&thinsp;0</span>');
         else
-          showLink.html('<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span><span class="btn-title">&thinsp;'+size+' – Show</span>');
+          showLink.html('<span class="glyphicon glyphicon-comment" aria-hidden="true"></span><span class="btn-title">&thinsp;'+size+' – Show</span>');
       });
   }
   d.append('&nbsp;');
