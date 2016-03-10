@@ -80,14 +80,18 @@ $(function(){
       for (var i = 0; i < skins.length; i++) {
         $('#skin-sel').append('<option>' + skins[i] + '</option>');
       }
+      $.get('../api/paramget/skin')
+        .done(function(skin){
+          if (skin == '') skin = 'None';
+          $('#skin-sel').val(skin).change();
+          $('#skin-sel').change(function(){
+            var newSkin = $(this).val();
+            if (newSkin == 'None') newSkin = '';
+            $.post('../api/paramset/skin', newSkin);
+            location.reload();
+          });
+        });
      });
-
-  $('#skin-sel').change(function(){
-    var newSkin = $(this).val();
-    if (newSkin == 'None') newSkin = '';
-    $.post('../api/paramset/skin', newSkin);
-    location.reload();
-  });
 
   function showParams() {
     $.get('../api/params')
