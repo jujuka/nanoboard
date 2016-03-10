@@ -1,0 +1,149 @@
+* {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 13px;
+  color: #bef;
+}
+
+body {
+  background-color: #345;
+}
+
+.version {
+  font-size: 50%;
+}
+
+#actions {
+  margin-right: -7px;
+}
+
+#placesd {
+  margin-left: 15px;
+  margin-bottom: 50px;
+}
+
+.board-name {
+  font-family: Tahoma;
+  font-size: 350%;
+  color: #58a;
+  padding-left: 10px;
+  text-decoration: none;
+  cursor: default;
+}
+
+.noselect {
+-webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */      
+}
+
+.not-avail {
+  color: red;
+}
+
+.not-avail:hover {
+  text-decoration: none;
+}
+
+.btn-title {
+  font-size: 100%;
+  font-family: Tahoma;
+}
+
+.reply {
+  margin: 0.5em;
+}
+
+#thread {
+  margin-left: 10px;
+}
+
+#statusd {
+  text-align: center;
+}
+
+.searchfield {
+  width: 500px;
+  outline: 0;
+}
+
+.reply-button {
+  float: right;
+  margin-bottom: 0.4em;
+  margin-right: 0.2em;
+}
+
+.word-search {
+  background-color: yellow;
+}
+
+gr {
+  color: green;
+}
+
+g {
+  color: #888;
+  font-style: italic; 
+  font-size: 75%;
+}
+
+textarea {
+  width: 300px;
+  height: 130px;
+  outline: 0;
+}
+
+.post {
+  background-color: #ddd;
+  border: 1px solid #aaa;
+  border-radius: .4em;
+  margin: .4em 0;
+  max-width: 600px;
+  margin-right: auto;
+}
+
+.reply-div {
+  display: inline-block;
+}
+
+img {
+  border: 1px dotted white;
+  max-width: 200px;
+  max-height: 300px;
+}
+
+.full {
+  max-width: 4000px;
+  max-height: 4000px;
+  border-width: 0;
+}
+
+a {
+  text-decoration: none;
+  color: darkorange;
+}
+
+a:hover {
+  color: salmon;
+}
+
+.high {
+  background-color: moccasin;
+  border-style: dotted;
+}
+
+sp {
+  background-color: #000;
+}
+
+sp:hover {
+  background-color: #ddd;
+}
+
+.post-inner {
+  word-break: normal;
+  overflow: auto;
+  max-height: 40em;
+  padding: 0em 0.25em;
+  margin: .5em;
+}

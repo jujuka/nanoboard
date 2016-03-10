@@ -34,7 +34,8 @@ namespace NServer
             server.AddHandler("api", new DbApiHandler(_db));
             server.AddHandler("pages", pagesHandler);
             server.AddHandler("scripts", new FileHandler("scripts", MimeType.Js));
-            server.AddHandler("styles", new FileHandler("styles", MimeType.Css));
+            //server.AddHandler("styles", new FileHandler("styles", MimeType.Css));
+            server.AddHandler("styles", new StylesHandler());
             server.AddHandler("images", new FileHandler("images", MimeType.Image, true));
             server.AddHandler("fonts", new FileHandler("fonts", "application/font",true));
             server.AddHandler("shutdown", new ActionHandler("Server was shut down.", ()=>server.Stop()));

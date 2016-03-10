@@ -1,0 +1,13 @@
+.notif {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #567;
+  padding: 4px;
+  color: #bef;
+}
+
+.notif_area {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+}

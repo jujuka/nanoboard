@@ -76,6 +76,7 @@
     <Compile Include="PngTransport\Post.cs" />
     <Compile Include="PngTransport\Posts.cs" />
     <Compile Include="PngTransport\Salsa20.cs" />
+    <Compile Include="Server\StylesHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
