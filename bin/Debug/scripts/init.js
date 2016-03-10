@@ -1,3 +1,25 @@
+function stripTags(text) {
+  text = text.replace(/<g>.*<\/g>/gim, '');
+  text = text.replace(/<.{1}>/gim, '');
+  text = text.replace(/<\/.{1}>/gim, '');
+  text = text.replace(/<br?\/>/gim, ' ');
+  text = text.replace(/^\s*/gim, '');
+  text = text.replace(/\s/gim, '&nbsp;');
+  return text;
+}
+
+function updateCategoriesBar() {
+  $('#categories').empty();
+  $.get('../api/replies/' + _categories)
+    .done(function(replies){
+	  replies = JSON.parse(replies);
+	  for (var i = 0; i < replies.length; i++){
+	    var reply = replies[i];
+		$('#categories').append('<a href="#category'+reply.hash+'">['+stripTags(applyFormatting(Base64.decode(reply.message)))+']</a> ');
+	  }
+    });
+}
+
 function updatePlacesBar() {
   $.get('../api/paramget/places')
       .done(function(v){
@@ -97,6 +119,8 @@ $(function() {
       }
     }
   }, 100);
+
+  updateCategoriesBar();
 
   setInterval(function(){
     updatePlacesBar();
