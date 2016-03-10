@@ -44,8 +44,8 @@ namespace NServer
                 return _filehandler.Handle(request);
             }
 
-            var req = new HttpRequest(request.Connection, "styles/skins/" + currentSkin + "/" + request.Address.Split('/').Last());
-            return _filehandler.Handle(req);
+            var file = request.Address.Replace("styles/", "styles/skins/" + currentSkin + "/").TrimStart('/');
+            return new HttpResponse(StatusCode.Ok, File.ReadAllText(file.Replace('/', Path.DirectorySeparatorChar)), MimeType.Css);
         }
     }
 }

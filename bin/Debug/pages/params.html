@@ -74,6 +74,21 @@ function beautifyParamName(txt) {
 }
 
 $(function(){
+  $.get('../api/paramget/skins')
+    .done(function(skins){
+      skins = JSON.parse(skins);
+      for (var i = 0; i < skins.length; i++) {
+        $('#skin-sel').append('<option>' + skins[i] + '</option>');
+      }
+     });
+
+  $('#skin-sel').change(function(){
+    var newSkin = $(this).val();
+    if (newSkin == 'None') newSkin = '';
+    $.post('../api/paramset/skin', newSkin);
+    location.reload();
+  });
+
   function showParams() {
     $.get('../api/params')
       .done(function(arr){
@@ -179,5 +194,12 @@ $(function(){
 <p>Some parameters may require thread page refresh, some (like IP/port) – server <button id='restartb'>restart</button>.</p>
 <p>If you did something wrong with port/ip and server is not accessible, change port/ip in config.json manually.</p>
 <p>Default values for IP/port are 127.0.0.1 and 7346</p>
+<div>
+Skin:
+<select id='skin-sel'>
+<option></option>
+<option>None</option>
+</select>
+</div>
 </body>
 </html>
