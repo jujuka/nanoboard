@@ -5,6 +5,7 @@ function stripTags(text) {
   text = text.replace(/<br?\/>/gim, ' ');
   text = text.replace(/^\s*/gim, '');
   text = text.replace(/\s/gim, '&nbsp;');
+  if (text.length > 48) text = text.substring(0, 48) + '...';
   return text;
 }
 
