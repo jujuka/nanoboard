@@ -27,20 +27,86 @@ function detectImages(text) {
   return text;
 }
 
+function addPlace(place,uuid) {
+  place = Base64.decode(place);
+  console.log('add:' + place);
+  $.get('../api/paramget/places')
+    .done(function(arr){
+      arr = arr.split('\n');
+      var wasAdded = arr.indexOf(place) != -1;
+      if (wasAdded) {
+        $(document.getElementById(uuid)).text('added');
+        pushNotification('Was added already.');
+        return;
+      }
+      arr.push(place);
+      $.post('../api/paramset/places', arr.join('\n'))
+        .done(function(){
+          $(document.getElementById(uuid)).text('added');
+          pushNotification('Added: ' + place);
+        });
+    });
+}
+
+function delPlace(place,uuid) {
+  place = Base64.decode(place);
+  console.log('del:' + place);
+  $.get('../api/paramget/places')
+    .done(function(arr){
+      arr = arr.split('\n');
+      var wasAdded = arr.indexOf(place) != -1;
+      if (!wasAdded) {
+        $(document.getElementById(uuid)).text('');
+        pushNotification('Not present or already deleted.');
+        return;
+      }
+      var arr2 = [];
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] != place) {
+          arr2.push(arr[i]);
+        }
+      }
+      arr = arr2;
+      $.post('../api/paramset/places', arr.join('\n'))
+        .done(function(){
+          $(document.getElementById(uuid)).text('');
+          pushNotification('Deleted: ' + place);
+        });
+    });
+}
+
+function generateUUID(){
+    var d = new Date().getTime();
+    if(window.performance && typeof window.performance.now === "function"){
+        d += performance.now(); //use high-precision timer if available
+    }
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
+
 function detectPlacesCommands(obj) {
+  var text = obj.text();
   var html = obj.html();
   var incl = ''.includes == undefined ? function(x,y) { return x.contains(y); } : function(x,y) { return x.includes(y); };
-  var matches = html.match(/[^"]{1}https?:\/\/[A-Za-z%&\?\-=_\.0-9\/:#]+/g);
+  var matches = text.match(/(ADD|DEL(ETE|))[\s]*https?:\/\/[a-z%&\?\-=_\.0-9\/:#]+/g);
   if (matches == null) return;
   $.get('../api/paramget/places')
     .done(function(arr){
       arr = arr.split('\n');
       for (var i = 0; i < matches.length; i++) {
         var value = matches[i].toString();
-        value = value.substring(1);
-        if (arr.indexOf(value) != -1) {
-          html = replaceAll(html, matches[i], matches[i] + ' <i><sup>added</sup></i>');
-        }
+        console.log(value);
+        value = value.substring(value.indexOf('http'));
+        var wasAdded = arr.indexOf(value) != -1;
+        var uuid = generateUUID();
+        html = replaceAll(html, value+'</a>', value + 
+          '</a>&nbsp;<a href=javascript:addPlace("'+Base64.encode(value)+'","'+uuid+'")><sup>[+]</sup></a>'+
+          '<i><sup id="'+uuid+'">' + (wasAdded ? 'added' : '') + '</sup></i>' +
+          '<a href=javascript:delPlace("'+Base64.encode(value)+'","'+uuid+'")><sup>[-]</sup></a>');
       }
       obj.html(html);
     });
