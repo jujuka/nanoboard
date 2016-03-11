@@ -96,6 +96,21 @@ function updateImage(loader) {
           img.width / scale, img.height / scale);
         var imgType = $('#imgtype').val()=='JPEG'?'image/jpeg':'image/webp';
         var dataURL = canvas.toDataURL(imgType, $('#quality').val() / 100.0);
+        $('#img-preview-btn').off();
+        $('#img-preview-btn').click(function(){
+          $('body').append(
+            $('<img>')
+              .attr('src', dataURL)
+              .css('max-width', '10000px')
+              .css('max-height', '10000px')
+              .css('position', 'fixed')
+              .css('z-index', '10000')
+              .css('top', '0')
+              .css('left', '0')
+              .click(function(){
+                $(this).remove();
+              }));
+        });
         $('#info').html('Length (base64): ' + dataURL.length +
           '<br>Max allowed: 64512<br>'+Math.floor(img.width/scale)+'x'+Math.floor(img.height/scale)+'px');
         if (dataURL.length > 64512) {
