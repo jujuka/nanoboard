@@ -42,6 +42,6 @@ function reloadParams() {
   tryGetParam('post_offset_in_tree_px', '10', function(v){ _treeOffsetPx = parseInt(v); });
   tryGetParam('post_delete_timeout', '5000', function(v){ _post_delete_timeout = parseInt(v); });
   tryGetParam('post_count_notification_time', '4000', function(v){ _post_count_notification_time = parseInt(v); });
-  tryGetParam('spam_filter', 'Here comes the hurricane!', function(v){ _spam_filter = parseRegExps(v); });
+  tryGetParam('spam_filter', '', function(v){ _spam_filter = parseRegExps(v); });
   tryGetParam('use_spam_filter', 'true', function(v){ _use_spam_filter = v; });
 }
