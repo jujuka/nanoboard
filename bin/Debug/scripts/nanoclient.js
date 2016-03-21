@@ -5,6 +5,11 @@ function numSuffix(numStr) {
 }
 
 function addPost(post, appendFunc, hasShowButton, short) {
+  if (_use_spam_filter=='true' && post.hash != _categories){
+    for (i in _spam_filter){
+        if (_spam_filter[i].test(escapeTags(Base64.decode(post.message)))) return false;
+    }
+  }
   var locationBackup = window.location.href.toString();
   if (_depth > 1) hasShowButton = false;
   if (short == undefined) short = true;
@@ -113,11 +118,13 @@ function loadReplies(hash, offset, highlight) {
         var deleted = Base64.decode(arr[i].message) == _postWasDeletedMarker;
         if (_showDeleted == 'false' && deleted) continue;
         var p = addPost(arr[i], function(d) { d.insertAfter($('#'+hash)); }, false)
-          .css('margin-left', offset * _treeOffsetPx + 'px');
-        if (deleted) p.css({ opacity: _deletedOpacity });
-        loadReplies(arr[i].hash, offset + 1, highlight);
-        if (highlight == arr[i].hash) {
-          p.addTemporaryClass('high', 8000);
+        if (p){
+            p.css('margin-left', offset * _treeOffsetPx + 'px');
+            if (deleted) p.css({ opacity: _deletedOpacity });
+            loadReplies(arr[i].hash, offset + 1, highlight);
+            if (highlight == arr[i].hash) {
+              p.addTemporaryClass('high', 8000);
+            }
         }
       }
       vid_show()
@@ -165,14 +172,16 @@ function loadThread(hash, highlight) {
           for (var i = 0; i < arr.length; i++) {
             var deleted = Base64.decode(arr[i].message) == _postWasDeletedMarker;
             if (_showDeleted == 'false' && deleted) continue;
-            var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, true)
-              .css('margin-left',  _treeOffsetPx + 'px');
-            if (deleted) p.css({ opacity: _deletedOpacity});
-            if (highlight == arr[i].hash) {
-              p.addTemporaryClass('high', 8000);
-            }
-            if (_depth > 1) {
-              loadReplies(arr[i].hash, 2, highlight);
+            var p = addPost(arr[i], function(d) {d.appendTo($('#thread'));}, true)
+            if (p){
+                p.css('margin-left',  _treeOffsetPx + 'px');
+                if (deleted) p.css({ opacity: _deletedOpacity});
+                if (highlight == arr[i].hash) {
+                  p.addTemporaryClass('high', 8000);
+                }
+                if (_depth > 1) {
+                  loadReplies(arr[i].hash, 2, highlight);
+                }
             }
           }
           vid_show()
