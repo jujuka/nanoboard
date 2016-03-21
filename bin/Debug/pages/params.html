@@ -8,9 +8,9 @@
 <script src='../scripts/base64.js'> </script>
 <script src='../scripts/notif.js'> </script>
 <script src='../scripts/bootstrap.min.js'></script>
+<link rel='stylesheet' type='text/css' href='../styles/bootstrap.min.css'>
 <link rel='stylesheet' type='text/css' href='../styles/nano.css'>
 <link rel='stylesheet' type='text/css' href='../styles/notif.css'>
-<link rel='stylesheet' type='text/css' href='../styles/bootstrap.min.css'>
 <style>
 h1 {
   font-size: 200%;
@@ -161,47 +161,55 @@ $(function(){
 
 <body>
 <span class='board-name noselect' href='javascript:void(0)'>Nanoboard<sup class='version'>2.0</sup></span>
-<div class="col-md-12">
-    <nav class="navbar navbar-default">
-        <ul class="nav navbar-nav">
-          <li role="presentation" id="mainli"><a id='maina' href='/pages/index.html'><span class='glyphicon glyphicon-home'></span>&thinsp;Main</a></li>
-          <li role="presentation" id="lastli" class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-              <span class='glyphicon glyphicon-bell'></span>&thinsp;Last <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <li role="presentation"><a id='last10a' href='/pages/index.html#last10'>10</a></li>
-              <li role="presentation"><a id='last50a' href='/pages/index.html#last50'>50</a></li>
-              <li role="presentation"><a id='last100a' href='/pages/index.html#last100'>100</a></li>
-              <li role="presentation"><a id='last200a' href='/pages/index.html#last200'>200</a></li>
-              <li role="presentation"><a id='last500a' href='/pages/index.html#last500'>500</a></li>
-            </ul>
-          </li>
-        </ul>
-        <form id="search" class="navbar-form navbar-left" role="search">
-            <button type="submit" id="searchbtn" class="btn btn-default hidden-xs"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-            <div class="form-group">
-              <input type="text" class="form-control searchfield" placeholder="Search">
-            </div>
-        </form>
-        <form id="actions" class="navbar-form navbar-right">
-            <!-- these buttons won't work here - in index.html - init.js there is js click action on them -->
-            <!--
-            <a type="button" href='/pages/index.html#png-collect' id="png-collect" class="btn btn-default"><span class="glyphicon glyphicon-save" aria-hidden="true">Collect PNG</span></a>        
-            <a type="button" href='/pages/index.html#png-create' id="png-create" class="btn btn-default"><span class="glyphicon glyphicon-open" aria-hidden="true">Create PNG</span></a>-->
-            <a type="button" href="/shutdown" id="shutdownbtn" class="btn btn-danger"><span class="glyphicon glyphicon-off" aria-hidden="true"></span><span class='btn-title'>&nbsp;Shutdown</span></a>
-        </form>
-    </nav>
+<div id="head-panel" class="container-fluid">
+    <div id="navrow" class="row no-gutter">
+        <nav class="navbar navbar-default">
+                <div class="col-md-3 col-sm-3 col-xs-5">
+                    <ul id="navs"class="nav nav-pills">
+                      <div class="row">
+                      <li role="presentation" id="mainli" class="active col-xs-4"><a id='maina' href='/pages/index.html'><span class='glyphicon glyphicon-home'></span><span class="hidden-xs">&thinsp;Main</span></a></li>
+                      <li role="presentation" id="lastli" class="dropdown col-xs-4">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                          <span class='glyphicon glyphicon-bell'></span><span class="hidden-xs">&thinsp;Last</span><span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li role="presentation"><a id='last10a' href='/pages/index.html#last10'>10</a></li>
+                          <li role="presentation"><a id='last50a' href='/pages/index.html#last50'>50</a></li>
+                          <li role="presentation"><a id='last100a' href='/pages/index.html#last100'>100</a></li>
+                          <li role="presentation"><a id='last200a' href='/pages/index.html#last200'>200</a></li>
+                          <li role="presentation"><a id='last500a' href='/pages/index.html#last500'>500</a></li>
+                        </ul>
+                      </li>
+                      <li role="presentation" class="col-xs-4" id="paramsli"><a href='params.html'><span class='glyphicon glyphicon-cog'></span><span class="hidden-xs">&thinsp;Settings</span></a></li>
+                      </div>
+                    </ul>
+                </div>
+                <form id="search" class="col-md-7 col-sm-7 col-xs-5 pull-left" role="search">
+                    <div class="form-group" >
+                      <div class="input-group">
+                        <span class="input-group-btn">
+                            <button type="submit" id="searchbtn" class="btn btn-default hidden-xs"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                        </span>
+                        <input type="text" class="form-control searchfield" placeholder="Search">
+                      </div>
+                    </div>
+                </form>
+                <form id="actions" class="col-md-2 col-sm-2 col-xs-2 pull-right" >
+                    <div class="row">
+                    <a type="button" href="/shutdown" id="shutdownbtn" class="col-xs-12 btn btn-danger"><span class="glyphicon glyphicon-off" aria-hidden="true"></span><span class='btn-title hidden-xs hidden-sm'>&nbsp;Shutdown</span></a>
+                    </div>
+                </form>
+        </nav>
+    </div>
 </div>
 <hr>
 <h1>Settings</h1>
-<p>Some parameters may require thread page refresh, some (like IP/port) – server <button id='restartb'>restart</button>.</p>
+<p>Some parameters may require thread page refresh, some (like IP/port) – server <button id='restartb' class="btn btn-warning">restart</button>.</p>
 <p>If you did something wrong with port/ip and server is not accessible, change port/ip in config.json manually.</p>
 <p>Default values for IP/port are 127.0.0.1 and 7346</p>
-<div>
+<div class="parname">
 Skin:
-<select id='skin-sel'>
-<option></option>
+<select class="black-text" id='skin-sel'>
 <option>None</option>
 </select>
 </div>
