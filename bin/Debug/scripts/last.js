@@ -64,7 +64,9 @@ function showLast(N){
               var p = addPost(arr[i], function(d) { d.appendTo($('#thread')); }, false);
               if (arr[i].hash != _categories && 
                   arr[i].replyTo != _categories && 
-                  arr[i].replyTo != _rootpost) {
+                  arr[i].replyTo != _rootpost &&
+                  p
+                  ) {
                 loadRootThreadHash(p.attr('id'), p,
                   function(h,pp) {
                   pp.append(
