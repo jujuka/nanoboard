@@ -3,21 +3,30 @@
   font-size: 13px;
 }
 
-body {
-  background-color: #eee;
-}
-
 .version {
   font-size: 50%;
 }
 
 #actions {
-  margin-right: -7px;
+  margin-right: 0px;
+  margin-top:10px;
+}
+
+#navs {
+  margin-top:16px;
+}
+
+#search {
+  margin-top:10px;
 }
 
 #placesd {
   margin-left: 15px;
   margin-bottom: 50px;
+}
+
+#head-panel {
+  padding-right:22px;
 }
 
 .board-name {
@@ -117,10 +126,6 @@ img {
   border-width: 0;
 }
 
-a {
-  text-decoration: none;
-  color: darkorange;
-}
 
 a:hover {
   color: salmon;

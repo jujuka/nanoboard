@@ -8,12 +8,25 @@
 }
 
 #actions {
-  margin-right: -7px;
+  margin-right: 0px;
+  margin-top:10px;
+}
+
+#navs {
+  margin-top:16px;
+}
+
+#search {
+  margin-top:10px;
 }
 
 #placesd {
   margin-left: 15px;
   margin-bottom: 50px;
+}
+
+#head-panel {
+  padding-right:22px;
 }
 
 .board-name {
@@ -100,7 +113,9 @@ textarea {
 .reply-div {
   display: inline-block;
 }
-
+.black-text {
+  color: black;
+}
 img {
   border: 1px dotted white;
   max-width: 200px;
