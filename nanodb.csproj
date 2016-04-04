@@ -84,6 +84,10 @@
     <Compile Include="Captcha\BitmapConvert.cs" />
     <Compile Include="Captcha\PostSignatureExt.cs" />
     <Compile Include="Captcha\ByteStringExt.cs" />
+    <Compile Include="Server\CaptchaTracker.cs" />
+    <Compile Include="Server\GetCaptchaTokenHandler.cs" />
+    <Compile Include="Server\GetCaptchaImageHandler.cs" />
+    <Compile Include="Server\SolveCaptchaAndAddPostHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

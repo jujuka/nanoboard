@@ -32,6 +32,9 @@ namespace NServer
             var pagesHandler = new FileHandler("pages", MimeType.Html);
             server.SetRootHandler(pagesHandler);
             server.AddHandler("api", new DbApiHandler(_db));
+            server.AddHandler("solve", new SolveCaptchaAndAddPostHandler(_db));
+            server.AddHandler("captcha", new GetCaptchaImageHandler());
+            server.AddHandler("pow", new GetCaptchaTokenHandler());
             server.AddHandler("pages", pagesHandler);
             server.AddHandler("scripts", new FileHandler("scripts", MimeType.Js));
             //server.AddHandler("styles", new FileHandler("styles", MimeType.Css));

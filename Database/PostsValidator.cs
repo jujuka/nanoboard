@@ -35,14 +35,15 @@ namespace NDB
         */
         public static bool Validate(Post p)
         {
-            var bytes = Encoding.UTF8.GetBytes(p.message.FromB64());
+            var message = p.message.FromB64();
+            var bytes = Encoding.UTF8.GetBytes(message);
 
             if (bytes.Length > 65536)
             {
                 return false;
             }
 
-            p.hash = HashCalculator.Calculate(p.replyto + p.message.FromB64());
+            p.hash = HashCalculator.Calculate(p.replyto + message);
 
             if (p.replyto.Length != 32)
                 return false;
@@ -53,6 +54,18 @@ namespace NDB
                 {
                     return false;
                 }
+            }
+
+            var post = p.replyto + message;
+
+            if (!captcha.Captcha.PostHasValidPOW(post))
+            {
+                return false;
+            }
+
+            if (!captcha.Captcha.PostHasSolvedCaptcha(post))
+            {
+                return false;
             }
 
             return true;

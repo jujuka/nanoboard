@@ -106,8 +106,9 @@ namespace captcha
             return Ed25519.Verify(signature, dummyMessage, _publicKey);
         }
 
-        public static Captcha GetCaptchaForPost(string captchaPackFilename, string post)
+        public static Captcha GetCaptchaForPost(string post)
         {
+            string captchaPackFilename = _packFile;
             var size = new FileInfo(captchaPackFilename).Length;
             int count = (int) (size / CaptchaBlockLength);
             return GetCaptchaForIndex(captchaPackFilename, CaptchaIndex(post, count));
@@ -124,7 +125,7 @@ namespace captcha
 
         public static bool PostHasSolvedCaptcha(string post)
         {
-            var captcha = GetCaptchaForPost(_packFile, post);
+            var captcha = GetCaptchaForPost(post);
             if (captcha == null) return false;
             return captcha.CheckSignature(post);
         }
