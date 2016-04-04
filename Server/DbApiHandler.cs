@@ -119,7 +119,7 @@ namespace NServer
                     + Configurator.Instance.GetValue("ip", "127.0.0.1")
                     + ":"
                     + Configurator.Instance.GetValue("port", "7346"),
-                    Configurator.Instance.GetValue("password", "nano")
+                    Configurator.Instance.GetValue("password", Configurator.DefaultPass)
                 });
                 _createAvail = true;
             });

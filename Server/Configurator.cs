@@ -19,6 +19,7 @@ namespace NServer
     */
     class Configurator
     {
+        public const string DefaultPass = "nano3";
         private const string ConfigFileName = "config.json";
         public static readonly Configurator Instance = new Configurator();
         private Dictionary<string, string> _keyValues = new Dictionary<string, string>();
