@@ -1,9 +1,9 @@
 #backup dev local db:
 mv release/downloaded.txt .
 mv release/places.txt .
-mv release/*.db .
-mv release/index.json .
-mv release/diff.list .
+mv release/*.db3 .
+mv release/index-3.json .
+mv release/diff-3.list .
 rm -r -f release
 mkdir release
 cd release
@@ -17,6 +17,7 @@ cp ../tools/aggregator/places.txt .
 xbuild ../nanodb.csproj
 mv ../bin/Debug/nanodb.exe .
 cp ../bin/Debug/Newtonsoft.Json.dll .
+cp ../bin/Debug/Chaos.NaCl.dll .
 cp ../README.md README.txt
 #xbuild ../tools/nbpack/nbpack.csproj
 #mv ../tools/nbpack/bin/Debug/nbpack.exe .
@@ -34,8 +35,8 @@ git add bin/Debug/pages/version.txt
 git commit -m 'Upload 2.x release'
 git push -u origin feature/2.0
 #restore dev local db:
-mv *.db release
-mv index.json release
-mv diff.list release
+mv *.db3 release
+mv index-3.json release
+mv diff-3.list release
 mv downloaded.txt release
 mv places.txt release

@@ -16,6 +16,8 @@ Install mono-runtime, in command line write:
   http://127.0.0.1:7346   
 
 ## How to use:
+  0) download captcha pack (captcha.nbc) and put it near nanodb.exe
+
   1) run nanodb.exe to start viewing threads in browser
   
   2) when you need to get fresh posts, click [PNG-collect]
