@@ -13,12 +13,12 @@ namespace NDB
     */
     public class PostDb
     {
-        private readonly string _index = "index.json";  // name of index file
-        private const string DiffFile = "diff.list";    // name of file that keeps changes to the index
+        private readonly string _index = "index-3.json";  // name of index file
+        private const string DiffFile = "diff-3.list";    // name of file that keeps changes to the index
         private readonly string DeletedStub = "post was deleted".ToB64();   // this message returned when someone asks for deleted post
         private const string DataPrefix = "";   // will be prepended to a data chunk name
-        private const string DataSuffix = ".db"; // data chunk extension
-        private string _data = "0.db";  // initial data chunk filename
+        private const string DataSuffix = ".db3"; // data chunk extension
+        private string _data = "0.db3";  // initial data chunk filename
         private int _dataIndex = 0; // initial data chunk name index
         private int _dataSize = 0; // size of current data chunk will be here
         private const int DataLimit = 1024 * 1024 * 1024; // 1GB allowed to be stored inside one chunk before creating new one
@@ -82,7 +82,7 @@ namespace NDB
 
             foreach (var p in initialPosts)
             {
-                PutPost(p, true);
+                PutPost(p, true, true);
             }
         }
 
@@ -303,9 +303,9 @@ namespace NDB
             return true;
         }
 
-        public bool PutPost(Post p, bool allowReput = false)
+        public bool PutPost(Post p, bool allowReput = false, bool bypassValidation = false)
         {
-            if (!PostsValidator.Validate(p)) // do not add posts that fail validation
+            if (!bypassValidation && !PostsValidator.Validate(p)) // do not add posts that fail validation
                 return false;
 
             lock (_lock)
