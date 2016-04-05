@@ -4,7 +4,7 @@ function addReplyForm(id) {
     .insertAfter($('#' + id))
     .css('margin-left', parseInt($('#' + id).css('margin-left')) + _treeOffsetPx + 'px')
     .append($('<div>').addClass('reply')
-      .append($('<textarea>').val('[g]' + new Date().toUTCString() + ', client: 2.0[/g]\n'))
+      .append($('<textarea>').val('[g]' + new Date().toUTCString() + ', client: 3.0[/g]\n'))
       .append($('<br>'))
       .append($('<button>')
         .addClass('reply-button btn btn-danger ')
