@@ -10,6 +10,7 @@ using System.Net;
 using System.Linq;
 using NDB;
 using captcha;
+using Newtonsoft.Json;
 
 namespace NServer
 {
@@ -45,9 +46,13 @@ namespace NServer
                 return new HttpResponse(StatusCode.BadRequest, "Wrong answer");
             }
 
-            if (_db.PutPost(new Post(post.Substring(0, 32), post.Substring(32))))
+            post = captcha.AddSignatureToThePost(post, guess);
+
+            var post1 = new Post(post.Substring(0, 32), post.Substring(32).ToB64());
+
+            if (_db.PutPost(post1))
             {
-                return new HttpResponse(StatusCode.Ok, "Post was successfully added");
+                return new HttpResponse(StatusCode.Ok, JsonConvert.SerializeObject(post1));
             }
 
             CaptchaTracker.Captchas.Remove(token);

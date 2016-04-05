@@ -12,6 +12,14 @@ function sendPostToDb(post) {
     });
 }
 
+function mockSendPostToDb(post) {
+  addPost(post, function(d){ d.insertAfter($('#'+post.replyTo)); }, false)
+    .addTemporaryClass('high', 1000)
+    .css('margin-left', parseInt($('#'+post.replyTo).css('margin-left'))+10+'px');
+  pushNotification('Post was successfully added.');
+  onAdd(post);
+}
+
 function deletePostFromDb(hash) {
   $.post('../api/delete/' + hash);
 }

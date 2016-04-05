@@ -22,7 +22,8 @@ namespace captcha
         public static byte[] Signature(this string post)
         {
             if (post.IndexOf("["+Captcha.SignatureTag+"=") == -1) return new byte[64];
-            return post.Substring(post.LastIndexOf("["+Captcha.SignatureTag+"=")).TrimEnd(']').Bytify();
+            var offset = post.LastIndexOf("["+Captcha.SignatureTag+"=") + ("["+Captcha.SignatureTag+"=").Length;
+            return post.Substring(offset).TrimEnd(']').Bytify();
         }
     }
     

@@ -22,9 +22,9 @@ namespace NServer
         public HttpResponse Handle(HttpRequest request)
         {
             var token = Guid.NewGuid().ToString();
-            var captcha = Captcha.GetCaptchaForPost(request.Content);
+            CaptchaTracker.Posts[token] = Captcha.AddPow(request.Content.FromB64());
+            var captcha = Captcha.GetCaptchaForPost(CaptchaTracker.Posts[token]);
             CaptchaTracker.Captchas[token] = captcha;
-            CaptchaTracker.Posts[token] = Captcha.AddPow(request.Content);
             return new HttpResponse(StatusCode.Ok, token);
         }
     }
