@@ -42,7 +42,6 @@ namespace nboard
             return output;
         }
 
-        [Obsolete]
         public static byte[] WrappedXor(byte[] input, string key)
         {
             byte[] sha = SHA512.Create().ComputeHash(Encoding.UTF8.GetBytes(key));

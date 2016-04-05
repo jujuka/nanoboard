@@ -148,6 +148,8 @@ var matches = text.match(/&gt;&gt;[a-f0-9]{32}/g);
 }
 
 function applyFormatting(text) {
+  text = text.replace(/\[sign=[a-f0-9]{128}\]/gim, '');
+  text = text.replace(/\[pow=[a-f0-9]{256}\]/gim, '');
   text = text.replace(/\[sp(oiler|)\]/gim, '[x]');
   text = text.replace(/\[\/sp(oiler|)\]/gim, '[/x]');
   var tags = 'biusxg';

@@ -8,7 +8,6 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using System.Linq;
-using NDB;
 
 namespace NServer
 {

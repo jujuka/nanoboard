@@ -38,6 +38,9 @@
       <HintPath>bin\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="Chaos.NaCl">
+      <HintPath>bin\Debug\Chaos.NaCl.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -77,12 +80,21 @@
     <Compile Include="PngTransport\Posts.cs" />
     <Compile Include="PngTransport\Salsa20.cs" />
     <Compile Include="Server\StylesHandler.cs" />
+    <Compile Include="Captcha\Captcha.cs" />
+    <Compile Include="Captcha\BitmapConvert.cs" />
+    <Compile Include="Captcha\PostSignatureExt.cs" />
+    <Compile Include="Captcha\ByteStringExt.cs" />
+    <Compile Include="Server\CaptchaTracker.cs" />
+    <Compile Include="Server\GetCaptchaTokenHandler.cs" />
+    <Compile Include="Server\GetCaptchaImageHandler.cs" />
+    <Compile Include="Server\SolveCaptchaAndAddPostHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Database\" />
     <Folder Include="Server\" />
     <Folder Include="PngTransport\" />
+    <Folder Include="Captcha\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

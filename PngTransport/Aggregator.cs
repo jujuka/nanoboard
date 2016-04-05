@@ -269,7 +269,7 @@ namespace nboard
                         + Configurator.Instance.GetValue("ip", "127.0.0.1") 
                         + ":"
                         + Configurator.Instance.GetValue("port", "7346"),
-                        Configurator.Instance.GetValue("password", "nano"), "download" + Path.DirectorySeparatorChar + name);
+                        Configurator.Instance.GetValue("password", Configurator.DefaultPass), "download" + Path.DirectorySeparatorChar + name);
                 }
 
                 catch (Exception ex)
