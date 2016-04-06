@@ -14,7 +14,7 @@ function escapeTags(text) {
 
 function detectImages(text) {
   var prefix = 'data:image/jpeg;base64,';
-  var matches = text.match(/\[img=[A-Za-z0-9+\/=]{4,64512}\]/g);
+  var matches = text.match(/\[(i|x)mg=[A-Za-z0-9+\/=]{4,64512}\]/g);
   if (matches != null) {
     for (var i = 0; i < matches.length; i++) {
       var value = matches[i].toString();

@@ -72,7 +72,7 @@ function updateImage(loader) {
           $('.output').find('img').attr('src', 'error');
           $('#info').css('color','red');
         } else {
-          $('#result').text('[img='+res.substring(res.indexOf(',')+1)+']');
+          $('#result').text('[xmg='+res.substring(res.indexOf(',')+1)+']');
           $('.output').find('img').attr('src', res);
           $('#info').css('color','black');
         }
@@ -118,7 +118,7 @@ function updateImage(loader) {
           $('#result').text('error');
         } else {
           $('#info').css('color','black');
-          $('#result').text('[img='+dataURL.substring(dataURL.indexOf(',')+1)+']');
+          $('#result').text('[xmg='+dataURL.substring(dataURL.indexOf(',')+1)+']');
         }
       };
       var shrd = canvas.toDataURL();
