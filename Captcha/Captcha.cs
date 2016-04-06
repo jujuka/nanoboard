@@ -131,53 +131,53 @@ namespace captcha
             return captcha.CheckSignature(post);
         }
 
-        private static byte[] ComputeHash(string post)
+        private static string ExceptXmg(string post)
         {
             var matches = Regex.Matches(post, "\\[xmg=[^\\]]*\\]");
             foreach (Match m in matches)
             {
                 post = post.Replace(m.Value, _sha.ComputeHash(Encoding.UTF8.GetBytes(m.Value)).Stringify());
             }
+            return post;
+        }
+
+        private static byte[] ComputeHash(string post)
+        {
             return _sha.ComputeHash(Encoding.UTF8.GetBytes(post));
         }
 
         public static bool PostHasValidPOW(string post)
         {
             post = post.ExceptSignature();
-            var hash = ComputeHash(post);
+            var hash = ComputeHash(ExceptXmg(post));
             return hash.MaxConsecZeros(PowByteOffset, PowTreshold) >= PowLength;
         }
 
         public static int CaptchaIndex(string post, int max)
         {
             post = post.ExceptSignature();
-            var hash = ComputeHash(post);
+            var hash = ComputeHash(ExceptXmg(post));
             if (hash.MaxConsecZeros(PowByteOffset, PowTreshold) < PowLength) return -1;
             return (hash[0] + hash[1] * 256 + hash[2] * 256 * 256) % max;
-        }
-
-        public static string GetHash(string post)
-        {
-            post = post.ExceptSignature();
-            return ComputeHash(post).Stringify();
         }
 
         public static string AddPow(string post)
         {
             post = post.ExceptSignature();
+            var xpost = ExceptXmg(post);
             byte[] hash = null;
-            string result = post + "["+PowTag+"="+new string('0', 256)+"]";
             var buffer = new byte[128];
             var rand = new RNGCryptoServiceProvider();
+            var trash = "";
 
             while (hash == null || hash.MaxConsecZeros(PowByteOffset, PowTreshold) < PowLength)
             {
                 rand.GetBytes(buffer);
-                result = post + "["+PowTag+"=" + buffer.Stringify() + "]";
-                hash = ComputeHash(result);
+                trash = "["+PowTag+"=" + buffer.Stringify() + "]";
+                hash = ComputeHash(xpost + trash);
             }
 
-            return result;
+            return post + trash;
         }
     }
 }
