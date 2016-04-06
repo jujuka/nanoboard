@@ -133,7 +133,7 @@ namespace captcha
 
         private static byte[] ComputeHash(string post)
         {
-            var matches = Regex.Matches(post, "\\[ximg=[^\\]]*\\]");
+            var matches = Regex.Matches(post, "\\[xmg=[^\\]]*\\]");
             foreach (Match m in matches)
             {
                 post = post.Replace(m.Value, _sha.ComputeHash(Encoding.UTF8.GetBytes(m.Value)).Stringify());
