@@ -10,6 +10,7 @@ using Chaos.NaCl;
 using NDB;
 using nboard;
 using NServer;
+using System.Text.RegularExpressions;
 
 namespace captcha
 {
@@ -130,17 +131,27 @@ namespace captcha
             return captcha.CheckSignature(post);
         }
 
+        private static byte[] ComputeHash(string post)
+        {
+            var matches = Regex.Matches(post, "\\[ximg=[^\\]]*\\]");
+            foreach (Match m in matches)
+            {
+                post = post.Replace(m.Value, _sha.ComputeHash(Encoding.UTF8.GetBytes(m.Value)).Stringify());
+            }
+            return _sha.ComputeHash(Encoding.UTF8.GetBytes(post));
+        }
+
         public static bool PostHasValidPOW(string post)
         {
             post = post.ExceptSignature();
-            var hash = _sha.ComputeHash(Encoding.UTF8.GetBytes(post));
+            var hash = ComputeHash(post);
             return hash.MaxConsecZeros(PowByteOffset, PowTreshold) >= PowLength;
         }
 
         public static int CaptchaIndex(string post, int max)
         {
             post = post.ExceptSignature();
-            var hash = _sha.ComputeHash(Encoding.UTF8.GetBytes(post));
+            var hash = ComputeHash(post);
             if (hash.MaxConsecZeros(PowByteOffset, PowTreshold) < PowLength) return -1;
             return (hash[0] + hash[1] * 256 + hash[2] * 256 * 256) % max;
         }
@@ -148,7 +159,7 @@ namespace captcha
         public static string GetHash(string post)
         {
             post = post.ExceptSignature();
-            return _sha.ComputeHash(Encoding.UTF8.GetBytes(post)).Stringify();
+            return ComputeHash(post).Stringify();
         }
 
         public static string AddPow(string post)
@@ -163,7 +174,7 @@ namespace captcha
             {
                 rand.GetBytes(buffer);
                 result = post + "["+PowTag+"=" + buffer.Stringify() + "]";
-                hash = _sha.ComputeHash(Encoding.UTF8.GetBytes(result));
+                hash = ComputeHash(result);
             }
 
             return result;
