@@ -1,4 +1,8 @@
-Скачать:
+Всем кто хочет быть ТРУЪ криптаном качать Фемтоборду: 
+https://github.com/nanoboard/femtoboard
+
+
+Скачать Наноборду (не труъ, переусложнена):
 https://github.com/nanoboard/nanoboard/releases
 
 
