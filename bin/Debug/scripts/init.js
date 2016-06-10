@@ -16,7 +16,8 @@ function updateCategoriesBar() {
 	  replies = JSON.parse(replies);
 	  for (var i = 0; i < replies.length; i++){
 	    var reply = replies[i];
-		$('#categories').append('<a href="#category'+reply.hash+'">['+stripTags(applyFormatting(Base64.decode(reply.message)))+']</a> ');
+	    if (reply.message != 'cG9zdCB3YXMgZGVsZXRlZA==') // if category post was deleted - skip
+	       $('#categories').append('<a href="#category'+reply.hash+'">['+stripTags(applyFormatting(Base64.decode(reply.message)))+']</a> ');
 	  }
     });
 }
